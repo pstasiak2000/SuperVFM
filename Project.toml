@@ -3,7 +3,15 @@ uuid = "2bd08867-fde5-4212-94c3-7727a5759a5e"
 authors = ["Piotr Stasiak <p.stasiak@newcastle.ac.uk> and contributors"]
 version = "1.0.0-DEV"
 
+[deps]
+Adapt = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
+CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+
 [compat]
+Adapt = "4.1.1"
+CUDA = "5.5.2"
+Dates = "1.11.0"
 julia = "1.6.7"
 
 [extras]

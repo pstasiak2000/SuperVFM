@@ -13,3 +13,7 @@ makedocs(sitename="SuperVFM.jl", remotes = nothing,
             ]    
 )
 
+deploydocs(
+    repo = "github.com/pstasiak2000/SuperVFM.jl.git",
+)
+

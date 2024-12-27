@@ -1,11 +1,11 @@
-# push!(LOAD_PATH,"../src/")
+push!(LOAD_PATH,"../src/")
 using Documenter
 using SuperVFM
 
 #Generates the subpages of the vortex initial conditions
 SUBSECTION_PAGES = "vortex_configs/" .* readdir("./docs/src/vortex_configs/")
 
-makedocs(sitename="SuperVFM.jl", remotes = nothing,
+makedocs(sitename="SuperVFM.jl",
     pages = [
         "Home" => "index.md",
         "Manual" => "manual.md",

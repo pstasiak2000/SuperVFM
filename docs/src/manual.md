@@ -6,11 +6,8 @@ Here everything will be listed, the routines for computing
 In the standard implementations of the Vortex Filament Method (VFM), filaments are constructed by a Fortran 'type' array. Unfortunately, though structure types are native to Julia, structures defined and adapted using the `Adapt` package are required to be immutable. The implementation of the VFM **requires** structures to mutate according to the number of vortex points, the value will fluctuate to maintain discretisation between filaments. 
 
 !!! tip
-<<<<<<< HEAD
     The GPU array can be converted to a filament structure by calling `convert(VFArr::CUDA.CuMatrix{Float32},VFArrInt::CUDA.CuMatrix{Int32},VFStruct::VortexFilaments)`. [WIP!!!]
-=======
     The GPU array can be converted to a filament structure by calling `convert(VFArr::CUDA.CuMatrix{Float32},VFArrInt::CUDA.CuMatrix{Int32},VFStruct::VortexFilaments)`.
->>>>>>> b28cc71f9ab0bd7658202bc3e7a22387ef04881e
 
 #### Float32 Array
 | Rows |            Variable Description                            |

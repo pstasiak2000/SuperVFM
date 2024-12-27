@@ -1,4 +1,4 @@
-push!(LOAD_PATH,"../src/")
+# push!(LOAD_PATH,"../src/")
 using Documenter
 using SuperVFM
 
@@ -13,6 +13,3 @@ makedocs(sitename="SuperVFM.jl", remotes = nothing,
             ]    
 )
 
-deploydocs(;
-   repo="github.com/pstasiak2000/SuperVFM.jl",
-)

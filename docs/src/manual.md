@@ -15,7 +15,7 @@ In the standard implementations of the Vortex Filament Method (VFM), filaments a
 | 1-3  | `xyz` position of the vortex point            |
 | 4-6  | `u` velocity of the vortex point | 
 | 7-9  |  `u1` stored velocity for Adams-Bashforth| 
-| 10-12 |  `u1` stored velocity for Adams-Bashforth|
+| 10-12 |  `u2` stored velocity for Adams-Bashforth|
 | 13-15 | `f_u_mf` velocity due to mutual friction |
 | 16-18 | `f_u_sup` velocity due to background flow|
 | 19-21 | `f_u_loc` velocity due to local contribution|

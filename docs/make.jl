@@ -14,6 +14,6 @@ makedocs(sitename="SuperVFM.jl",
 )
 
 deploydocs(
-    repo = "github.com/pstasiak2000/SuperVFM.jl",
+    repo = "github.com/pstasiak2000/SuperVFM",
 )
 

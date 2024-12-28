@@ -37,10 +37,16 @@ In the standard implementations of the Vortex Filament Method (VFM), filaments a
 
 
 ## Boundary Conditions
+The following methods are the currently implemented boundary conditions in the vortex filament method solver.
+
+```@docs
+OpenBoundary()
+```
 
 ```@docs
 PeriodicBoundary()
 ```
+
 
 
 ## Vortex Configurations

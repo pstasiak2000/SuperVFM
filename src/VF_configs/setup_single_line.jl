@@ -7,9 +7,9 @@ Adapt.@adapt_structure SingleLine
 
 
 function getInitPcount(::SingleLine,δ)
-    println("-----------------------------------------------------")
-    println("-------- Initialising straight line vortex ----------")
-    println("-----------------------------------------------------")
+    println("--------------------------------------------------------")
+    println("----------- Initialising straight line vortex ----------")
+    println("--------------------------------------------------------")
     println("Changing size of pcount to fit with box_length and δ ")
     println("-: δ=$δ                                              ")
     return Int32(round((2π)/(0.75*δ)))

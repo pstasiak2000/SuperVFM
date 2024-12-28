@@ -7,9 +7,9 @@ Adapt.@adapt_structure SingleRing
 
 #Obtains initial number of vortex points
 function getInitPcount(initf::SingleRing,δ)
-    println("-----------------------------------------------------")
-    println("-------- Initialising vortex ring  ------------------")
-    println("-----------------------------------------------------")
+    println("--------------------------------------------------------")
+    println("----------- Initialising vortex ring  ------------------")
+    println("--------------------------------------------------------")
     println("Changing size of pcount to fit with box_length and δ ")
     println("Radius of ring: R=$(initf.Radius)")
     println("-: δ=$δ                                              ")

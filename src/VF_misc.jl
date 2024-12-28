@@ -17,7 +17,7 @@ function banner_print()
     
     println("user info:  $(username)@$(hostname)")
     println("Launched on $(Dates.day(date))/$(Dates.month(date))/$(Dates.year(date)) @ $(Dates.Time(date))")
-    println("---------------------------------------------")
+    println("--------------------------------------------------------")
 end
 
 function print_GPU_info()

@@ -19,7 +19,7 @@ Initialises a periodic boundary in the chosen direction. Vortex loops that excee
 Example usage:
 ```julia
     boundary_x = PeriodicBoundary()
-````
+```
 """
 function PeriodicBoundary()
     return PeriodicBoundary{String}("periodic")
@@ -36,7 +36,12 @@ Adapt.@adapt_structure OpenBoundary
 """
     OpenBoundary()
 
-Initialises a periodic boundary in the chosen direction.     
+Initialises an open boundary in the chosen direction. Vortex loops that exceed the box size (typically ``2π``) are not restricted. 
+
+Example usage:
+```julia
+    boundary_x = OpenBoundary()
+```
 """
 function OpenBoundary()
     return OpenBoundary{String}("open")

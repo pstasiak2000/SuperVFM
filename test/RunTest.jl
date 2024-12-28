@@ -19,7 +19,7 @@ PARAMS = SuperVFM.SimulationParams(;
         dt=0.01
 )
 
-f = Run(PARAMS)
+f = Run(PARAMS);
 
 fCPU = Array(f')
 
@@ -30,6 +30,13 @@ fCPU = Array(f')
 #         zlimits=(-π,π), zlabel="z",
 #         label=false)
 
+
+# plot(fCPU[:,33],fCPU[:,34],fCPU[:,35],
+#         linewidth=5,
+#         xlimits=(0,2π), xlabel="x",
+#         ylimits=(0,2π), ylabel="y",
+#         zlimits=(0,2π), zlabel="z",
+#         label=false)
 println("Done")
 
 

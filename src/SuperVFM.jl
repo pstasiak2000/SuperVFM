@@ -1,6 +1,8 @@
 module SuperVFM
 using CUDA, Adapt
 using Dates
+using StaticArrays
+using LinearAlgebra
 
 export Run
 
@@ -8,6 +10,7 @@ include("VF_boundary.jl")
 include("VF_timestep.jl")
 include("VF_initial_condition.jl")
 include("VF_cdata.jl")
+include("VF_derivatives.jl")
 include("VF_general.jl")
 include("VF_misc.jl")
 
@@ -35,7 +38,8 @@ function Run(SimParams::SimulationParams)
 
     initialiseVortex!(f,fint,pcount,SimParams.initf; threads=nthreads, blocks=nblocks)
 
-    ghostp!(f,fint,pcount, SimParams; )
+    @time ghostp!(f,fint,pcount, SimParams; nthreads, nblocks)
+    @time s_dot = get_deriv_1(f, pcount; nthreads, nblocks)
     t = 0; #Simulation time
     for it ∈ 1:SimParams.nsteps
 

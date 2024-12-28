@@ -66,6 +66,7 @@ Depth=1
 
 The Vortex Filament requires the computation of spatial derivatives. The following methods compute these derivatives using finite difference adaptive techniques.
 
-```@docs
-get_deriv_1(f,pcount; nthreads=1, nblocks=1)
+
+```math
+\frac{d\mathbf{s}_i}{d\xi} = \frac{\ell_{i-1}\mathbf{s}_{i+1} + (\ell_{i+1} - \ell_{i-1})\mathbf{s}_i + \ell_{i+1}\mathbf{s}_{i-1}}{2\ell_{i+1}\ell_{i-1}} + {\cal O}(\ell^2) 
 ```

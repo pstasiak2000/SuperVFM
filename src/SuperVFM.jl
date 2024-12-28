@@ -39,13 +39,13 @@ function Run(SimParams::SimulationParams)
     initialiseVortex!(f,fint,pcount,SimParams.initf; threads=nthreads, blocks=nblocks)
 
     @time ghostp!(f,fint,pcount, SimParams; nthreads, nblocks)
-    @time s_dot = get_deriv_1(f, pcount; nthreads, nblocks)
-    t = 0; #Simulation time
+    @time s_ddot = get_deriv_2(f, pcount; nthreads, nblocks)
+        t = 0; #Simulation time
     for it ∈ 1:SimParams.nsteps
 
         t += SimParams.dt
     end
-    return f
+    return f, s_ddot
 end
 
 

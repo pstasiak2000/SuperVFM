@@ -61,33 +61,32 @@ function ghostp_Kernel!(f,fint,pcount,box_size)
     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
     stride = gridDim().x * blockDim().x
     for idx ∈ index:stride:pcount 
-        #Ghost point infront - 33:35 infront
-        f[33,idx] = mod(f[1,fint[1,idx]] + box_size[1]/2,box_size[1]) - box_size[1]/2
-        f[34,idx] = mod(f[2,fint[1,idx]] + box_size[2]/2,box_size[2]) - box_size[2]/2
-        f[35,idx] = mod(f[3,fint[1,idx]] + box_size[3]/2,box_size[3]) - box_size[3]/2
+        # #Ghost point infront - 33:35 infront
+        f[33,idx] = f[1,fint[1,idx]]
+        f[34,idx] = f[2,fint[1,idx]]
+        f[35,idx] = f[3,fint[1,idx]]
 
-        #Ghost point behind - 36:38 behind
-        f[36,idx] = mod(f[1,fint[2,idx]] + box_size[1]/2,box_size[1]) - box_size[1]/2
-        f[37,idx] = mod(f[2,fint[2,idx]] + box_size[2]/2,box_size[2]) - box_size[2]/2
-        f[38,idx] = mod(f[3,fint[2,idx]] + box_size[3]/2,box_size[3]) - box_size[3]/2
+        # #Ghost point behind - 36:38 behind
+        f[36,idx] = f[1,fint[2,idx]]
+        f[37,idx] = f[2,fint[2,idx]]
+        f[38,idx] = f[3,fint[2,idx]]
 
-        #Deprecated::
-        # favourable to drop the if statements
-        # for c ∈ 1:3
-        #     #Periodically fix infront
-        #     if(f[c,idx] - f[32+c,idx] > box_size[c]/2)
-        #         f[32+c,idx] += box_size[c]
-        #     elseif(f[c,idx] - f[32+c,idx] < -box_size[c]/2)
-        #         f[32+c,idx] -= box_size[c]
-        #     end
+        #Periodic fixing
+        for c ∈ 1:3
+            #Periodically fix infront
+            if(f[c,idx] - f[32+c,idx] > box_size[c]/2)
+                f[32+c,idx] += box_size[c]
+            elseif(f[c,idx] - f[32+c,idx] < -box_size[c]/2)
+                f[32+c,idx] -= box_size[c]
+            end
 
-        #     # #Periodically fix behind
-        #     if(f[c,idx] - f[35+c,idx] >box_size[c]/2)
-        #         f[35+c,idx] += box_size[c]
-        #     elseif(f[c,idx] - f[35+c,idx] < -box_size[c]/2)
-        #         f[35+c,idx] -= box_size[c]
-        #     end
-        # end
+            # #Periodically fix behind
+            if(f[c,idx] - f[35+c,idx] >box_size[c]/2)
+                f[35+c,idx] += box_size[c]
+            elseif(f[c,idx] - f[35+c,idx] < -box_size[c]/2)
+                f[35+c,idx] -= box_size[c]
+            end
+        end
     end
     return nothing
 end

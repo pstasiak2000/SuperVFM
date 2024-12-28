@@ -58,12 +58,14 @@ Here is a list of all of the vortex configurations that can be used for the vort
 Pages = Main.SUBSECTION_PAGES
 Depth=1
 ```
-```math
-\int x dx
-```
 
-```@example 1
-a = 1
-b = 2
-a + b
+
+
+
+## Derivatives 
+
+The Vortex Filament requires the computation of spatial derivatives. The following methods compute these derivatives using finite difference adaptive techniques.
+
+```@docs
+get_deriv_1(f,pcount; nthreads=1, nblocks=1)
 ```

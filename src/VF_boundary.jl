@@ -50,23 +50,24 @@ export OpenBoundary
 
 #######################################################################
 
-function print_boundary_info(boundary_x,boundary_y,boundary_z)
-    println("--------------------------------------------------------")
-    println("                Boundary Informataion                   ")
-    println("--------------------------------------------------------")
-    println("boundary_x: $(boundary_x.name)")
-    println("boundary_y: $(boundary_y.name)")
-    println("boundary_z: $(boundary_z.name)")
+function ghostp!(f,fint,pcount,SimParams; nthreads=1, nblocks=1)
+    CUDA.@sync begin
+        @cuda threads=nthreads blocks=nblocks ghostp_Kernel!(f,fint,pcount,SimParams.box_size)
+    end
 end
 
-
 #Computes the ghost points infront and behind
-function ghostp!(f,fint,pcount,boundary_x,boundary_y,boundary_z)
+function ghostp_Kernel!(f,fint,pcount,box_size)
     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
     stride = gridDim().x * blockDim().x
     for idx ∈ index:stride:pcount 
+        #Ghost point infront
         f[33,idx] = f[1,fint[1,idx]]
-        f[34,idx] = f[2,fint[2,idx]]
-        f[35,idx] = f[3,fint[3,idx]]
+        f[34,idx] = f[2,fint[1,idx]]
+        f[35,idx] = f[3,fint[1,idx]]
+
+        #Ghost point behind
+        
     end
+    return nothing
 end

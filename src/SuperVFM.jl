@@ -15,7 +15,7 @@ include("VF_misc.jl")
 
 
 function Run(SimParams::SimulationParams)
-    banner_print()
+    print_banner()
     print_boundary_info(
         SimParams.boundary_x,
         SimParams.boundary_y,
@@ -26,15 +26,16 @@ function Run(SimParams::SimulationParams)
     println("-: pcount is now at $pcount")
 
     #!!![NOTE] Function here to determine the number of threads and blocks to be used
-    threads = min(pcount, 1024)
-    blocks = cld(pcount,threads)
+    nthreads = min(pcount, 1024)
+    nblocks = cld(pcount,nthreads)
     #!!!
 
     f = CUDA.zeros(Float32, 39, pcount)
     fint = CUDA.zeros(Int32, 3, pcount)
 
-    initialiseVortex!(f,fint,pcount,SimParams.initf; threads, blocks)
+    initialiseVortex!(f,fint,pcount,SimParams.initf; threads=nthreads, blocks=nblocks)
 
+    ghostp!(f,fint,pcount, SimParams; )
     t = 0; #Simulation time
     for it ∈ 1:SimParams.nsteps
 

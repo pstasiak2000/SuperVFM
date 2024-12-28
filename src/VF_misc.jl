@@ -1,7 +1,4 @@
-
-
-
-function banner_print()
+function print_banner()
     hostname = gethostname() #Get the hostname
     username = ENV["USER"]   #Get the username
     date = now()             #Get the current date and time
@@ -38,4 +35,13 @@ function print_GPU_info()
     println("Maximum Threads per Block: $max_threads_per_block")
     println("Warp Size: $warp_size")
     println("========================================================")
+end
+
+function print_boundary_info(boundary_x,boundary_y,boundary_z)
+    println("--------------------------------------------------------")
+    println("                Boundary Informataion                   ")
+    println("--------------------------------------------------------")
+    println("boundary_x: $(boundary_x.name)")
+    println("boundary_y: $(boundary_y.name)")
+    println("boundary_z: $(boundary_z.name)")
 end

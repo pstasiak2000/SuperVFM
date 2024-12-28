@@ -1,11 +1,23 @@
 push!(LOAD_PATH, "../") #Load the source path 
 using SuperVFM
 
-δ=0.001
+#Vortex initial condition
 IC = SingleRing(1.2)
 
+#Set the simulation parameters
+PARAMS = SuperVFM.SimulationParams(;
+        shots=1,
+        δ=0.1,
+        box_size=(2π,2π,2π),
+        velocity=nothing,
+        initf=IC,
+        boundary=("periodic","periodic","periodic"),
+        corea=Float32(6.29e-7),
+        dt=0.01,
+        VFdtFrac=1
+)
 
-f = Run(IC,δ)
+f = Run(PARAMS)
 
 fCPU = Array(f')
 

@@ -1,0 +1,1 @@
+abstract type VelocityMode end #Super type for computing the velocity

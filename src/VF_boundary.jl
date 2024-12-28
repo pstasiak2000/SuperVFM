@@ -2,7 +2,5 @@
 #Support for PERIODIC boundary conditions only
 
 function get_ghost_p(i,ginfront,gbehind)
-
-
     return nothing
 end

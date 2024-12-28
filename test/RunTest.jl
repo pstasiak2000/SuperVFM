@@ -12,7 +12,9 @@ PARAMS = SuperVFM.SimulationParams(;
         box_size=(2π,2π,2π),
         velocity=nothing,
         initf=IC,
-        boundary=("periodic","periodic","periodic"),
+        boundary_x=PeriodicBoundary(),
+        boundary_y=PeriodicBoundary(),
+        boundary_z=PeriodicBoundary(),
         corea=Float32(6.29e-7),
         dt=0.01
 )

@@ -7,7 +7,6 @@ In the standard implementations of the Vortex Filament Method (VFM), filaments a
 
 !!! tip
     The GPU array can be converted to a filament structure by calling `convert(VFArr::CUDA.CuMatrix{Float32},VFArrInt::CUDA.CuMatrix{Int32},VFStruct::VortexFilaments)`. [WIP!!!]
-    The GPU array can be converted to a filament structure by calling `convert(VFArr::CUDA.CuMatrix{Float32},VFArrInt::CUDA.CuMatrix{Int32},VFStruct::VortexFilaments)`.
 
 #### Float32 Array
 | Rows |            Variable Description                            |
@@ -37,7 +36,11 @@ In the standard implementations of the Vortex Filament Method (VFM), filaments a
 
 
 
-## Variables
+## Boundary Conditions
+
+```@docs
+PeriodicBoundary()
+```
 
 
 ## Vortex Configurations

@@ -4,11 +4,11 @@ using Dates
 
 export Run
 
+include("VF_boundary.jl")
 include("VF_timestep.jl")
 include("VF_initial_condition.jl")
 include("VF_cdata.jl")
 include("VF_general.jl")
-include("VF_boundary.jl")
 include("VF_misc.jl")
 
 
@@ -16,6 +16,10 @@ include("VF_misc.jl")
 
 function Run(SimParams::SimulationParams)
     banner_print()
+    print_boundary_info(
+        SimParams.boundary_x,
+        SimParams.boundary_y,
+        SimParams.boundary_z)
     print_GPU_info()
 
     pcount = getInitPcount(SimParams.initf,SimParams.δ)

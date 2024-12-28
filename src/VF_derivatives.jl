@@ -5,7 +5,7 @@
 Computes the first derivative of the vortex filaments using a second order adaptive mesh finite difference scheme.
 
 ```math
-\frac{d\mathbf{s}_i}{d\xi} = \frac{\ell_{i-1}\mathbf{s}_{i+1} + (\ell_{i+1} - \ell_{i-1})\mathbf{s}_i + \ell_{i+1}\mathbf{s}_{i-1}}{2\ell_{i+1}\ell_{i-1}} + {\cal O}(\ell^2) 
+\\frac{d\\mathbf{s}_i}{d\\xi} = \\frac{\\ell_{i-1}\\mathbf{s}_{i+1} + (\\ell_{i+1} - \\ell_{i-1})\\mathbf{s}_i + \\ell_{i+1}\\mathbf{s}_{i-1}}{2\\ell_{i+1}\\ell_{i-1}} + {\\cal O}(\\ell^2) 
 ```
 """
 function get_deriv_1(f,pcount; nthreads=1, nblocks=1)

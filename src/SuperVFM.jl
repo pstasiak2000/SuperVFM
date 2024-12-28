@@ -21,10 +21,21 @@ function Run(SimParams::SimulationParams)
     pcount = getInitPcount(SimParams.initf,SimParams.δ)
     println("-: pcount is now at $pcount")
 
+    #!!![NOTE] Function here to determine the number of threads and blocks to be used
+    threads = min(pcount, 1024)
+    blocks = cld(pcount,threads)
+    #!!!
+
     f = CUDA.zeros(Float32, 39, pcount)
     fint = CUDA.zeros(Int32, 3, pcount)
 
-    initialiseVortex!(f,fint,pcount,SimParams.initf)
+    initialiseVortex!(f,fint,pcount,SimParams.initf; threads, blocks)
+
+    t = 0; #Simulation time
+    for it ∈ 1:SimParams.nsteps
+
+        t += SimParams.dt
+    end
     return f
 end
 

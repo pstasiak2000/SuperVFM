@@ -8,12 +8,12 @@ for config ∈ VORTEX_CONFIGS
 end
 
 
-function initialiseVortex!(f,fint,pcount,initf::InitCond)
+function initialiseVortex!(f,fint,pcount,initf::InitCond; threads=1, blocks=1)
     @assert supertype(typeof(initf)) == InitCond "Invalid initial condition"
     kernel = @cuda launch=false init!(f,fint,pcount,initf)
-    config = launch_configuration(kernel.fun)
-    threads = min(pcount, config.threads)
-    blocks = cld(pcount,threads)
+    # config = launch_configuration(kernel.fun)
+    # threads = min(pcount, config.threads)
+    # blocks = cld(pcount,threads)
     CUDA.@sync begin
         kernel(f,fint,pcount, initf; threads, blocks)
     end

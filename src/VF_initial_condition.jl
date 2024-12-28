@@ -1,7 +1,11 @@
 abstract type InitCond end #Super type of all initial conditions
 
-include("./VFConfig/setup_single_line.jl")
-include("./VFConfig/setup_single_ring.jl")
+
+VORTEX_CONFIGS = readdir("./src/VF_configs")
+
+for config ∈ VORTEX_CONFIGS  
+    include("./VF_configs/" * config)
+end
 
 
 function initialiseVortex!(f,fint,pcount,initf::InitCond)

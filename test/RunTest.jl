@@ -3,7 +3,7 @@ using SuperVFM
 using Test
 
 #Vortex initial condition
-IC = SingleLine()
+IC = SingleRing(1.0f0)
 
 #Set the simulation parameters
 PARAMS = SuperVFM.SimulationParams(;
@@ -22,14 +22,13 @@ PARAMS = SuperVFM.SimulationParams(;
 
 @time f = Run(PARAMS);
 
-
-fCPU = Array(f')
-# plot(fCPU[:,1],fCPU[:,2],fCPU[:,3],
-#         linewidth=5,
-#         xlimits=(-π,π), xlabel="x",
-#         ylimits=(-π,π), ylabel="y",
-#         zlimits=(-π,π), zlabel="z",
-#         label=false)
+fCPU = Array(f)'
+plot(Tuple.(fCPU[:,1]),
+        linewidth=5,
+        xlimits=(-π,π), xlabel="x",
+        ylimits=(-π,π), ylabel="y",
+        zlimits=(-π,π), zlabel="z",
+        label=false)
 
 
 # plot(fCPU[:,33],fCPU[:,34],fCPU[:,35],

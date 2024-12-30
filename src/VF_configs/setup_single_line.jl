@@ -20,9 +20,10 @@ function init!(f,fint,pcount,::SingleLine)
     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
     stride = gridDim().x * blockDim().x
     for idx ∈ index:stride:pcount
-        f[1,idx] = 0.0
-        f[2,idx] = 0.0
-        f[3,idx] = -π + (Float32(idx)-0.5)*2π/pcount
+        f[1,idx] += @SVector [0.0,0.0,-π + (Float32(idx)-0.5)*2π/pcount]
+        # f[1,idx][1] = 0.0
+        # f[1,idx][2] = 0.0
+        # f[1,idx][3] = -π + (Float32(idx)-0.5)*2π/pcount
 
         if index == 1 #The first element
             fint[2,idx] = pcount

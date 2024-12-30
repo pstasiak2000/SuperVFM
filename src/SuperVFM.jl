@@ -31,16 +31,16 @@ function Run(SimParams::SimulationParams)
     nthreads = min(pcount, 1024)
     nblocks = cld(pcount,nthreads)
     #!!!
-
-    f = CUDA.zeros(Float32, 39, pcount)
-    fint = CUDA.zeros(Int32, 3, pcount)
+    f = CUDA.fill(SVector{3,Float32}(0,0,0),12,pcount)  #Contains the vector components of the vortex filaments
+    fScal  = CUDA.zeros(Float32, 3, pcount)             #Contains the scalar components of the vortex filaments
+    fint = CUDA.zeros(Int32, 3, pcount)                 #Contains the scalar integer components of the vortex filaments
 
     initialiseVortex!(f,fint,pcount,SimParams.initf; threads=nthreads, blocks=nblocks)
 
-    @time ghostp!(f,fint,pcount, SimParams; nthreads, nblocks)
+    # @time ghostp!(f,fint,pcount, SimParams; nthreads, nblocks)
     t = 0; #Simulation time
     for it ∈ 1:SimParams.nsteps
-        calc_velocity!(f, pcount, SimParams.velocity; nthreads, nblocks)
+        # calc_velocity!(f, pcount, SimParams.velocity; nthreads, nblocks)
         t += SimParams.dt
     end
     return f

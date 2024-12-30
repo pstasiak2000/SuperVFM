@@ -1,5 +1,6 @@
 push!(LOAD_PATH, "../") #Load the source path 
 using SuperVFM
+using Test
 
 #Vortex initial condition
 IC = SingleLine()
@@ -8,9 +9,9 @@ IC = SingleLine()
 PARAMS = SuperVFM.SimulationParams(;
         shots=1,
         nsteps=1,
-        δ=0.01,
+        δ=0.1,
         box_size=(2π,2π,2π),
-        velocity=nothing,
+        velocity=LIA(),
         initf=IC,
         boundary_x=PeriodicBoundary(),
         boundary_y=PeriodicBoundary(),
@@ -19,11 +20,10 @@ PARAMS = SuperVFM.SimulationParams(;
         dt=0.01
 )
 
-f, s_ddot = Run(PARAMS);
+@time f = Run(PARAMS);
 
 
 fCPU = Array(f')
-s_dot'
 # plot(fCPU[:,1],fCPU[:,2],fCPU[:,3],
 #         linewidth=5,
 #         xlimits=(-π,π), xlabel="x",

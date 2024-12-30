@@ -19,12 +19,11 @@ include("VF_misc.jl")
 
 function Run(SimParams::SimulationParams)
     print_banner()
+    print_GPU_info()
     print_boundary_info(
         SimParams.boundary_x,
         SimParams.boundary_y,
         SimParams.boundary_z)
-    print_GPU_info()
-
     pcount = getInitPcount(SimParams.initf,SimParams.δ)
     println("-: pcount is now at $pcount")
 
@@ -39,13 +38,12 @@ function Run(SimParams::SimulationParams)
     initialiseVortex!(f,fint,pcount,SimParams.initf; threads=nthreads, blocks=nblocks)
 
     @time ghostp!(f,fint,pcount, SimParams; nthreads, nblocks)
-    @time s_ddot = get_deriv_2(f, pcount; nthreads, nblocks)
-        t = 0; #Simulation time
+    t = 0; #Simulation time
     for it ∈ 1:SimParams.nsteps
-
+        calc_velocity!(f, pcount, SimParams.velocity; nthreads, nblocks)
         t += SimParams.dt
     end
-    return f, s_ddot
+    return f
 end
 
 

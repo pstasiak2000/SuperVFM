@@ -1,1 +1,1 @@
-abstract type VelocityMode end #Super type for computing the velocity
+include("VF_velocity.jl") #Include the routines for computing the superfluid velocity

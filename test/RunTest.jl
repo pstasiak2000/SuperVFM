@@ -22,7 +22,7 @@ using Test
                 dt=1e-5 |> Float32
         )
 
-        @time f, x_pos = Run(PARAMS)
+        @time f, x_pos = Run(PARAMS);
 
         plot(x_pos[1,:],x_pos[2,:])
 

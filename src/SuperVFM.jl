@@ -31,25 +31,27 @@ function Run(SimParams::SimulationParams)
     
 
     #!!![NOTE] Function here to determine the number of threads and blocks to be used
-    nthreads = min(pcount, 1024)
-    nblocks = cld(pcount, nthreads)
+    # nthreads = min(pcount, 1024)
+    # nblocks = cld(pcount, nthreads)
     #!!!
     #Check the timestep here
     @assert check_timestep(SimParams) "Timestep is too large dt=$(SimParams.dt)"
 
     #Initialise the vortex arrays [VF_initial_condition.jl]
-    f, fint, pcount, nthreads, nblocks = (SimParams.initf)()
-    
-    @info "Computing the ghost points" #[VF_boundary.jl]
-    @time ghostp!(f, fint, pcount, SimParams; nthreads, nblocks) 
+    f, fint, pcount, nthreads, nblocks = (SimParams.initf)(SimParams.δ)
+
 
     t = 0 #Simulation time
- 
     x_pos = zeros(2,SimParams.nsteps)
     for it ∈ 1:SimParams.nsteps
 
+        # @info "Computing the ghost points" #[VF_boundary.jl]
+        ghostp!(f, fint, pcount, SimParams; nthreads, nblocks) 
+        #println(Array(f)')
+
         calc_fil_motion!(f, fint, pcount, SimParams::SimulationParams; nthreads=1, nblocks=1)
-        fCPU = Array(f) 
+        fCPU = Array(f)
+        
         t += SimParams.dt
 
         x_pos[1,it] = t

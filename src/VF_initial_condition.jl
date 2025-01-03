@@ -16,7 +16,7 @@ function (initf::InitCond)(δ)
     fint = CUDA.zeros(Int32, 3, pcount)                 #Contains the scalar integer components of the vortex filaments
 
     nthreads, nblocks = redefineThreads_Blocks(pcount)
-
+    @info "Using threads=$nthreads and blocks=$nblocks "
     # @assert supertype(typeof(initf)) == InitCond "Invalid initial condition"
     # config = launch_configuration(kernel.fun)
     # threads = min(pcount, config.threads)

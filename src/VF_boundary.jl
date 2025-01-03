@@ -83,7 +83,6 @@ function ghostp_Kernel!(f,fint,pcount,box_size,Id)
             #Wrapping the points behind
             if sum((f[1,idx] - f[12,idx]) .* Id[c])  > box_size[c]/2
                 f[12,idx] += box_size[c] * Id[c]
-                @cuprintln "We are now here checking"
             elseif sum((f[1,idx] - f[12,idx]).* Id[c])  < -box_size[c]/2
                 f[12,idx] -= box_size[c] * Id[c]
             end

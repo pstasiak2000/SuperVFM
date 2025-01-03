@@ -18,14 +18,14 @@ function getInitPcount(initf::SingleRing,δ)
 end
 
 #Initialises the vortex configuration
-function init!(f,fint,pcount,initf::SingleRing)
+function initVortex!(f,fint,pcount,initf::SingleRing)
     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
     stride = gridDim().x * blockDim().x
     for idx ∈ index:stride:pcount
         f[1,idx] += @SVector [
             0.0,
-            initf.Radius * sin(π * Float32((2*idx - 1))/Float32(pcount)),
-            initf.Radius * cos(π * Float32((2*idx - 1))/Float32(pcount))
+            initf.Radius * cos(π * Float32((2*idx - 1))/Float32(pcount)),
+            initf.Radius * sin(π * Float32((2*idx - 1))/Float32(pcount))
         ]
         # f[1,idx] = 0.0
         # f[2,idx] = initf.Radius * sin(π * Float32((2*idx - 1))/Float32(pcount))

@@ -16,7 +16,7 @@ function getInitPcount(::SingleLine,δ)
 end
 
 #Generate the structure
-function init!(f,fint,pcount,::SingleLine)
+function initVortex!(f,fint,pcount,::SingleLine)
     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
     stride = gridDim().x * blockDim().x
     for idx ∈ index:stride:pcount

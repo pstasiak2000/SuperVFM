@@ -8,8 +8,8 @@ using Test
         #Set the simulatiprintln(Array(curv)[1])on parameters
         PARAMS = SuperVFM.SimulationParams(;
                 shots=1,
-                nsteps=2000,
-                δ=0.1f0,
+                nsteps=10000,
+                δ=0.05f0,
                 box_size=(2π,2π,2π),
                 velocity=LIA(),
                 initf=IC,
@@ -19,10 +19,12 @@ using Test
                 corea=Float32(6.29e-7),
                 ν_0=0.04f0,
                 Γ=4.8f0,
-                dt=1e-4 |> Float32
+                dt=1e-5 |> Float32
         )
 
-        @time f = Run(PARAMS)
+        @time f, x_pos = Run(PARAMS)
+
+        plot(x_pos[1,:],x_pos[2,:])
 
         # fCPU = Array(f)[1,1]
         # fCPU_init = Array(f_init)[1,1]

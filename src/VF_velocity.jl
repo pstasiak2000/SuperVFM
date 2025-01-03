@@ -37,7 +37,7 @@ function calc_velocity(f, fint, pcount, κ, corea, ::LIA; nthreads=1, nblocks=1)
     @cuda threads=nthreads blocks=nblocks copy_to_f!(f, fint, u, 7, pcount)
     
     # println(Array(CUDA.map(cross, f_dot, f_ddot))[1])
-    @show Array(CUDA.map(cross, f_dot, f_ddot))[10]
+    # @show Array(CUDA.map(cross, f_dot, f_ddot))[10]
     return u  
 end
 

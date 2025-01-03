@@ -8,13 +8,27 @@ for config ∈ VORTEX_CONFIGS
 end
 
 
-function initialiseVortex!(f,fint,pcount,initf::InitCond; threads=1, blocks=1)
-    @assert supertype(typeof(initf)) == InitCond "Invalid initial condition"
-    kernel = @cuda launch=false init!(f,fint,pcount,initf)
+function (initf::InitCond)(δ)
+    pcount = getInitPcount(initf, δ)
+    println("-: pcount is now at $pcount")
+
+    f = CUDA.fill(SVector{3,Float32}(0, 0, 0), 12, pcount)  #Contains the vector components of the vortex filaments
+    fint = CUDA.zeros(Int32, 3, pcount)                 #Contains the scalar integer components of the vortex filaments
+
+    nthreads, nblocks = redefineThreads_Blocks(pcount)
+
+    # @assert supertype(typeof(initf)) == InitCond "Invalid initial condition"
     # config = launch_configuration(kernel.fun)
     # threads = min(pcount, config.threads)
     # blocks = cld(pcount,threads)
     CUDA.@sync begin
-        kernel(f,fint,pcount, initf; threads, blocks)
+        @cuda threads=nthreads blocks=nblocks initVortex!(f,fint,pcount, initf)
     end
+    return f, fint, pcount, nthreads, nblocks
 end
+
+function redefineThreads_Blocks(pcount)
+    nthreads = min(pcount, max_threads_per_block)
+    nblocks = cld(pcount,nthreads)
+    return nthreads, nblocks
+end 

@@ -18,6 +18,9 @@ function check_timestep(SimParams::SimulationParams)
     δ = SimParams.δ
     κ = SimParams.κ
     corea = SimParams.corea
+    dt = SimParams.dt
+
     dt_max = ((δ/2.0f0)^2)/(κ * log10(δ/(Float32(2π) * corea)))
+    @info "Max timestep is $dt_max"
     return dt < dt_max
 end

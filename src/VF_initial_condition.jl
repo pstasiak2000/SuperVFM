@@ -1,4 +1,4 @@
-abstract type InitCond end #Super type of all initial conditions
+
 
 
 VORTEX_CONFIGS = readdir("./src/VF_configs")

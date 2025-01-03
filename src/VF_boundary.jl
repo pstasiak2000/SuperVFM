@@ -1,8 +1,6 @@
 #Contains all of the routines used to enforce the boundary conditions within this file
 #Support for PERIODIC boundary conditions only
 
-abstract type BoundaryType end #Super type of all boundary conditions
-
 #---------------------------------------
 #--- Periodic boundary identifier
 #---------------------------------------
@@ -51,40 +49,43 @@ export OpenBoundary
 #######################################################################
 
 function ghostp!(f,fint,pcount,SimParams; nthreads=1, nblocks=1)
+    Id = CuArray([#Defines the identity matrix as three static arrays
+        SVector{3,Float32}(1,0,0),
+        SVector{3,Float32}(0,1,0),
+        SVector{3,Float32}(0,0,1)
+    ])
     CUDA.@sync begin
-        @cuda threads=nthreads blocks=nblocks ghostp_Kernel!(f,fint,pcount,SimParams.box_size)
+        @cuda threads=nthreads blocks=nblocks ghostp_Kernel!(f,fint,pcount,SimParams.box_size,Id)
     end
 end
 
-#Computes the ghost points infront and behind
-function ghostp_Kernel!(f,fint,pcount,box_size)
+# #Computes the ghost points infront and behind
+function ghostp_Kernel!(f,fint,pcount,box_size,Id)
     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
     stride = gridDim().x * blockDim().x
     for idx ∈ index:stride:pcount 
-        # #Ghost point infront - 33:35 infront
-        f[33,idx] = f[1,fint[1,idx]]
-        f[34,idx] = f[2,fint[1,idx]]
-        f[35,idx] = f[3,fint[1,idx]]
+        # #Ghost point infront - 11 is infront
+        f[11,idx] = f[1,fint[1,idx]]
 
-        # #Ghost point behind - 36:38 behind
-        f[36,idx] = f[1,fint[2,idx]]
-        f[37,idx] = f[2,fint[2,idx]]
-        f[38,idx] = f[3,fint[2,idx]]
+        # #Ghost point behind - 12 is behind
+        f[12,idx] = f[1,fint[2,idx]]
 
-        #Periodic fixing
+
+        #Periodic fixing for static arrays
         for c ∈ 1:3
-            #Periodically fix infront
-            if(f[c,idx] - f[32+c,idx] > box_size[c]/2)
-                f[32+c,idx] += box_size[c]
-            elseif(f[c,idx] - f[32+c,idx] < -box_size[c]/2)
-                f[32+c,idx] -= box_size[c]
+            #Wrapping the points infront
+            if sum((f[1,idx] - f[11,idx]) .* Id[c])  > box_size[c]/2
+                f[11,idx] += box_size[c] * Id[c]
+            elseif sum((f[1,idx] - f[11,idx]).* Id[c])  < -box_size[c]/2
+                f[11,idx] -= box_size[c] * Id[c]
             end
-
-            # #Periodically fix behind
-            if(f[c,idx] - f[35+c,idx] >box_size[c]/2)
-                f[35+c,idx] += box_size[c]
-            elseif(f[c,idx] - f[35+c,idx] < -box_size[c]/2)
-                f[35+c,idx] -= box_size[c]
+            
+            #Wrapping the points behind
+            if sum((f[1,idx] - f[12,idx]) .* Id[c])  > box_size[c]/2
+                f[12,idx] += box_size[c] * Id[c]
+                @cuprintln "We are now here checking"
+            elseif sum((f[1,idx] - f[12,idx]).* Id[c])  < -box_size[c]/2
+                f[12,idx] -= box_size[c] * Id[c]
             end
         end
     end

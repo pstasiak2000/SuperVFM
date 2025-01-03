@@ -12,3 +12,12 @@ function convert_to_struct(VFArr::CUDA.CuMatrix{Float32},
                  VFArrInt::CUDA.CuMatrix{Int32})
     return nothing
 end
+
+
+function check_timestep(SimParams::SimulationParams)
+    δ = SimParams.δ
+    κ = SimParams.κ
+    corea = SimParams.corea
+    dt_max = ((δ/2.0f0)^2)/(κ * log10(δ/(Float32(2π) * corea)))
+    return dt < dt_max
+end

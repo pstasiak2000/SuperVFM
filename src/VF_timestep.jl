@@ -2,17 +2,26 @@ include("VF_velocity.jl") #Include the routines for computing the superfluid vel
 
 
 
-function calc_fil_motion!(f, fint, pcount, SimParams::SimulationParams; nthreads=1, nblocks=1)
+function calc_fil_motion!(f, u, u1, u2, fint, pcount, SimParams::SimulationParams; nthreads=1, nblocks=1)
 
     #Calculate the superfluid velocity v_s
-    u_sup = calc_velocity(f, fint, pcount, SimParams.κ, SimParams.corea, SimParams.velocity; nthreads, nblocks)
+    u_sup = calc_velocity(f, fint, pcount, SimParams.κ, SimParams.corea, SimParams.box_size, SimParams.velocity; nthreads, nblocks)
 
     u = u_sup   
 
-    CUDA.@sync begin
-        @cuda threads=nthreads blocks=nblocks copy_to_f!(f, fint, u, 2, pcount)
-        @cuda threads=nthreads blocks=nblocks timestep!(f, fint, pcount, SimParams.dt)
+    timestep!(f,u, u1, u2, SimParams.dt)
+end
+
+function timestep!(f, u, u1, u2, dt)
+    if(maximum(norm.(u1) == 0.f0))
+        @. f += dt * u
+    elseif(maximum(norm.(u2) == 0.f0))
+        @. f += (3.f0/2.0f)*dt*u - (0.5f0)*dt*u1
+    else
+        @. f += (23.f0/12.f0)*dt*u - (4.f0/3.f0)*dt*u1 + (5.0f0/12.0f0)*dt*u2
     end
+    u2 .= u1
+    u1 .= u
 end
 
 function timestep!(f, fint, pcount, dt)

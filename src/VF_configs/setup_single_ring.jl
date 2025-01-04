@@ -22,7 +22,7 @@ function initVortex!(f,fint,pcount,initf::SingleRing)
     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
     stride = gridDim().x * blockDim().x
     for idx ∈ index:stride:pcount
-        f[1,idx] += @SVector [
+        f[idx] += @SVector [
             0.0,
             initf.Radius * cos(π * Float32((2*idx - 1))/Float32(pcount)),
             initf.Radius * sin(π * Float32((2*idx - 1))/Float32(pcount))
@@ -31,10 +31,10 @@ function initVortex!(f,fint,pcount,initf::SingleRing)
         # f[2,idx] = initf.Radius * sin(π * Float32((2*idx - 1))/Float32(pcount))
         # f[3,idx] = initf.Radius * cos(π * Float32((2*idx - 1))/Float32(pcount))
 
-        if index == 1 #The first element
+        if idx == 1 #The first element
             fint[2,idx] = pcount
             fint[1,idx] = idx+1
-        elseif index == pcount #The last element
+        elseif idx == pcount #The last element
             fint[2,idx] = idx - 1
             fint[1,idx] = 1
         else 

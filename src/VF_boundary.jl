@@ -48,43 +48,44 @@ export OpenBoundary
 
 #######################################################################
 
-function ghostp!(f,fint,pcount,SimParams; nthreads=1, nblocks=1)
+function ghostp!(ghosti,ghostb,f,fint,pcount,box_size; nthreads=1, nblocks=1)
     Id = CuArray([#Defines the identity matrix as three static arrays
         SVector{3,Float32}(1,0,0),
         SVector{3,Float32}(0,1,0),
         SVector{3,Float32}(0,0,1)
     ])
     CUDA.@sync begin
-        @cuda threads=nthreads blocks=nblocks ghostp_Kernel!(f,fint,pcount,SimParams.box_size,Id)
+        @cuda threads=nthreads blocks=nblocks ghostp_Kernel!(ghosti,ghostb,f,fint,pcount,box_size,Id)
     end
+    return nothing
 end
 
 # #Computes the ghost points infront and behind
-function ghostp_Kernel!(f,fint,pcount,box_size,Id)
+function ghostp_Kernel!(ghosti,ghostb,f,fint,pcount,box_size,Id)
     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
     stride = gridDim().x * blockDim().x
     for idx ∈ index:stride:pcount 
         # #Ghost point infront - 11 is infront
-        f[11,idx] = f[1,fint[1,idx]]
+        ghosti[idx] = f[fint[1,idx]]
 
         # #Ghost point behind - 12 is behind
-        f[12,idx] = f[1,fint[2,idx]]
+        ghostb[idx] = f[fint[2,idx]]
 
 
         #Periodic fixing for static arrays
         for c ∈ 1:3
             #Wrapping the points infront
-            if sum((f[1,idx] - f[11,idx]) .* Id[c])  > box_size[c]/2
-                f[11,idx] += box_size[c] * Id[c]
-            elseif sum((f[1,idx] - f[11,idx]).* Id[c])  < -box_size[c]/2
-                f[11,idx] -= box_size[c] * Id[c]
+            if sum((f[idx] - ghosti[idx]) .* Id[c])  > box_size[c]/2
+                ghosti[idx] += box_size[c] * Id[c]
+            elseif sum((f[idx] - ghosti[idx]).* Id[c])  < -box_size[c]/2
+                ghosti[idx] -= box_size[c] * Id[c]
             end
             
             #Wrapping the points behind
-            if sum((f[1,idx] - f[12,idx]) .* Id[c])  > box_size[c]/2
-                f[12,idx] += box_size[c] * Id[c]
-            elseif sum((f[1,idx] - f[12,idx]).* Id[c])  < -box_size[c]/2
-                f[12,idx] -= box_size[c] * Id[c]
+            if sum((f[idx] - ghostb[idx]) .* Id[c])  > box_size[c]/2
+                ghostb[idx] += box_size[c] * Id[c]
+            elseif sum((f[idx] - ghostb[idx]).* Id[c])  < -box_size[c]/2
+                ghostb[idx] -= box_size[c] * Id[c]
             end
         end
     end

@@ -18,12 +18,15 @@ Computes the superfluid velocity using the Local Induction Approximation (LIA)
 \\mathbf{v}_i = \\beta \\mathbf{s}'_i \\times \\mathbf{s}''_i  
 ```
 """
-function calc_velocity(f, fint, pcount, κ, corea, ::LIA; nthreads=1, nblocks=1)
+function calc_velocity(f, fint, pcount, κ, corea, box_size,::LIA; nthreads=1, nblocks=1)
+    ghosti = similar(f)
+    ghostb = similar(f)
 
-    f_dot = get_deriv_1(f, fint, pcount; nthreads, nblocks)
-    f_ddot =  get_deriv_2(f, fint, pcount; nthreads, nblocks)
-    
-    # println(norm(Array(f_ddot)[1]))
+    #Computing the ghost points #[VF_boundary.jl]
+    ghostp!(ghosti, ghostb, f, fint, pcount, box_size) 
+  
+    f_dot = get_deriv_1(f, ghosti, ghostb, pcount)
+    f_ddot =  get_deriv_2(f, ghosti, ghostb, pcount)
 
     curv = sqrt.(CUDA.map(dot, f_ddot, f_ddot)) 
     @cuda threads=nthreads blocks=nblocks check_zero_curvature!(curv,pcount)
@@ -34,23 +37,22 @@ function calc_velocity(f, fint, pcount, κ, corea, ::LIA; nthreads=1, nblocks=1)
     # println(Array(curv)[1])
 
     u = CUDA.map(.*, beta, CUDA.map(cross, f_dot, f_ddot)) #This is the local velocity
-    @cuda threads=nthreads blocks=nblocks copy_to_f!(f, fint, u, 7, pcount)
     
     # println(Array(CUDA.map(cross, f_dot, f_ddot))[1])
     # @show Array(CUDA.map(cross, f_dot, f_ddot))[10]
     return u  
 end
 
-function copy_to_f!(f, fint, vec, row, pcount)
-    index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
-    stride = gridDim().x * blockDim().x
-    for idx ∈ index:stride:pcount
-        if fint[1,idx] == 0; continue; end;
-        f[row,idx] *= @. 0.f0
-        f[row,idx] += vec[idx]
-    end
-    return nothing
-end
+# function copy_to_f!(f, fint, vec, row, pcount)
+#     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
+#     stride = gridDim().x * blockDim().x
+#     for idx ∈ index:stride:pcount
+#         if fint[1,idx] == 0; continue; end;
+#         f[row,idx] *= @. 0.f0
+#         f[row,idx] += vec[idx]
+#     end
+#     return nothing
+# end
 
 function check_zero_curvature!(curv, pcount)
     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x

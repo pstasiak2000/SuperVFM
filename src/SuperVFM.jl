@@ -4,7 +4,7 @@ using Dates
 using StaticArrays
 using LinearAlgebra
 using Plots
-
+import Printf: @sprintf
 export Run
 
 #Define the max number of threads that can be run per block
@@ -16,6 +16,7 @@ include("VF_timestep.jl")
 include("VF_initial_condition.jl")
 include("VF_derivatives.jl")
 include("VF_general.jl")
+include("VF_output.jl")
 include("VF_misc.jl")
 
 
@@ -30,34 +31,31 @@ function Run(SimParams::SimulationParams)
     #     SimParams.boundary_z)
     
 
-    #!!![NOTE] Function here to determine the number of threads and blocks to be used
-    # nthreads = min(pcount, 1024)
-    # nblocks = cld(pcount, nthreads)
-    #!!!
     #Check the timestep here
     @assert check_timestep(SimParams) "Timestep is too large dt=$(SimParams.dt)"
 
     #Initialise the vortex arrays [VF_initial_condition.jl]
     f, fint, pcount, nthreads, nblocks = (SimParams.initf)(SimParams.δ)
 
-
-    t = 0 #Simulation time
-    x_pos = zeros(2,SimParams.nsteps)
+    u = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)
+    u1 = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)
+    u2 = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)
+    
+    t = 0.0 #Simulation time
     for it ∈ 1:SimParams.nsteps
 
-        # @info "Computing the ghost points" #[VF_boundary.jl]
-        ghostp!(f, fint, pcount, SimParams; nthreads, nblocks) 
-        #println(Array(f)')
+        #Find the right number of threads and blocks
+        nthreads, nblocks = redefineThreads_Blocks(pcount)
 
-        calc_fil_motion!(f, fint, pcount, SimParams::SimulationParams; nthreads=1, nblocks=1)
-        fCPU = Array(f)
-        
+   
+        #Calculate the velocity and timestep
+        calc_fil_motion!(f, u, u1, u2, fint, pcount, SimParams::SimulationParams; nthreads=1, nblocks=1)
+        # fCPU = Array(f)
+
         t += SimParams.dt
-
-        x_pos[1,it] = t
-        x_pos[2,it] = fCPU[1,1][1]
+        print_info(f, SimParams, pcount, it)
     end
-    return f, x_pos
+    return f
 end
 
 

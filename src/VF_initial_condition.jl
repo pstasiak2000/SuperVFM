@@ -12,7 +12,7 @@ function (initf::InitCond)(δ)
     pcount = getInitPcount(initf, δ)
     println("-: pcount is now at $pcount")
 
-    f = CUDA.fill(SVector{3,Float32}(0, 0, 0), 12, pcount)  #Contains the vector components of the vortex filaments
+    f = CUDA.fill(SVector{3,Float32}(0, 0, 0), pcount)  #Contains the vector components of the vortex filaments
     fint = CUDA.zeros(Int32, 3, pcount)                 #Contains the scalar integer components of the vortex filaments
 
     nthreads, nblocks = redefineThreads_Blocks(pcount)

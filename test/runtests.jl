@@ -23,6 +23,18 @@ corea=Float32(6.29e-7),
 dt=1e-6 |> Float32
 )
 
+f, fint, pcount, nthreads, nblocks = (IC)(SimParams.δ)
+fScal = CUDA.zeros(Float32, 3, pcount) #Contains the scalar components of the vortex filaments
+
+ghosti = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)
+ghostb = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)
+
+Empty = (CUDA.reduce(+, fint, dims=1) .== 0)'
+
+@info "Computing the ghost points" #[VF_boundary.jl]
+SuperVFM.ghostp!(ghosti, ghostb, f, fint, pcount, SimParams.box_size; nthreads, nblocks)
+
+
 begin
     f, fint, pcount, nthreads, nblocks = (IC)(SimParams.δ)
     fScal = CUDA.zeros(Float32, 3, pcount) #Contains the scalar components of the vortex filaments

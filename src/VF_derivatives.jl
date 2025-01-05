@@ -1,14 +1,40 @@
 ### Routines to calculate the special derivatives
-function get_deriv_1(f, ghosti, ghostb, pcount)
-    s_dot = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)
-
-    disti = norm.(f-ghosti)
-    distb = norm.(f-ghostb)
-
-    @. s_dot = (distb*ghosti) + (disti-distb)*f - disti * ghostb
-    return s_dot
+function get_deriv_1(f::AbstractArray, ghosti::AbstractArray, ghostb::AbstractArray, Empty::Bool)
+    # s_dot = CUDA.fill(SVector{3,Float32}(0,0,0),length(f))
+    if Empty #Skip the empty particles
+        return ZeroVector
+    else
+        disti = norm(f - ghosti)
+        distb = norm(f - ghostb)
+        s_dot = ((distb*ghosti) + (disti-distb)*f - disti * ghostb) / (2*disti*distb)
+        return s_dot
+    end
 end
 
+function get_deriv_2(f::AbstractArray, ghosti::AbstractArray, ghostb::AbstractArray, Empty::Bool)
+    # s_dot = CUDA.fill(SVector{3,Float32}(0,0,0),length(f))
+    if Empty #Skip the empty particles
+        return ZeroVector
+    else
+        disti = norm(f - ghosti)
+        distb = norm(f - ghostb)
+        s_ddot = 2.0f0 * (ghosti/(disti*(disti+distb)) + ghostb/(distb*(disti+distb)) - f/(disti*distb))
+        return s_ddot
+    end
+end
+
+# function get_deriv_2(f, ghosti, ghostb, Empty::Bool)
+#     if Empty #Skip the empty particles
+#         return ZeroVector
+#     else
+#     # s_ddot = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)
+#         disti = norm(f-ghosti)
+#         distb = norm(f-ghostb)
+
+#         @. s_ddot = 2.0f0* (ghosti/(disti*(disti+distb)) + ghostb/(distb*(disti+distb)) - f/(disti*distb))
+#         return s_ddot
+#     end
+# end
 # function deriv_1_kernel(s_dot, pcount, f, fint)
 #     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
 #     stride = gridDim().x * blockDim().x
@@ -29,17 +55,6 @@ end
 #     end
 #     return nothing
 # end
-
-function get_deriv_2(f, ghosti, ghostb, pcount)
-    s_ddot = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)
-    
-    disti = norm.(f-ghosti)
-    distb = norm.(f-ghostb)
-
-    @. s_ddot = 2.0f0* (ghosti/(disti*(disti+distb)) + ghostb/(distb*(disti+distb)) - f/(disti*distb))
-
-    return s_ddot
-end
 
 # function deriv_2_kernel(s_ddot, pcount, f, fint)
 #     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x

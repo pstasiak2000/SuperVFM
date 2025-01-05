@@ -1,5 +1,5 @@
 function print_info(f, SimParams, pcount, it)
-    if it == 1
+    if it == 0
         println("--var--------t--------pcount--------recon-----wall_recon---avg_d-----length--------maxu---------maxdu-------curv------removed")
     end
 

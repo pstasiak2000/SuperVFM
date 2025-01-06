@@ -44,4 +44,5 @@ function print_boundary_info(boundary_x,boundary_y,boundary_z)
     println("boundary_x: $(boundary_x.name)")
     println("boundary_y: $(boundary_y.name)")
     println("boundary_z: $(boundary_z.name)")
+    println("--------------------------------------------------------")
 end

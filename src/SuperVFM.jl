@@ -26,19 +26,20 @@ include("VF_misc.jl")
 
 
 function Run(SimParams::SimulationParams)
-    # print_banner()
-    # print_GPU_info()
-    # print_boundary_info(
-    #     SimParams.boundary_x,
-    #     SimParams.boundary_y,
-    #     SimParams.boundary_z)
+    print_banner()
+    print_GPU_info()
+    print_boundary_info(
+        SimParams.boundary_x,
+        SimParams.boundary_y,
+        SimParams.boundary_z)
     
-
+    print_filamentmodel_info(SimParams.FilamentModel)
     #Check the timestep here
     @assert check_timestep(SimParams) "Timestep is too large dt=$(SimParams.dt)"
 
     #Initialise the vortex arrays [VF_initial_condition.jl]
     f, fint, pcount, nthreads, nblocks = (SimParams.initf)(SimParams.δ)
+    f_curv = CUDA.zeros(Float32, pcount) #Vortex filament curvature
 
     u_loc = CUDA.fill(SVector{3,Float32}(0,0,0),pcount) #Local superfluid velocity
     u_sup = CUDA.fill(SVector{3,Float32}(0,0,0),pcount) #Total superfluid velocity
@@ -54,11 +55,13 @@ function Run(SimParams::SimulationParams)
     ghosti = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)
     ghostb = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)
 
+    normal_velocity = CUDA.fill(SimParams.normal_velocity, pcount)
 
     t = 0.0 #Simulation time
-    print_info(f, SimParams, pcount, 0)
+    print_info_header()
 
-    # x_pos = zeros(Float32, 2, SimParams.nsteps)
+    f_out = []
+    itCount = 0
     for it ∈ 1:SimParams.nsteps
 
         #Find the right number of threads and blocks if pcount changes
@@ -71,17 +74,27 @@ function Run(SimParams::SimulationParams)
         u_sup .= u_loc
 
         #Calculate the velocities of the filaments
-        @. u = calc_fil_motion(f, ghosti, ghostb, u_sup, Empty)
-        
+        @. u = (SimParams.FilamentModel)(f, ghosti, ghostb, u_sup, normal_velocity, Empty)
         #Timestep the new positions
         @. f += SimParams.dt * timestep(u, u1, u2, Empty)
-
+        u2 .= u1
+        u1 .= u
         t += SimParams.dt
+
+        fCPU = Array(f)
         # x_pos[1,it] = t
-        # x_pos[2,it] = Array(f)[1,1][1]
-        print_info(f, SimParams, pcount, it)
+        # x_pos[2,it] = fCPU[1,1][1]
+        # x_pos[3,it] = fCPU[1,1][2]
+        # x_pos[4,it] = fCPU[1,1][3]
+        print_info(f, ghosti, ghostb, u, Empty, SimParams, pcount, it)
+        if mod(it, SimParams.shots) == 0
+            itCount += 1
+            push!(f_out,fCPU)
+        end
     end
-    return f#, x_pos
+    println("")
+    printstyled("Simulation finished!\n", bold=:true, color=:green)
+    return f_out
 end
 
 

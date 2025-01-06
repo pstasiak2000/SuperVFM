@@ -2,7 +2,7 @@
 
 *Initialises a single, vortex ring of size ``R``.*
 
-![ Single vortex ring](../assets/single_ring.svg)
+![ Single vortex ring](../assets/single_ring.gif)
 
 ## Usage
 ```julia

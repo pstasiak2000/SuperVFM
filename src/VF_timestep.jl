@@ -1,12 +1,45 @@
 include("VF_velocity.jl") #Include the routines for computing the superfluid velocity
 
+### VORTEX FILAMENT MODELS
 
-function calc_fil_motion(f, ghosti, ghostb, u_sup, Empty::Bool)
+#! Zero temperature model - no dissipation mechanism
+struct ZeroTemperature <: FilamentModel
+end
+Adapt.@adapt_structure ZeroTemperature
+export ZeroTemperature
+print_filamentmodel_info(::ZeroTemperature) = println("Using the zero temperature model\n")
+
+function (FM::ZeroTemperature)(f, ghosti, ghostb, u_sup, normal_velocity, Empty::Bool)
     if Empty
         return ZeroVector
     else
         # f_dot = get_deriv_1(f, ghosti, ghostb, Empty)
         return u_sup
+    end
+end
+### ---------------------------------------------------------------------
+
+
+#! Schwarz model - one way coupled model of finite temperature
+struct SchwarzModel{A} <: FilamentModel
+    α1::A
+    α2::A
+end
+Adapt.@adapt_structure SchwarzModel
+SchwarzModel(α1::AbstractFloat,α2::AbstractFloat) = SchwarzModel{Float32}(α1,α2)
+
+export SchwarzModel
+
+print_filamentmodel_info(FM::SchwarzModel) = println("Using the Schwarz model with α=$(FM.α1) and α'=$(FM.α2)\n")
+
+
+function (FM::SchwarzModel)(f, ghosti, ghostb, u_sup, normal_velocity, Empty::Bool)
+    if Empty
+        return ZeroVector
+    else
+        f_dot = get_deriv_1(f, ghosti, ghostb, false)
+        u_mf = FM.α1 * cross(f_dot,normal_velocity-u_sup) - FM.α2*cross(f_dot,cross(f_dot,normal_velocity - u_sup))
+        return u_sup + u_mf
     end
 end
 

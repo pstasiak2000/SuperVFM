@@ -22,8 +22,8 @@ function (Velocity::LIA)(f, ghosti, ghostb, Empty::Bool, κ, corea)
     if Empty
         return ZeroVector
     else
-        f_dot = get_deriv_1(f, ghosti, ghostb, Empty)
-        f_ddot = get_deriv_2(f, ghosti, ghostb, Empty)
+        f_dot = get_deriv_1(f, ghosti, ghostb, false)
+        f_ddot = get_deriv_2(f, ghosti, ghostb, false)
         
         curv = sqrt(dot(f_ddot,f_ddot))
         if(curv < eps32)

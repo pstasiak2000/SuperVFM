@@ -28,7 +28,7 @@ function (initf::InitCond)(δ)
 end
 
 function redefineThreads_Blocks(pcount)
-    nthreads = min(pcount, max_threads_per_block)
+    nthreads = min(pcount,1024) #max_threads_per_block
     nblocks = cld(pcount,nthreads)
     return nthreads, nblocks
 end 

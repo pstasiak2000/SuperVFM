@@ -8,7 +8,7 @@ import Printf: @sprintf
 export Run
 
 #Define the max number of threads that can be run per block
-const max_threads_per_block = CUDA.attribute(CUDA.device(), CUDA.DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK)
+# const max_threads_per_block = CUDA.attribute(CUDA.device(), CUDA.DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK)
 
 const eps32 = eps(0.0f0) #Machine epsilon of 0.0 in 32 bits
 const ZeroVector = SVector{3,Float32}(0.0f0,0.0f0,0.0f0) #Zero vector
@@ -34,8 +34,10 @@ function Run(SimParams::SimulationParams)
         SimParams.boundary_z)
     
     print_filamentmodel_info(SimParams.FilamentModel)
+    
     #Check the timestep here
     @assert check_timestep(SimParams) "Timestep is too large dt=$(SimParams.dt)"
+    printstyled("Timestep check passed!\n", bold=:true, color=:green)
 
     #Initialise the vortex arrays [VF_initial_condition.jl]
     f, fint, pcount, nthreads, nblocks = (SimParams.initf)(SimParams.δ)
@@ -96,6 +98,5 @@ function Run(SimParams::SimulationParams)
     printstyled("Simulation finished!\n", bold=:true, color=:green)
     return f_out
 end
-
 
 end # module VortexFilament

@@ -10,10 +10,10 @@ Documentation Available [here](https://pstasiak2000.github.io/SuperVFM/).
 
 
 
+[![Build Status](https://github.com/pstasiak2000/SuperVFM.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/pstasiak2000/SuperVFM.jl/actions/workflows/CI.yml?query=branch%3Amain)
+
+
 [![Build Status](https://github.com/pstasiak2000/SuperVFM.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/pstasiak2000/SuperVFM.jl/actions/workflows/CI.yml?query=branch%3Amain)
-
-
-
 
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
 [docs-dev-url]: https://pstasiak2000.github.io/SuperVFM/dev/

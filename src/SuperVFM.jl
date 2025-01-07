@@ -40,7 +40,7 @@ function Run(SimParams::SimulationParams)
     printstyled("Timestep check passed!\n", bold=:true, color=:green)
 
     #Initialise the vortex arrays [VF_initial_condition.jl]
-    f, fint, pcount, nthreads, nblocks = (SimParams.initf)(SimParams.δ)
+    f, fint, pcount, nthreads, nblocks = (SimParams.initf)(SimParams)
     f_curv = CUDA.zeros(Float32, pcount) #Vortex filament curvature
 
     u_loc = CUDA.fill(SVector{3,Float32}(0,0,0),pcount) #Local superfluid velocity
@@ -63,6 +63,8 @@ function Run(SimParams::SimulationParams)
     print_info_header()
 
     f_out = []
+    push!(f_out,Array(f)) #Initial configuration
+
     itCount = 0
     for it ∈ 1:SimParams.nsteps
 

@@ -6,14 +6,14 @@ end
 Adapt.@adapt_structure SingleRing
 
 #Obtains initial number of vortex points
-function getInitPcount(initf::SingleRing,δ)
+function getInitPcount(initf::SingleRing,SimParams::SimulationParams)
     println("--------------------------------------------------------")
     println("----------- Initialising vortex ring  ------------------")
     println("--------------------------------------------------------")
     println("Changing size of pcount to fit with box_length and δ ")
     println("Radius of ring: R=$(initf.Radius)")
-    println("-: δ=$δ                                              ")
-    tmp = ceil(2π*initf.Radius/(0.75*δ))
+    println("-: δ=$(SimParams.δ)                                     ")
+    tmp = ceil(2π*initf.Radius/(0.75*SimParams.δ))
     return Int32(tmp)
 end
 

@@ -6,13 +6,13 @@ end
 Adapt.@adapt_structure SingleLine
 
 
-function getInitPcount(::SingleLine,δ)
+function getInitPcount(::SingleLine,SimParams::SimulationParams)
     println("--------------------------------------------------------")
     println("----------- Initialising straight line vortex ----------")
     println("--------------------------------------------------------")
     println("Changing size of pcount to fit with box_length and δ ")
-    println("-: δ=$δ                                              ")
-    return Int32(round((2π)/(0.75*δ)))
+    println("-: δ=$(SimParams.δ)                                     ")
+    return Int32(round((2π)/(0.75*SimParams.δ)))
 end
 
 #Generate the structure

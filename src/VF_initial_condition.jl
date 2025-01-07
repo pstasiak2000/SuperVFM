@@ -8,8 +8,8 @@ for config ∈ VORTEX_CONFIGS
 end
 
 
-function (initf::InitCond)(δ)
-    pcount = getInitPcount(initf, δ)
+function (initf::InitCond)(SimParams::SimulationParams)
+    pcount = getInitPcount(initf, SimParams)
     println("-: pcount is now at $pcount")
 
     f = CUDA.fill(SVector{3,Float32}(0, 0, 0), pcount)  #Contains the vector components of the vortex filaments

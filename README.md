@@ -1,8 +1,6 @@
 # SuperVFM
 
-Some text here in order to fill the space
-
-Documentation Available [here](https://pstasiak2000.github.io/SuperVFM/).
+Some text here in order to fill the space.
 
 | **Documentation**                                                         | **Build Status**                                                                                |
 |:-------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|

@@ -11,9 +11,9 @@ end
 Adapt.@adapt_structure PeriodicBoundary
 
 """
-    PeriodicBoundary(dim::Int32)
+    PeriodicBoundary(dim::Int)
 
-Initialises a periodic boundary in the chosen direction selected by `dim`. Vortex loops that exceed the box size (typically ``2π``) are looped back periodically to the other side of the box. 
+Initialises a periodic boundary in the chosen direction selected by `dim`. Vortex loops that exceed the box size (typically ``2π``) are looped back periodically to the other side of the box.Set `dim=1` for the ``x`` direction, `dim=2` for the ``y`` direction and `dim=3` fir the ``z`` direction. 
 
 Example usage:
 ```julia
@@ -39,7 +39,7 @@ Adapt.@adapt_structure OpenBoundary
 """
     OpenBoundary(dim::Int)
 
-Initialises an open boundary in the chosen direction. Vortex loops that exceed the box size (typically ``2π``) are not restricted. 
+Initialises an open boundary in the chosen direction. Vortex loops that exceed the box size (typically ``2π``) are not restricted. Set `dim=1` for the ``x`` direction, `dim=2` for the ``y`` direction and `dim=3` fir the ``z`` direction.
 
 Example usage:
 ```julia

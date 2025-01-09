@@ -14,14 +14,14 @@ In the standard implementations of the Vortex Filament Method (VFM), filaments a
 The following methods are the currently implemented boundary conditions in the vortex filament method solver.
 
 ```@docs
-OpenBoundary()
+OpenBoundary(dims::Int)
 ```
 
 ```@docs
-PeriodicBoundary()
+PeriodicBoundary(dims::Int)
 ```
-
-
+!!! warning
+    As of v1.0.2, only the periodic boundary condition is fully implemented and working correctly, open boundary conditions and solid walls will be implemented in a future release.
 
 ## Vortex Configurations
 

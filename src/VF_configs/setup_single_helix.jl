@@ -20,7 +20,7 @@ function getInitPcount(initf::SingleHelix,SimParams::SimulationParams)
     println("Amplitude of wave: A/2π=$(initf.A_KW)")
     println("Wavenumber $(initf.b_KW)")
     println("-: δ=$(SimParams.δ)                                     ")
-    @assert SimParams.boundary_z == PeriodicBoundary() "Periodic boundary conditions in z required"
+    @assert SimParams.boundary_z == PeriodicBoundary(3) "Periodic boundary conditions in z required"
     tmp = ceil(initf.box_length_z*(sqrt(((initf.A_KW/initf.b_KW)^2)+1.0f0))/(0.75*SimParams.δ))
     return Int32(tmp)
 end
@@ -38,13 +38,6 @@ function initVortex!(f,fint,pcount,initf::SingleHelix)
         initf.A_KW*sin((idx-1)*step_KW/(sqrt((initf.A_KW)^2 + (initf.b_KW)^2))),
         initf.b_KW*(idx-1)*step_KW/(sqrt((initf.A_KW)^2 + (initf.b_KW)^2)) - initf.box_length_z/2
         ]
-        #     initf.A_KW*cos((idx-1)*step_KW/(sqrt((initf.A_KW^2) + (initf.b_kw^2)))),
-        #     initf.A_KW*sin((idx-1)*step_KW/(sqrt((initf.A_KW^2) + (initf.b_kw^2)))),
-        #     initf.b_KW*(idx-1)*step_KW/(sqrt((initf.A_KW^2) + (initf.b_kw^2)))
-        # ]
-        # f[1,idx] = 0.0
-        # f[2,idx] = initf.Radius * sin(π * Float32((2*idx - 1))/Float32(pcount))
-        # f[3,idx] = initf.Radius * cos(π * Float32((2*idx - 1))/Float32(pcount))
 
         if idx == 1 #The first element
             fint[2,idx] = pcount

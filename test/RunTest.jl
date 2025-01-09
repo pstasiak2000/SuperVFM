@@ -6,44 +6,49 @@ using Plots
 BOX_SIZE = (2π, 2π, 2π)
 
 #Vortex initial condition
-IC = SingleHelix(0.2, 0.1, BOX_SIZE)
+# IC = SingleHelix(0.2, 0.1, BOX_SIZE)
+IC = SingleRing(0.25)
 
 #Set the simulation parameters
 PARAMS = SuperVFM.SimulationParams(;
         shots=1000,
-        nsteps=60000,
+        nsteps=200000,
         δ=0.05f0,
         box_size=BOX_SIZE,
         velocity=LIA(),
         # FilamentModel=SchwarzModel(0.206,8.34e-3),
         FilamentModel=ZeroTemperature(),
         initf=IC,
-        boundary_x=PeriodicBoundary(),
-        boundary_y=PeriodicBoundary(),
-        boundary_z=PeriodicBoundary(),
-        normal_velocity=[0.0, 0.0, 1.0],
-        corea=Float32(6.29e-7),
-        ν_0=0.04f0,
-        Γ=4.8f0,
-        dt=1e-4 |> Float32
+        boundary_x=PeriodicBoundary(1),
+        boundary_y=PeriodicBoundary(2),
+        boundary_z=PeriodicBoundary(3),
+        normal_velocity=[0.0, 0.0, 0.0],
+        corea=6.29e-7,
+        ν_0=0.04,
+        Γ=4.8,
+        dt=1e-4
 )
 
 
 @time f = Run(PARAMS);
 
-plot(Tuple.(f[1]),
+scatter(Tuple.(f[1]),
         xlim=(-π, π), xlabel="x",
         ylim=(-π, π), ylabel="y",
         zlim=(-π, π), zlabel="z",
+        markerstrokewidth=0,
+        markersize=2,
         linewidth=3,
         label=nothing)
 
-anim = @animate for Vortex ∈ f
-        plt = plot(Tuple.(Vortex),
+anim = @animate for Vortex ∈ f[1:165]
+        plt = scatter(Tuple.(Vortex),
         xlim=(-π,π), xlabel="x",
         ylim=(-π,π), ylabel="y",
         zlim=(-π,π), zlabel="z",
-        linewidth=3,
+        markerstrokewidth=0.1,
+        markersize=2,
+        # linewidth=3,
         label=nothing,
         # camera=(0,90)
         )

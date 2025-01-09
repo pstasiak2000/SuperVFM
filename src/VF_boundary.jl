@@ -6,44 +6,52 @@
 #---------------------------------------
 struct PeriodicBoundary{A} <: BoundaryType
     name::A
+    dim::Int
 end
 Adapt.@adapt_structure PeriodicBoundary
 
 """
-    PeriodicBoundary()
+    PeriodicBoundary(dim::Int32)
 
-Initialises a periodic boundary in the chosen direction. Vortex loops that exceed the box size (typically ``2π``) are looped back periodically to the other side of the box.
+Initialises a periodic boundary in the chosen direction selected by `dim`. Vortex loops that exceed the box size (typically ``2π``) are looped back periodically to the other side of the box. 
 
 Example usage:
 ```julia
-    boundary_x = PeriodicBoundary()
+    boundary_x = PeriodicBoundary(1)
+    boundary_y = PeriodicBoundary(2)
+    boundary_z = PeriodicBoundary(3)
 ```
 """
-function PeriodicBoundary()
-    return PeriodicBoundary{String}("periodic")
+function PeriodicBoundary(dim::Int)
+    return PeriodicBoundary{String}("periodic",dim) 
 end
 export PeriodicBoundary
+
 #--------------------------------------
 #--- Open boundary identifier
 #---------------------------------------
 struct OpenBoundary{A} <: BoundaryType
     name::A
+    dim::Int
 end
 Adapt.@adapt_structure OpenBoundary
 
 """
-    OpenBoundary()
+    OpenBoundary(dim::Int)
 
 Initialises an open boundary in the chosen direction. Vortex loops that exceed the box size (typically ``2π``) are not restricted. 
 
 Example usage:
 ```julia
-    boundary_x = OpenBoundary()
+    boundary_x = OpenBoundary(1)
+    boundary_y = OpenBoundary(2)
+    boundary_z = OpenBoundary(3)
 ```
 """
-function OpenBoundary()
-    return OpenBoundary{String}("open")
+function OpenBoundary(dim::Int)
+    return OpenBoundary{String}("open",dim) 
 end
+
 export OpenBoundary
 
 #######################################################################
@@ -90,4 +98,45 @@ function ghostp_Kernel!(ghosti,ghostb,f,fint,pcount,box_size,Id)
         end
     end
     return nothing
+end
+ 
+
+#######################################################################
+
+
+function boundary(f, ::Val{1})
+    s = SVector{3,Float32}(2π,0,0)
+    if norm(f.*e_x) > π
+        f -= s
+    elseif norm(f.*e_x) < -π
+        f += s
+    end
+    return f
+end
+
+function boundary(f, ::Val{2})
+    s = SVector{3,Float32}(0,2π,0)
+    if norm(f.*e_y) > π
+        f -= s
+    elseif norm(f.*e_y) < -π
+        f += s
+    end
+    return f
+end
+
+function boundary(f, ::Val{3})
+    s = SVector{3,Float32}(0,0,2π)
+    if norm(f.*e_z) > π
+        f -= s
+    elseif norm(f.*e_z) < -π
+        f += s
+    end
+    return f
+end
+
+function enforce_boundary!(f,boundary_x,boundary_y,boundary_z)
+    f .= boundary.(f, Val(boundary_x.dim))
+    f .= boundary.(f, Val(boundary_y.dim))
+    f .= boundary.(f, Val(boundary_z.dim))
+   return nothing
 end

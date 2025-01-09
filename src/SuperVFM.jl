@@ -5,6 +5,7 @@ using StaticArrays
 using LinearAlgebra
 using Plots
 import Printf: @sprintf
+
 export Run
 
 #Define the max number of threads that can be run per block
@@ -12,6 +13,11 @@ export Run
 
 const eps32 = eps(0.0f0) #Machine epsilon of 0.0 in 32 bits
 const ZeroVector = SVector{3,Float32}(0.0f0,0.0f0,0.0f0) #Zero vector
+
+#Unit vectors to avoid constant definitions in the code
+const e_x = cu(SVector{3,Float32}(1.0f0,0.0f0,0.0f0)) #unit vector in the x direction
+const e_y = cu(SVector{3,Float32}(0.0f0,1.0f0,0.0f0)) #unit vector in the y direction
+const e_z = cu(SVector{3,Float32}(0.0f0,0.0f0,1.0f0)) #unit vector in the z direction
 
 include("VF_cdata.jl")
 include("VF_boundary.jl")
@@ -84,7 +90,9 @@ function Run(SimParams::SimulationParams)
         u2 .= u1
         u1 .= u
         t += SimParams.dt
-
+        
+        enforce_boundary!(f,SimParams.boundary_x,SimParams.boundary_y,SimParams.boundary_z)
+        # boundary.(f)
         fCPU = Array(f)
         # x_pos[1,it] = t
         # x_pos[2,it] = fCPU[1,1][1]

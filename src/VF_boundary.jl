@@ -5,7 +5,6 @@
 #--- Periodic boundary identifier
 #---------------------------------------
 struct PeriodicBoundary{A} <: BoundaryType
-    name::A
     dim::Int
 end
 Adapt.@adapt_structure PeriodicBoundary
@@ -22,16 +21,13 @@ Example usage:
     boundary_z = PeriodicBoundary(3)
 ```
 """
-function PeriodicBoundary(dim::Int)
-    return PeriodicBoundary{String}("periodic",dim) 
-end
+PeriodicBoundary(dim::Int) = PeriodicBoundary{Int32}(dim)
 export PeriodicBoundary
 
 #--------------------------------------
 #--- Open boundary identifier
 #---------------------------------------
 struct OpenBoundary{A} <: BoundaryType
-    name::A
     dim::Int
 end
 Adapt.@adapt_structure OpenBoundary
@@ -48,11 +44,25 @@ Example usage:
     boundary_z = OpenBoundary(3)
 ```
 """
-function OpenBoundary(dim::Int)
-    return OpenBoundary{String}("open",dim) 
+OpenBoundary(dim::Int) = OpenBoundary{Int32}(dim)
+export OpenBoundary
+
+function print_boundary(BC::OpenBoundary)
+    if BC.dim==1; ax="x"; end;
+    if BC.dim==2; ax="y"; end;
+    if BC.dim==3; ax="z"; end;
+    print("boundary_$ax: "); printstyled("open\n", color=:blue)
+    return nothing
 end
 
-export OpenBoundary
+function print_boundary(BC::PeriodicBoundary)
+    if BC.dim==1; ax="x"; end;
+    if BC.dim==2; ax="y"; end;
+    if BC.dim==3; ax="z"; end;
+    print("boundary_$ax: "); printstyled("periodic\n", color=:blue)
+    return nothing
+end
+
 
 #######################################################################
 
@@ -78,7 +88,6 @@ function ghostp_Kernel!(ghosti,ghostb,f,fint,pcount,box_size,Id)
 
         # #Ghost point behind - 12 is behind
         ghostb[idx] = f[fint[2,idx]]
-
 
         #Periodic fixing for static arrays
         for c ∈ 1:3

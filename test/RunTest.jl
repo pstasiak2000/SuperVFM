@@ -6,27 +6,27 @@ using Plots
 BOX_SIZE = (2π, 2π, 2π)
 
 #Vortex initial condition
-# IC = SingleHelix(0.2, 0.1, BOX_SIZE)
-IC = SingleRing(0.25)
+IC = SingleHelix(0.2, 0.2, BOX_SIZE)
+# IC = SingleRing(0.25)
 
 #Set the simulation parameters
 PARAMS = SuperVFM.SimulationParams(;
-        shots=1000,
-        nsteps=200000,
+        shots=1,
+        nsteps=100,
         δ=0.05f0,
         box_size=BOX_SIZE,
         velocity=LIA(),
-        # FilamentModel=SchwarzModel(0.206,8.34e-3),
-        FilamentModel=ZeroTemperature(),
+        FilamentModel=SchwarzModel(0.206,8.34e-3),
+        # FilamentModel=ZeroTemperature(),
         initf=IC,
         boundary_x=PeriodicBoundary(1),
         boundary_y=PeriodicBoundary(2),
         boundary_z=PeriodicBoundary(3),
-        normal_velocity=[0.0, 0.0, 0.0],
+        normal_velocity=[1.0, 0.0, 0.0],
         corea=6.29e-7,
         ν_0=0.04,
         Γ=4.8,
-        dt=1e-4
+        dt=1e-5
 )
 
 
@@ -41,7 +41,7 @@ scatter(Tuple.(f[1]),
         linewidth=3,
         label=nothing)
 
-anim = @animate for Vortex ∈ f[1:165]
+anim = @animate for Vortex ∈ f
         plt = scatter(Tuple.(Vortex),
         xlim=(-π,π), xlabel="x",
         ylim=(-π,π), ylabel="y",

@@ -29,20 +29,25 @@ function print_GPU_info()
     println("========================================================")
     println("                   GPU Device info                      ")
     println("========================================================")
-    println("Device Name: $device_name")
-    println("Total Multiprocessors: $num_multiprocessors")
-    println("Maximum Threads per Multiprocessor: $max_threads_per_mp")
-    println("Maximum Threads per Block: $max_threads_per_block")
-    println("Warp Size: $warp_size")
+    print("Device Name: ");
+            printstyled("$device_name\n", color=:blue, bold=:true)
+    print("Total Multiprocessors: ");
+            printstyled("$num_multiprocessors\n", color=:blue, bold=:true)
+    print("Maximum Threads per Multiprocessor: ");
+            printstyled("$max_threads_per_mp\n", color=:blue, bold=:true)
+    print("Maximum Threads per Block: ");
+            printstyled("$max_threads_per_block\n", color=:blue, bold=:true)
+    print("Warp Size: ");
+            printstyled("$warp_size\n", color=:blue, bold=:true)
     println("========================================================")
 end
 
 function print_boundary_info(boundary_x,boundary_y,boundary_z)
     println("--------------------------------------------------------")
-    println("                Boundary Informataion                   ")
+    println("                 Boundary Information                   ")
     println("--------------------------------------------------------")
-    println("boundary_x: $(boundary_x.name)")
-    println("boundary_y: $(boundary_y.name)")
-    println("boundary_z: $(boundary_z.name)")
+    print_boundary(boundary_x)
+    print_boundary(boundary_y)
+    print_boundary(boundary_z)
     println("--------------------------------------------------------")
 end

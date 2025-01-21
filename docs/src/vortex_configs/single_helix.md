@@ -1,4 +1,4 @@
-## Single helix
+# Single helix
 
 *Initialises a single, helix of amplitude ``A`` and wavenumber ``k``.*
 

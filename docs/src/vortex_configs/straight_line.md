@@ -1,4 +1,4 @@
-## Straight line 
+# Straight line 
 
 *Initialises a single, straight line vortex at the centre of the computational box.*
 

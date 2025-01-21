@@ -1,12 +1,11 @@
+VORTEX_CONFIGS = readdir(joinpath(@__DIR__, "VF_configs"))
 
-
-
-VORTEX_CONFIGS = readdir("./src/VF_configs")
-
-for config ∈ VORTEX_CONFIGS  
-    include("./VF_configs/" * config)
+printstyled("Loading vortex initial conditions\n", bold=:true, color=:yellow)
+for config ∈ VORTEX_CONFIGS
+	println("Loading in $config ...")
+    include(joinpath(@__DIR__,"VF_configs",config))
 end
-
+println("Done!")
 
 function (initf::InitCond)(SimParams::SimulationParams)
     pcount = getInitPcount(initf, SimParams)

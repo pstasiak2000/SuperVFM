@@ -69,6 +69,7 @@ function Run(SimParams::SimulationParams)
     print_info_header()
 
     f_out = []
+    tt = [t]
     push!(f_out,Array(f)) #Initial configuration
 
     itCount = 0
@@ -102,11 +103,12 @@ function Run(SimParams::SimulationParams)
         if mod(it, SimParams.shots) == 0
             itCount += 1
             push!(f_out,fCPU)
+            push!(tt,t)
         end
     end
     println("")
     printstyled("Simulation finished!\n", bold=:true, color=:green)
-    return f_out
+    return f_out, tt
 end
 
 end # module VortexFilament

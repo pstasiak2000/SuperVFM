@@ -15,7 +15,7 @@ function print_info(f, ghosti, ghostb, u, Empty, SimParams, pcount, it)
 
         d = sum(norm.(f-ghosti))
         avg_d_str = @sprintf "%1.4f" d/(pcount*SimParams.δ)
-        length_str = @sprintf "%4.6f" d
+        length_str = @sprintf "%9.6f" d
 
         u_max_str = @sprintf "%1.5f" maximum(norm.(u))
         du_max_str = @sprintf "%1.5f" 0.0f0

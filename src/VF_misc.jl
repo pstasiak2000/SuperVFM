@@ -103,17 +103,18 @@ function list_parameters(io::IO,SimParams::SimulationParams)
     printstyled(io,"   • Boundary conditions \n", italic=:true, color=:red)
     printstyled(io,"   • Velocity and filament models \n", italic=:true, color=:magenta)
     return nothing
-
+end
 
 export GetTempCoeffs
-end
-"""
-    GetTempCoeffs(Temp<:Real)
 
-Obtain the Schwarz α and α' parameters from observational data using the temperature. For values that lie within the observation data, compute a spline interpolation to extract parameters for the desired temperature.
 """
-function GetTempCoeffs(Temp<:Real)
-    @assert Temp >= 0 "Incorrect temperature set"
+    GetTempCoeffs(Temp::Real)
+
+Obtain the Schwarz α and α' parameters from observational data using the temperature. For values that lie within the observation data, compute a cubic spline interpolation to extract parameters for the desired temperature.
+"""
+function GetTempCoeffs(Temp::Real)
+    @assert Temp >= 0 "Temperature cannot be negative"
+    @assert Temp <= 2.17 "Temperature cannot exceed T_c"
     ObsData = [
         0.00 0.000 0.000e-00;
         1.30 0.034 1.383e-02;
@@ -137,8 +138,23 @@ function GetTempCoeffs(Temp<:Real)
         2.08 0.414 -6.690E-03;
         2.10 0.481 -2.412E-02]
     ObsIndex = findall(i -> (i == Temp), ObsData)
-    ObsIndex = ObsIndex[1][1]
+    
+    if length(ObsIndex) == 0 && Temp < 2.00
+        @info "Cubic Spline interpolating α α'"
+        interp_cubic_α1 = cubic_spline_interpolation((1.30:0.05:2.00),ObsData[2:16,2])
+        interp_cubic_α2 = cubic_spline_interpolation((1.30:0.05:2.00),ObsData[2:16,3])
+        
+        α = (interp_cubic_α1(Temp),interp_cubic_α2(Temp))
+    elseif length(ObsIndex) == 0 && Temp >= 2.00
+        @info "Cubic Spline interpolating α α'"
+        interp_cubic_α1 = cubic_spline_interpolation((2.00:0.02:2.10),ObsData[16:21,2])
+        interp_cubic_α2 = cubic_spline_interpolation((2.00:0.05:2.10),ObsData[16:21,3])    
 
-    α = [ObsData[ObsIndex, 2], ObsData[ObsIndex, 3]]
+        α = (interp_cubic_α1(Temp),interp_cubic_α2(Temp))
+    else   
+    ObsIndex = ObsIndex[1][1]
+    α = (ObsData[ObsIndex, 2], ObsData[ObsIndex, 3])       
+    end
+
     return α
 end

@@ -8,14 +8,16 @@ using Plots
 IC = SingleHelix(0.2, 0.2, 2π)
 # IC = SingleRing(0.25)
 
+α = GetTempCoeffs(1.9)
+
 #Set the simulation parameters
 PARAMS = SuperVFM.SimulationParams(;
     shots=100,
-    nsteps=50000,
+    nsteps=100,
     δ=0.05f0,
     box_size=(2π, 2π, 2π),
     velocity=LIA(),
-    FilamentModel=SchwarzModel(0.206, 8.34e-3),
+    FilamentModel=SchwarzModel(α[1], α[2]),
     # FilamentModel=ZeroTemperature(),
     initf=IC,
     boundary_x=PeriodicBoundary(1),
@@ -29,10 +31,10 @@ PARAMS = SuperVFM.SimulationParams(;
 )
 
 
-@time f, tt = Run(cpu(),PARAMS);
+@time f, tt = Run(gpu(), PARAMS);
 
 let it = 1
-    plot_title= @sprintf "t = %4.2f" tt[it]
+    plot_title = @sprintf "t = %4.2f" tt[it]
     scatter(Tuple.(f[it]),
         xlim=(-π, π), xlabel="x",
         ylim=(-π, π), ylabel="y",
@@ -64,3 +66,9 @@ begin
 end
 
 
+
+
+
+
+
+GetTempCoeffs(1.91)

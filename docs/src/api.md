@@ -13,5 +13,5 @@ Base.show(io::IO, SimParams::SimulationParams)
 ```
 
 ```@docs
-GetTempCoeffs(Temp<:Real)
+GetTempCoeffs(Temp::Real)
 ```

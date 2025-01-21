@@ -3,6 +3,7 @@ using CUDA, Adapt
 using Dates
 using StaticArrays
 using LinearAlgebra
+using Interpolations
 using Plots
 import Printf: @sprintf
 

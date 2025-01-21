@@ -12,13 +12,13 @@ IC = SingleHelix(0.2, 0.2, 2π)
 
 #Set the simulation parameters
 PARAMS = SuperVFM.SimulationParams(;
-    shots=100,
-    nsteps=100,
+    shots=1000,
+    nsteps=100000,
     δ=0.05f0,
     box_size=(2π, 2π, 2π),
     velocity=LIA(),
-    FilamentModel=SchwarzModel(α[1], α[2]),
-    # FilamentModel=ZeroTemperature(),
+    # FilamentModel=SchwarzModel(α[1], α[2]),
+    FilamentModel=ZeroTemperature(),
     initf=IC,
     boundary_x=PeriodicBoundary(1),
     boundary_y=PeriodicBoundary(2),

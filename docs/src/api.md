@@ -1,5 +1,6 @@
+# Library
 
-# Public API
+## Public API
 ```@docs
 OpenBoundary(dims::Int)
 ```
@@ -18,4 +19,4 @@ Base.show(io::IO, SimParams::SimulationParams)
 GetTempCoeffs(Temp::Real)
 ```
 
-# Internal API
+## Internal API

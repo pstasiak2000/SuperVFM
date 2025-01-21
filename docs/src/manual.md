@@ -33,7 +33,7 @@ Periodic and open boundary conditions can be mixed. For example, if we define a 
     boundary_y = OpenBoundary(2)#y direction
     boundary_z = PeriodicBoundary(3)#z direction 
 ```
-!!! warn
+!!! warning
     Vortex initial conditions will throw an error if not supplied with the correct boundary condition!
 
 ## Vortex Configurations

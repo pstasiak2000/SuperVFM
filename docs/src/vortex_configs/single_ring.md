@@ -1,10 +1,10 @@
-# Single vortex ring
+## Single vortex ring
 
 *Initialises a single, vortex ring of size ``R``.*
 
 ![ Single vortex ring](../assets/single_ring.gif)
 
-## Usage
+### Usage
 ```julia
 struct SingleRing{A} <: InitCond
     Radius::A

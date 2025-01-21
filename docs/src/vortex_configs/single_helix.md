@@ -1,10 +1,10 @@
-# Single helix
+## Single helix
 
 *Initialises a single, helix of amplitude ``A`` and wavenumber ``k``.*
 
 ![ Single vortex ring](../assets/single_helix.gif)
 
-## Usage
+### Usage
 ```julia
 struct SingleHelix{A} <: InitCond
     A_KW::A #Amplitude of the Kelvin wave
@@ -23,7 +23,6 @@ Parameters are as follows:
 
 Example:
 ```julia
-#Set an initial condition of ring size 1.0
-BOX_SIZE = (2π, 2π, 2π)
-IC = SingleHelix(0.2, 0.1, BOX_SIZE)
+#Set a helix of 
+IC = SingleHelix(0.2, 0.1, 2π)
 ```

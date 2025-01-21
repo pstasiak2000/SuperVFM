@@ -29,7 +29,7 @@ PARAMS = SuperVFM.SimulationParams(;
 )
 
 
-@time f, tt = Run(PARAMS);
+@time f, tt = Run(cpu(),PARAMS);
 
 let it = 1
     plot_title= @sprintf "t = %4.2f" tt[it]

@@ -11,3 +11,7 @@ PeriodicBoundary(dims::Int)
 ```@docs
 Base.show(io::IO, SimParams::SimulationParams)
 ```
+
+```@docs
+GetTempCoeffs(Temp<:Real)
+```

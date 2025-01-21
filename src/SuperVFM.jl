@@ -19,6 +19,10 @@ const e_x = cu(SVector{3,Float32}(1.0f0,0.0f0,0.0f0)) #unit vector in the x dire
 const e_y = cu(SVector{3,Float32}(0.0f0,1.0f0,0.0f0)) #unit vector in the y direction
 const e_z = cu(SVector{3,Float32}(0.0f0,0.0f0,1.0f0)) #unit vector in the z direction
 
+struct cpu end; export cpu 
+struct gpu end; export gpu
+
+
 include("VF_cdata.jl")
 include("VF_boundary.jl")
 include("VF_timestep.jl")
@@ -31,7 +35,12 @@ include("VF_misc.jl")
 
 
 
-function Run(SimParams::SimulationParams)
+function Run(::cpu,SimParams::SimulationParams)
+    @warn "The cpu version of the code is still currently in development!"
+    return nothing, nothing
+end
+
+function Run(::gpu,SimParams::SimulationParams)
     print_banner()
     print_GPU_info()
     print_boundary_info(

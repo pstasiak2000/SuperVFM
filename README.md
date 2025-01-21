@@ -1,6 +1,6 @@
 # SuperVFM
 
-*Vortex filament method solver using GPU parallelism in Julia*
+*Vortex filament method solver using CPU and GPU parallelism in Julia*
 
 | **Documentation**                                                         | **Build Status**                                                                                |
 |:-------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|

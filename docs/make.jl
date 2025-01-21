@@ -9,9 +9,10 @@ makedocs(sitename="SuperVFM.jl",
     pages = [
         "Home" => "index.md",
         "Manual" => "manual.md",
-        "Vortex Configurations" => SUBSECTION_PAGES
+        "Vortex Configurations" => SUBSECTION_PAGES,
+        "API" => "api.md" 
             ],
-        "API" => "api.md"    
+          
 )
 
 deploydocs(

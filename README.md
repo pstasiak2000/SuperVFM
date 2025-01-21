@@ -1,4 +1,4 @@
-# SuperVFM
+# SuperVFM.jl
 
 *Vortex filament method solver using CPU and GPU parallelism in Julia*
 

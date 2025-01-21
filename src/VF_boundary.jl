@@ -24,6 +24,8 @@ Example usage:
 PeriodicBoundary(dim::Int) = PeriodicBoundary{Int32}(dim)
 export PeriodicBoundary
 
+
+
 #--------------------------------------
 #--- Open boundary identifier
 #---------------------------------------
@@ -47,13 +49,15 @@ Example usage:
 OpenBoundary(dim::Int) = OpenBoundary{Int32}(dim)
 export OpenBoundary
 
-function print_boundary(BC::OpenBoundary)
+function print_boundary(BC::Boundary) where Boundary <:BoundaryType
     if BC.dim==1; ax="x"; end;
     if BC.dim==2; ax="y"; end;
     if BC.dim==3; ax="z"; end;
-    print("boundary_$ax: "); printstyled("open\n", color=:blue)
+    print_BC(ax, BC)
     return nothing
 end
+
+print_BC(ax::AbstractString, ::OpenBoundary) =  print("boundary_$ax: "); printstyled("open\n", color=:blue)
 
 function print_boundary(BC::PeriodicBoundary)
     if BC.dim==1; ax="x"; end;

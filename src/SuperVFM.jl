@@ -65,7 +65,7 @@ function Run(SimParams::SimulationParams)
 
     normal_velocity = CUDA.fill(SimParams.normal_velocity, pcount)
 
-    t = 0.0 #Simulation time
+    t = 0.0f0 #Simulation time
     print_info_header()
 
     f_out = []
@@ -93,16 +93,11 @@ function Run(SimParams::SimulationParams)
         t += SimParams.dt
         
         enforce_boundary!(f,SimParams.boundary_x,SimParams.boundary_y,SimParams.boundary_z)
-        # boundary.(f)
-        fCPU = Array(f)
-        # x_pos[1,it] = t
-        # x_pos[2,it] = fCPU[1,1][1]
-        # x_pos[3,it] = fCPU[1,1][2]
-        # x_pos[4,it] = fCPU[1,1][3]
+        
         print_info(f, ghosti, ghostb, u, Empty, SimParams, pcount, it)
         if mod(it, SimParams.shots) == 0
             itCount += 1
-            push!(f_out,fCPU)
+            push!(f_out,Array(f))
             push!(tt,t)
         end
     end

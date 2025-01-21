@@ -2,6 +2,7 @@ function print_banner()
     hostname = gethostname() #Get the hostname
     username = ENV["USER"]   #Get the username
     date = now()             #Get the current date and time
+    docsite = raw"https://pstasiak2000.github.io/SuperVFM/stable/"   
 
     printstyled("                                             \n",bold=:true,color=:blue)
     printstyled("        _   _     __     __         _        \n",bold=:true,color=:blue)
@@ -14,6 +15,7 @@ function print_banner()
     
     println("user info:  $(username)@$(hostname)")
     println("Launched on $(Dates.day(date))/$(Dates.month(date))/$(Dates.year(date)) @ $(Dates.Time(date))")
+    print("Documentation available at: "); printstyled(docsite * "\n", underline=:true)
     println("--------------------------------------------------------")
 end
 
@@ -27,7 +29,7 @@ function print_GPU_info()
     max_threads_per_block = CUDA.attribute(device, CUDA.DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK)
     warp_size = CUDA.attribute(device, CUDA.DEVICE_ATTRIBUTE_WARP_SIZE)
     println("========================================================")
-    println("                   GPU Device info                      ")
+    printstyled("                   GPU Device info                      \n",bold=:true)
     println("========================================================")
     print("Device Name: ");
             printstyled("$device_name\n", color=:blue, bold=:true)
@@ -43,11 +45,11 @@ function print_GPU_info()
 end
 
 function print_boundary_info(boundary_x,boundary_y,boundary_z)
-    println("--------------------------------------------------------")
-    println("                 Boundary Information                   ")
-    println("--------------------------------------------------------")
+    println("========================================================")
+    printstyled("                 Boundary Information                   \n", bold=:true)
+    println("========================================================")
     print_boundary(boundary_x)
     print_boundary(boundary_y)
     print_boundary(boundary_z)
-    println("--------------------------------------------------------")
+    println("========================================================")
 end

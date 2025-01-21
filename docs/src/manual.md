@@ -11,17 +11,30 @@ In the standard implementations of the Vortex Filament Method (VFM), filaments a
 
 
 ## Boundary Conditions
-The following methods are the currently implemented boundary conditions in the vortex filament method solver.
+As of v1.0.2, only periodic boundary conditions and open boundary conditions are supported.
+```julia
+    #Initialises all open boundary conditions 
+    boundary_x = OpenBoundary(1)#x direction
+    boundary_y = OpenBoundary(2)#y direction 
+    boundary_z = OpenBoundary(3)#z direction
 
-```@docs
-OpenBoundary(dims::Int)
+    #Initialises all periodic boundary conditions 
+    boundary_x = PeriodicBoundary(1)#x direction
+    boundary_y = PeriodicBoundary(2)#y direction
+    boundary_z = PeriodicBoundary(3)#z direction
 ```
+Periodic and open boundary conditions can be mixed. For example, if we define a helical or straight line vortex, we require periodic boundary conditions in the ``z`` direction, however we may also set open boundary conditions in the ``x`` and ``y`` directions.
+```julia
+    #Set a straight line vortex - this condition  requires  periodic boundary in z
+    IC = SingleLine() 
 
-```@docs
-PeriodicBoundary(dims::Int)
+    #Sert open conditions in x,y and periodic in z 
+    boundary_x = OpenBoundary(1)#x direction
+    boundary_y = OpenBoundary(2)#y direction
+    boundary_z = PeriodicBoundary(3)#z direction 
 ```
-!!! warning
-    As of v1.0.2, only the periodic boundary condition is fully implemented and working correctly, open boundary conditions and solid walls will be implemented in a future release.
+!!! warn
+    Vortex initial conditions will throw an error if not supplied with the correct boundary condition!
 
 ## Vortex Configurations
 

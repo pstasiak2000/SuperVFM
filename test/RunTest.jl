@@ -64,11 +64,3 @@ begin
     end
     gif(anim, "animation.gif"; fps=30)
 end
-
-
-
-
-
-
-
-GetTempCoeffs(1.91)

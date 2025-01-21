@@ -4,10 +4,8 @@ using Printf
 using Test
 using Plots
 
-BOX_SIZE = (2π, 2π, 2π)
-
 #Vortex initial condition
-IC = SingleHelix(0.2, 0.2, BOX_SIZE)
+IC = SingleHelix(0.2, 0.2, 2π)
 # IC = SingleRing(0.25)
 
 #Set the simulation parameters
@@ -15,7 +13,7 @@ PARAMS = SuperVFM.SimulationParams(;
     shots=100,
     nsteps=50000,
     δ=0.05f0,
-    box_size=BOX_SIZE,
+    box_size=(2π, 2π, 2π),
     velocity=LIA(),
     FilamentModel=SchwarzModel(0.206, 8.34e-3),
     # FilamentModel=ZeroTemperature(),

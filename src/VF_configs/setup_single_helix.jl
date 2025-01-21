@@ -7,8 +7,8 @@ struct SingleHelix{A} <: InitCond
 end
 Adapt.@adapt_structure SingleHelix
 
-function SingleHelix(A_KW,b_KW,box_size)
-    return SingleHelix{Float32}(A_KW,b_KW,box_size[3])
+function SingleHelix(A_KW,b_KW,box_height)
+    return SingleHelix{Float32}(A_KW,b_KW,box_height)
 end
 
 #Obtains initial number of vortex points

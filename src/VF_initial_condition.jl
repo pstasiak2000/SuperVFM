@@ -1,4 +1,7 @@
+### This script contains the initialisation of vortex filaments 
+
 VORTEX_CONFIGS = readdir(joinpath(@__DIR__, "VF_configs"))
+
 
 printstyled("Loading vortex initial conditions\n", bold=:true, color=:yellow)
 for config ∈ VORTEX_CONFIGS
@@ -6,6 +9,7 @@ for config ∈ VORTEX_CONFIGS
     include(joinpath(@__DIR__,"VF_configs",config))
 end
 println("Done!")
+
 
 function (initf::InitCond)(SimParams::SimulationParams)
     pcount = getInitPcount(initf, SimParams)

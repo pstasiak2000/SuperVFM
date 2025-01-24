@@ -76,13 +76,14 @@ function Run(::gpu,SimParams::SimulationParams)
     normal_velocity = CUDA.fill(SimParams.normal_velocity, pcount)
 
     t = 0.0f0 #Simulation time
-    print_info_header()
+    
 
     f_out = []
     tt = [t]
     push!(f_out,Array(f)) #Initial configuration
 
     itCount = 0
+    print_info_header()
     for it ∈ 1:SimParams.nsteps
 
         #Find the right number of threads and blocks if pcount changes
@@ -104,8 +105,9 @@ function Run(::gpu,SimParams::SimulationParams)
         
         enforce_boundary!(f,SimParams.boundary_x,SimParams.boundary_y,SimParams.boundary_z)
         
-        print_info(f, ghosti, ghostb, u, Empty, SimParams, pcount, it)
+        
         if mod(it, SimParams.shots) == 0
+            print_info(f, ghosti, ghostb, u, Empty, SimParams, pcount, it)
             itCount += 1
             push!(f_out,Array(f))
             push!(tt,t)

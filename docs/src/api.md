@@ -16,7 +16,7 @@ Base.show(io::IO, SimParams::SimulationParams)
 ```
 
 ```@docs
-GetTempCoeffs(Temp::Real)
+GetSchwarzTempCoeffs(Temp::Real)
 ```
 
 ## Internal API

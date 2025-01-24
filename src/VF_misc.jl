@@ -105,14 +105,14 @@ function list_parameters(io::IO,SimParams::SimulationParams)
     return nothing
 end
 
-export GetTempCoeffs
+export GetSchwarzTempCoeffs
 
 """
-    GetTempCoeffs(Temp::Real)
+    GetSchwarzTempCoeffs(Temp::Real)
 
 Obtain the Schwarz α and α' parameters from observational data using the temperature. For values that lie within the observation data, compute a cubic spline interpolation to extract parameters for the desired temperature.
 """
-function GetTempCoeffs(Temp::Real)
+function GetSchwarzTempCoeffs(Temp::Real)
     @assert Temp >= 0 "Temperature cannot be negative"
     @assert Temp <= 2.17 "Temperature cannot exceed T_c"
     ObsData = [

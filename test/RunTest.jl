@@ -4,16 +4,19 @@ using Printf
 using Test
 using Plots
 
+make_animation = false
+make_plot = false
+
 #Vortex initial condition
 IC = SingleHelix(0.2, 0.2, 2π)
 # IC = SingleRing(0.25)
 
-α = GetTempCoeffs(1.9)
+α = GetSchwarzTempCoeffs(1.9)
 
 #Set the simulation parameters
 PARAMS = SuperVFM.SimulationParams(;
-    shots=1000,
-    nsteps=100000,
+    shots=1,
+    nsteps=100,
     δ=0.05f0,
     box_size=(2π, 2π, 2π),
     velocity=LIA(),
@@ -33,20 +36,22 @@ PARAMS = SuperVFM.SimulationParams(;
 
 @time f, tt = Run(gpu(), PARAMS);
 
-let it = 1
-    plot_title = @sprintf "t = %4.2f" tt[it]
-    scatter(Tuple.(f[it]),
-        xlim=(-π, π), xlabel="x",
-        ylim=(-π, π), ylabel="y",
-        zlim=(-π, π), zlabel="z",
-        markerstrokewidth=0,
-        markersize=2,
-        linewidth=3,
-        title=plot_title,
-        label=nothing)
+if make_plot    
+    let it = 1
+        plot_title = @sprintf "t = %4.2f" tt[it]
+        scatter(Tuple.(f[it]),
+            xlim=(-π, π), xlabel="x",
+            ylim=(-π, π), ylabel="y",
+            zlim=(-π, π), zlabel="z",
+            markerstrokewidth=0,
+            markersize=2,
+            linewidth=3,
+            title=plot_title,
+            label=nothing)
+    end
 end
 
-begin
+if make_animation
     anim = @animate for it in eachindex(f)
         plot_title = @sprintf "t = %4.2f" tt[it]
         plt = scatter(Tuple.(f[it]),

@@ -3,6 +3,13 @@ abstract type VelocityMode end #Super type for computing the velocity
 abstract type FilamentModel end #Super type for the filament models
 abstract type BoundaryType end #Super type of all boundary conditions
 
+export SimulationParams 
+export DimensionalParams
+export get_density
+export get_dynamic_viscosity
+export print_density_data
+export print_dynamic_visosity_data
+
 ### Dimensional constants
 const a₀ = 1e-10u"m"        #Helium-4 vortex core radius
 const m₄ = 6.65e-24u"g"    #Mass of helium-4 atom
@@ -88,7 +95,7 @@ function SimulationParams(DimParams::DimensionalParams;
     return SimulationParams{Int32,Float32}(shots,nsteps,δ,box_size,velocity,FilamentModel,initf,boundary_x,boundary_y,boundary_z,norm_vel,corea,ν_0,Γ,κ,dt)
 end
 
-export SimulationParams 
+
 
 """
     get_density(T::AbstractFloat)
@@ -167,7 +174,7 @@ function print_density_data(io::IO=stdout)
 end
 
 """
-    print_density_data(io::IO=stdout)
+    print_dynamic_visosity_data(io::IO=stdout)
 
 Prints the dynamic viscosity η to the IO buffer. Defaults to `stdout`.
 """

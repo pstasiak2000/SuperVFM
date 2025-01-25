@@ -1,3 +1,6 @@
+export print_characteristics
+export GetSchwarzTempCoeffs
+
 function print_banner()
     hostname = gethostname() #Get the hostname
     username = ENV["USER"]   #Get the username
@@ -111,8 +114,6 @@ function list_parameters(io::IO,SimParams::SimulationParams)
     return nothing
 end
 
-export GetSchwarzTempCoeffs
-
 """
     GetSchwarzTempCoeffs(Temp::Real)
 
@@ -171,7 +172,5 @@ end
 Prints the characteristic time and length scales of the simulation in dimensional units
 """
 function print_characteristics(io::IO,SimParams::SimulationParams)
-
-
-
+    return nothing
 end

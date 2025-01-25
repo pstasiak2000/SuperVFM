@@ -6,6 +6,7 @@ using SuperVFM
 SUBSECTION_PAGES = "vortex_configs/" .* readdir("./docs/src/vortex_configs/")
 
 makedocs(sitename="SuperVFM.jl",
+    modules = [SuperVFM],
     pages = [
         "Home" => "index.md",
         "Manual" => "manual.md",

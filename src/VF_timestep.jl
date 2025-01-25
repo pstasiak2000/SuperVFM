@@ -1,12 +1,14 @@
 include("VF_velocity.jl") #Include the routines for computing the superfluid velocity
 
+export ZeroTemperature
+export SchwarzModel
+
 ### VORTEX FILAMENT MODELS
 
 #! Zero temperature model - no dissipation mechanism
-struct ZeroTemperature <: FilamentModel
-end
+struct ZeroTemperature <: FilamentModel end
 Adapt.@adapt_structure ZeroTemperature
-export ZeroTemperature
+
 print_filamentmodel_info(::ZeroTemperature) = print("Using the "), printstyled("zero temperature model\n\n", bold=:true, color=:yellow)
 
 function (FM::ZeroTemperature)(f, ghosti, ghostb, u_sup, normal_velocity, Empty::Bool)
@@ -27,8 +29,6 @@ struct SchwarzModel{A} <: FilamentModel
 end
 Adapt.@adapt_structure SchwarzModel
 SchwarzModel(α1::AbstractFloat,α2::AbstractFloat) = SchwarzModel{Float32}(α1,α2)
-
-export SchwarzModel
 
 print_filamentmodel_info(FM::SchwarzModel) = print("Using the "), printstyled("Schwarz model with α=$(FM.α1) and α'=$(FM.α2)\n\n", bold=:true, color=:yellow)
 

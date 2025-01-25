@@ -1,4 +1,9 @@
 ### Routines to calculate the special derivatives
+"""
+    get_deriv_1(f::AbstractArray, ghosti::AbstractArray, ghostb::AbstractArray, Empty::Bool)
+
+Computes the first order derivative using a 2nd order finite difference adaptive scheme using ghost points, skipping filaments that are labelled as empty.
+"""
 function get_deriv_1(f::AbstractArray, ghosti::AbstractArray, ghostb::AbstractArray, Empty::Bool)
     # s_dot = CUDA.fill(SVector{3,Float32}(0,0,0),length(f))
     if Empty #Skip the empty particles
@@ -11,6 +16,11 @@ function get_deriv_1(f::AbstractArray, ghosti::AbstractArray, ghostb::AbstractAr
     end
 end
 
+"""
+    get_deriv_2(f::AbstractArray, ghosti::AbstractArray, ghostb::AbstractArray, Empty::Bool)
+
+Computes the first order derivative using a 2nd order finite difference adaptive scheme, skipping filaments that are labelled as empty.
+"""
 function get_deriv_2(f::AbstractArray, ghosti::AbstractArray, ghostb::AbstractArray, Empty::Bool)
     # s_dot = CUDA.fill(SVector{3,Float32}(0,0,0),length(f))
     if Empty #Skip the empty particles

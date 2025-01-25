@@ -1,6 +1,10 @@
 #Contains all of the routines used to enforce the boundary conditions within this file
 #Support for PERIODIC boundary conditions only
 
+
+export PeriodicBoundary
+export OpenBoundary
+
 #---------------------------------------
 #--- Periodic boundary identifier
 #---------------------------------------
@@ -20,9 +24,12 @@ Example usage:
     boundary_y = PeriodicBoundary(2)
     boundary_z = PeriodicBoundary(3)
 ```
+
+!!! warning
+    As of v1.0.2, only the periodic boundary condition is fully implemented and working correctly, open boundary conditions and solid walls will be implemented in a future release.
 """
 PeriodicBoundary(dim::Int) = PeriodicBoundary{Int32}(dim)
-export PeriodicBoundary
+
 
 
 
@@ -47,7 +54,6 @@ Example usage:
 ```
 """
 OpenBoundary(dim::Int) = OpenBoundary{Int32}(dim)
-export OpenBoundary
 
 function print_boundary(BC::Boundary) where Boundary <:BoundaryType
     if BC.dim==1; ax="x"; end;

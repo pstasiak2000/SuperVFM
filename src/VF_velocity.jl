@@ -1,8 +1,7 @@
-
-struct LIA <: VelocityMode
-end
-Adapt.@adapt_structure LIA
 export LIA
+struct LIA <: VelocityMode end
+Adapt.@adapt_structure LIA
+
 
 #Don't compute anything if type is set to nothing
 function (Velocity::Nothing)(f, ghosti, ghostb, Empty::Bool, κ, corea)

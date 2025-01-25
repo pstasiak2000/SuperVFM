@@ -35,10 +35,22 @@ function DimensionalParams(;
     
     # Read the normal and superfluid densities and dynamic viscosity
     ρ_n, ρ_s = get_density(T)
-    η = get_dynamic_viscosity(T)
 
-    #Compute the normal fluid kinematic viscosity
-    ν_n = uconvert(u"m^2/s", η / ρ_n)
+    #Default to T=1.9K if the temperature is too low for viscosity measurements
+    #Typically this is only used for pure superfluid simulations
+    #ρ_temp and η simply set the characteristic time scale for the simulation!
+    if T < 0.8u"K"
+        η = get_dynamic_viscosity(1.9u"K") #Default to T=1.9K for characteristics
+        ρ_temp = get_density(1.9u"K")
+        ν_n = uconvert(u"m^2/s", η / ρ_temp[1])
+    else
+        η = get_dynamic_viscosity(T)
+        ν_n = uconvert(u"m^2/s", η / ρ_n)
+    end
+
+    
+
+
     return DimensionalParams(T,D,λ,τ,ρ_n,ρ_s,ν_n)
 end
 
@@ -137,7 +149,7 @@ Returns the dynamic viscosity ``η`` at temperature ``T``.
 Requires ``0.8\\leq T \\leq T_{\\lambda} = 2.178``
 """
 function get_dynamic_viscosity(T::AbstractFloat)
-    @assert T > 0.8 "Invalid temperature: Required T>0.8K"
+    @assert T ≥ 0.8 "Invalid temperature: T cannot be negative"
     @assert T < 2.17 "Invalid temperature: T cannot be above the transition temperature"
     data = readdlm(joinpath(@__DIR__,"data","dynamic_viscosity.txt"),skipstart=0)
     row = findall(view(data,:,1) .== T)

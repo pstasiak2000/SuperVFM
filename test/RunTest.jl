@@ -16,8 +16,8 @@ IC = SingleHelix(0.2, 0.2, 2π)
 
 ### Set the dimensional properties
 DimParams = SuperVFM.DimensionalParams(;
-    T=1.9u"K",
-    D=0.1u"mm")
+    T=0.0u"K",
+    D=0.1u"cm")
 
 
 α = GetSchwarzTempCoeffs(ustrip(DimParams.T))

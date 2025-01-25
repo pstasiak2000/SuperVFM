@@ -1,0 +1,25 @@
+                           SIMULATION PARAMETERS                                   
+------------------------------------------------------------------------------------
+|○                       shots =  1
+|○                      nsteps = 100
+|□                           δ = 0.05
+|□                    box_size = (6.2831855f0, 6.2831855f0, 6.2831855f0)
+|⋄                    velocity = LIA()
+|⋄               FilamentModel = ZeroTemperature()
+|★                       initf = SingleHelix{Float64}(0.2, 0.2, 6.283185307179586)
+|△                  boundary_x = PeriodicBoundary{Int32}(1)
+|△                  boundary_y = PeriodicBoundary{Int32}(2)
+|△                  boundary_z = PeriodicBoundary{Int32}(3)
+|□             normal_velocity = Float32[0.0, 0.0, 0.0]
+|□                       corea = 6.2831855e-6
+|□                         ν_0 = 0.04
+|□                           Γ = 4.5172167
+|□                           κ = 0.18068866
+|□                          dt = 0.0001
+------------------------------------------------------------------------------------
+Key:
+   ○ Int32   / Vector{Int32}   / Tuple{Int32}
+   □ Float32 / Vector{Float32} / Tuple{Float32} 
+   ★ Initial vortex configuration 
+   △ Boundary conditions 
+   ⋄ Velocity and filament models 

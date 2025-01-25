@@ -64,30 +64,35 @@ Lists the simulation parameters stored in `SimParams` in a stylistic way with a 
 Base.show(io::IO, SimParams::SimulationParams) = list_parameters(io,SimParams)
 
 function list_parameters(io::IO,SimParams::SimulationParams)
-    printstyled(io,"                           SIMULATION PARAMETERS                                   \n", bold=:true, underline=:true)
-    # println("------------------------------------------------------------------------------------")
+    printstyled(io,"                           SIMULATION PARAMETERS                                   \n", bold=:true)
+    println(io,"------------------------------------------------------------------------------------")
 
     total_args = length(fieldnames(typeof(SimParams)))
     for arg in fieldnames(typeof(SimParams))
 
-        print(io,"□        ")
+        
         argname = @sprintf "%20s = " arg
         argval = @sprintf "%2s" getfield(SimParams, arg)
 
         #Choose the colouring based on type
         if eltype(getfield(SimParams, arg)) == Float32
             col = :blue
-
+            printstyled(io,"|□        ", color=col)
         elseif eltype(getfield(SimParams, arg)) == Int32
             col = :green
+            printstyled(io,"|○        ", color=col)
         elseif typeof(getfield(SimParams, arg)) <: BoundaryType
             col = :red
+            printstyled(io,"|△        ", color=col)
         elseif typeof(getfield(SimParams, arg)) <: InitCond
             col = :yellow
+            printstyled(io,"|★        ", color=col)
         elseif typeof(getfield(SimParams, arg)) <: Union{VelocityMode,FilamentModel}
             col = :magenta
+            printstyled(io,"|⋄        ", color=col)
         else
             col = :white
+            printstyled(io,"|x        ", color=col)
         end
 
 
@@ -98,10 +103,11 @@ function list_parameters(io::IO,SimParams::SimulationParams)
     # printstyled("                                                                                     \n", underline=:true)
     println(io,"------------------------------------------------------------------------------------")
     printstyled(io,"Key:\n", italic=:true)
-    printstyled(io,"   • Int32   / Vector{Int32}   / Tuple{Int32}\n", italic=:true, color=:green)
-    printstyled(io,"   • Float32 / Vector{Float32} / Tuple{Float32} \n", italic=:true, color=:blue)
-    printstyled(io,"   • Boundary conditions \n", italic=:true, color=:red)
-    printstyled(io,"   • Velocity and filament models \n", italic=:true, color=:magenta)
+    printstyled(io,"   ○ Int32   / Vector{Int32}   / Tuple{Int32}\n", italic=:true, color=:green)
+    printstyled(io,"   □ Float32 / Vector{Float32} / Tuple{Float32} \n", italic=:true, color=:blue)
+    printstyled(io,"   ★ Initial vortex configuration \n", italic=:true, color=:yellow)
+    printstyled(io,"   △ Boundary conditions \n", italic=:true, color=:red)
+    printstyled(io,"   ⋄ Velocity and filament models \n", italic=:true, color=:magenta)
     return nothing
 end
 
@@ -157,4 +163,15 @@ function GetSchwarzTempCoeffs(Temp::Real)
     end
 
     return α
+end
+
+"""
+    print_characteristics(io::IO,SimParams::SimulationParams)
+
+Prints the characteristic time and length scales of the simulation in dimensional units
+"""
+function print_characteristics(io::IO,SimParams::SimulationParams)
+
+
+
 end

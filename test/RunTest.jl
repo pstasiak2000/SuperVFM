@@ -1,5 +1,6 @@
 push!(LOAD_PATH, "../") #Load the source path 
 using SuperVFM
+using Unitful
 using Printf
 using Test
 using Plots
@@ -11,10 +12,18 @@ make_plot = false
 IC = SingleHelix(0.2, 0.2, 2π)
 # IC = SingleRing(0.25)
 
-α = GetSchwarzTempCoeffs(1.9)
 
-#Set the simulation parameters
-PARAMS = SuperVFM.SimulationParams(;
+
+### Set the dimensional properties
+DimParams = SuperVFM.DimensionalParams(;
+    T=1.9u"K",
+    D=0.1u"mm")
+
+
+α = GetSchwarzTempCoeffs(ustrip(DimParams.T))
+
+### Set the simulation parameters
+PARAMS = SimulationParams(DimParams;
     shots=1,
     nsteps=100,
     δ=0.05f0,
@@ -27,12 +36,14 @@ PARAMS = SuperVFM.SimulationParams(;
     boundary_y=PeriodicBoundary(2),
     boundary_z=PeriodicBoundary(3),
     normal_velocity=[0.0, 0.0, 0.0],
-    corea=6.29e-7,
     ν_0=0.04,
-    Γ=4.8,
     dt=1e-4
 )
 
+### Save parameters to file
+open("parameterVF.txt","w") do io
+    show(io,PARAMS)
+end
 
 @time f, tt = Run(gpu(), PARAMS);
 
@@ -69,3 +80,6 @@ if make_animation
     end
     gif(anim, "animation.gif"; fps=30)
 end
+
+
+

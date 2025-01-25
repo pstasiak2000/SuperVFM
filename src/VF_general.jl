@@ -15,11 +15,11 @@ export check_timestep
 """
     check_timestep(SimParams::SimulationParams)
 
-Checks if the current timestep in `SimParams` is small enough to resolve the smallest Kelvin waves. Returns true if it is true.
+Checks if the current timestep in `SimParams` is small enough to resolve the smallest Kelvin waves. Returns true if the timestep ``\\Delta t < \\Delta t_{max}``.
 
 The maximum timestep is given by
 ```math
-    \\Delta t_{max} = \\frac{(\\delta/2)^2}{\\kappa *\\log(\\delta/(2\\pi a_0))}
+    \\Delta t_{max} = \\frac{(\\delta/2)^2}{\\kappa\\log(\\delta/(2\\pi a_0))}
 ```
 """
 function check_timestep(SimParams::SimulationParams)

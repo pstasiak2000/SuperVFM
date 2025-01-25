@@ -5,33 +5,29 @@ Here everything will be listed, the routines for computing
 ## Vortex filament structure on GPU
 In the standard implementations of the Vortex Filament Method (VFM), filaments are constructed by a Fortran 'type' array. Unfortunately, though structure types are native to Julia, structures defined and adapted using the `Adapt` package are required to be immutable. The implementation of the VFM **requires** structures to mutate according to the number of vortex points, the value will fluctuate to maintain discretisation between filaments. 
 
-!!! tip
-    The GPU array can be converted to a filament structure by calling `convert(VFArr::CUDA.CuMatrix{Float32},VFArrInt::CUDA.CuMatrix{Int32},VFStruct::VortexFilaments)`. [WIP!!!]
-
-
 
 ## Boundary Conditions
 As of v1.0.2, only periodic boundary conditions and open boundary conditions are supported.
 ```julia
-    #Initialises all open boundary conditions 
-    boundary_x = OpenBoundary(1)#x direction
-    boundary_y = OpenBoundary(2)#y direction 
-    boundary_z = OpenBoundary(3)#z direction
+#Initialises all open boundary conditions 
+boundary_x = OpenBoundary(1) #x direction
+boundary_y = OpenBoundary(2) #y direction 
+boundary_z = OpenBoundary(3) #z direction
 
-    #Initialises all periodic boundary conditions 
-    boundary_x = PeriodicBoundary(1)#x direction
-    boundary_y = PeriodicBoundary(2)#y direction
-    boundary_z = PeriodicBoundary(3)#z direction
+#Initialises all periodic boundary conditions 
+boundary_x = PeriodicBoundary(1) #x direction
+boundary_y = PeriodicBoundary(2) #y direction
+boundary_z = PeriodicBoundary(3) #z direction
 ```
 Periodic and open boundary conditions can be mixed. For example, if we define a helical or straight line vortex, we require periodic boundary conditions in the ``z`` direction, however we may also set open boundary conditions in the ``x`` and ``y`` directions.
 ```julia
-    #Set a straight line vortex - this condition  requires  periodic boundary in z
-    IC = SingleLine() 
+#Set a straight line vortex - this condition  requires  periodic boundary in z
+IC = SingleLine() 
 
-    #Sert open conditions in x,y and periodic in z 
-    boundary_x = OpenBoundary(1)#x direction
-    boundary_y = OpenBoundary(2)#y direction
-    boundary_z = PeriodicBoundary(3)#z direction 
+#Set open conditions in x,y and periodic in z 
+boundary_x = OpenBoundary(1)#x direction
+boundary_y = OpenBoundary(2)#y direction
+boundary_z = PeriodicBoundary(3)#z direction 
 ```
 !!! warning
     Vortex initial conditions will throw an error if not supplied with the correct boundary condition!

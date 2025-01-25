@@ -6,12 +6,10 @@
 
 ### Usage
 ```julia
-struct SingleLine <: InitCond
-end
-Adapt.@adapt_structure SingleLine
+struct SingleLine <: InitCond end
 ```
 
 To set up a single vortex line, simply pass `SingleLine()`.
 ```julia
-    IC = SingleLine()
+IC = SingleLine()
 ```

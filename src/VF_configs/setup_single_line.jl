@@ -1,8 +1,7 @@
 ### Singleton for straight line
 
 export SingleLine
-struct SingleLine <: InitCond
-end
+struct SingleLine <: InitCond end
 Adapt.@adapt_structure SingleLine
 
 

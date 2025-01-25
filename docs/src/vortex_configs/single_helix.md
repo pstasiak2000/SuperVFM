@@ -23,6 +23,6 @@ Parameters are as follows:
 
 Example:
 ```julia
-#Set a helix of 
+#Set a helix with amplitude A=0.2 and k=10
 IC = SingleHelix(0.2, 0.1, 2π)
 ```

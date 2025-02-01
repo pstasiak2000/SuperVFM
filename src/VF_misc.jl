@@ -2,9 +2,18 @@ export print_characteristics
 export GetSchwarzTempCoeffs
 
 function print_banner()
-    hostname = gethostname() #Get the hostname
-    username = ENV["USER"]   #Get the username
-    date = now()             #Get the current date and time
+    ### Gets the system independent username to print
+    function get_username()
+        varnames = ["LOGNAME", "USER", "LNAME",  "USERNAME"]
+        for varname in varnames
+            haskey(ENV, varname) && return ENV[varname]
+        end
+        return nothing
+    end
+    
+    hostname = gethostname()  #Get the hostname
+    username = get_username() #Get the username
+    date = now()              #Get the current date and time
     docsite = raw"https://pstasiak2000.github.io/SuperVFM/stable/"
 
     printstyled("                                             \n", bold=:true, color=:blue)

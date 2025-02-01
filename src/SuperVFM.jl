@@ -47,23 +47,6 @@ function Run(SP::SimulationParams)
     return nothing, nothing
 end
 
-
-
-# function Run(::cpu,SimParams::SimulationParams)
-#     print_banner()
-#     print_boundary_info(
-#         SimParams.boundary_x,
-#         SimParams.boundary_y,
-#         SimParams.boundary_z)
-#     print_filamentmodel_info(SimParams.FilamentModel)
-    
-#      #Check the timestep here
-#      @assert check_timestep(SimParams) "Timestep is too large dt=$(SimParams.dt)"
-#      printstyled("Timestep check passed!\n", bold=:true, color=:green)   
-#     @warn "The cpu version of the code is still currently in development!"
-#     return nothing, nothing
-# end
-
 # function Run(::gpu,SimParams::SimulationParams)
 #     print_banner()
 #     print_GPU_info()

@@ -2,8 +2,6 @@ push!(LOAD_PATH, "../") #Load the source path
 using SuperVFM
 using Unitful
 using Printf
-using Test
-using Plots
 
 make_animation = false
 make_plot = false

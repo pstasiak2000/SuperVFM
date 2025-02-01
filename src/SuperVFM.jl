@@ -35,11 +35,15 @@ include("VF_misc.jl")
 
 function Run(SP::SimulationParams)
     print_banner()
-        print_boundary_info(
+    print_boundary_info(
         SP.boundary_x,
         SP.boundary_y,
         SP.boundary_z)
     
+        print_filamentmodel_info(SP.FilamentModel)
+     @assert check_timestep(SP) "Timestep is too large dt=$(SP.dt)"
+     printstyled("Timestep check passed!\n", bold=:true, color=:green)
+
     return nothing, nothing
 end
 

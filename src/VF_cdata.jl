@@ -56,6 +56,7 @@ end
 
 struct SimulationParams{A,B}
     backend::Any
+    workergroupsize::Int64
     shots::A
     nsteps::A
     δ::B
@@ -75,8 +76,9 @@ struct SimulationParams{A,B}
 end
 Adapt.@adapt_structure SimulationParams
 
-function SimulationParams(DimParams::DimensionalParams;
+function SimulationParams{S,T}(DimParams::DimensionalParams;
     backend=CPU(),
+    workergroupsize=64,
     shots=1,
     nsteps=1,
     δ=0.1f0,
@@ -90,7 +92,7 @@ function SimulationParams(DimParams::DimensionalParams;
     normal_velocity=[0.0f0,0.0f0,0.0f0],
     ν_0=0.04f0,
     dt=0.1f0
-    )
+    ) where {S,T}
     #Compute the non-dimensional paramater Γ
     Γ = SuperVFM.κ / DimParams.ν_n
 
@@ -106,10 +108,12 @@ function SimulationParams(DimParams::DimensionalParams;
     norm_vel = @SVector [normal_velocity[1],normal_velocity[2],normal_velocity[3]]
 
 
-    return SimulationParams{Int32,Float32}(backend,shots,nsteps,δ,box_size,velocity,FilamentModel,initf,boundary_x,boundary_y,boundary_z,norm_vel,corea,ν_0,Γ,κ,dt)
+    return SimulationParams{S,T}(backend,workergroupsize,shots,nsteps,δ,box_size,velocity,FilamentModel,initf,boundary_x,boundary_y,boundary_z,norm_vel,corea,ν_0,Γ,κ,dt)
 end
 
-
+### Obtain the precision of simulation parameters
+# Base.precision(::SimulationParams{S,T},::Type{Int}) where {S,T} = S
+# Base.precision(::SimulationParams{S,T},::Type{AbstractFloat}) where {S,T} = T
 
 """
     get_density(T::AbstractFloat)

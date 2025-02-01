@@ -44,7 +44,10 @@ function Run(SP::SimulationParams)
      @assert check_timestep(SP) "Timestep is too large dt=$(SP.dt)"
      printstyled("Timestep check passed!\n", bold=:true, color=:green)
 
-    return nothing, nothing
+    f, fint, pcount = initialiseVortex(SP)
+
+    ghosti, ghostb = ghostp(f, fint, pcount, SP)
+    return f, nothing
 end
 
 # function Run(::gpu,SimParams::SimulationParams)

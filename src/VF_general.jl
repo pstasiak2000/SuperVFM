@@ -5,14 +5,14 @@ export check_timestep
 
 Initialise an array of static vectors of size `S` and type `T`
 """
-KernelAbstractions.zeros(BE::Backend,::Type{SVector{S,T}},dims::Tuple) where {S,T} = T(0.0) * allocate(BE,SVector{S,T},dims)
+KernelAbstractions.zeros(BE::Backend,::Type{SVector{3,T}},dims::Tuple) where {T} = T(0.0) * allocate(BE,SVector{3,T},dims)
 
 """
     KA.zeros(BE::Backend,::Type{SVector{S,T}},N::Int) where {S,T}
 
 Initialise an array of static vectors of size `S` and type `T`
 """
-KernelAbstractions.zeros(BE::Backend,::Type{SVector{S,T}},N::Int) where {S,T} = T(0.0) * allocate(BE,SVector{S,T},N)
+KernelAbstractions.zeros(BE::Backend,::Type{SVector{3,T}},N::Int64) where {T} = T(0.0) * allocate(BE,SVector{3,T},N)
 
 
 

@@ -1,13 +1,14 @@
                            SIMULATION PARAMETERS                                   
 ------------------------------------------------------------------------------------
-|x                     backend = CPU(false)
+|x                     backend = CUDABackend(false, false)
+|x             workergroupsize = 64
 |○                       shots =  1
 |○                      nsteps = 100
-|□                           δ = 0.05
+|□                           δ = 0.01
 |□                    box_size = (6.2831855f0, 6.2831855f0, 6.2831855f0)
 |⋄                    velocity = LIA()
 |⋄               FilamentModel = ZeroTemperature()
-|★                       initf = SingleHelix{Float64}(0.2, 0.2, 6.283185307179586)
+|★                       initf = SingleRing{Float64}(0.5)
 |△                  boundary_x = PeriodicBoundary{Int32}(1)
 |△                  boundary_y = PeriodicBoundary{Int32}(2)
 |△                  boundary_z = PeriodicBoundary{Int32}(3)
@@ -16,7 +17,7 @@
 |□                         ν_0 = 0.04
 |□                           Γ = 4.5172167
 |□                           κ = 0.18068866
-|□                          dt = 0.0001
+|□                          dt = 1.0e-5
 ------------------------------------------------------------------------------------
 Key:
    ○ Int32   / Vector{Int32}   / Tuple{Int32}

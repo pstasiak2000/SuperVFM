@@ -75,6 +75,32 @@ end
 
 
 #######################################################################
+function ghostp(f, fint, pcount, SP::SimulationParams{S,T}) where {S,T}
+    ghosti = allocate(SP.backend, SVector{3,T}, pcount)
+    ghostb = allocate(SP.backend, SVector{3,T}, pcount)
+
+    kernel = ghostp_kernel!(SP.backend,SP.workergroupsize)
+    kernel(ghosti, ghostb, f, fint, SP.boundary_x, ndrange=pcount)
+    return ghosti, ghostb
+end
+
+@kernel function ghostp_kernel!(ghosti, ghostb, f, fint, boundary_x)
+    Idx = @index(Global, Linear)
+    if fint[1,Idx] == 0
+        ghosti[Idx] = ZeroVector
+        ghostb[Idx] = ZeroVector
+    else
+        ghosti[Idx] = f[fint[1,Idx]]
+        ghostb[Idx] = f[fint[2,Idx]]
+    end
+
+    boundary!(ghosti[Idx],boundary_x)
+end
+
+
+function boundary!(x,BC::PeriodicBoundary)
+    e_unit = [0,0,0];
+end
 
 # function ghostp!(ghosti,ghostb,f,fint,pcount,box_size; nthreads=1, nblocks=1)
 #     Id = CuArray([#Defines the identity matrix as three static arrays

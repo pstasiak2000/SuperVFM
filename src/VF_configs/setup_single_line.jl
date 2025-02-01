@@ -1,39 +1,36 @@
 ### Singleton for straight line
 
 export SingleLine
+
 struct SingleLine <: InitCond end
 Adapt.@adapt_structure SingleLine
 
 
-# function getInitPcount(::SingleLine,SimParams::SimulationParams)
-#     println("--------------------------------------------------------")
-#     println("----------- Initialising straight line vortex ----------")
-#     println("--------------------------------------------------------")
-#     println("Changing size of pcount to fit with box_length and δ ")
-#     println("-: δ=$(SimParams.δ)                                     ")
-#     return Int32(round((2π)/(0.75*SimParams.δ)))
-# end
+function getInitpcount(::SingleLine, SP::SimulationParams{S,T}) where {S,T}
+    return Int64(round((SP.box_size[3])/(0.75*SP.δ)))
+end
 
-# #Generate the structure
-# function initVortex!(f,fint,pcount,::SingleLine)
-#     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
-#     stride = gridDim().x * blockDim().x
-#     for idx ∈ index:stride:pcount
-#         f[idx] += @SVector [0.0,0.0,-π + (Float32(idx)-0.5)*2π/pcount]
-#         # f[1,idx][1] = 0.0
-#         # f[1,idx][2] = 0.0
-#         # f[1,idx][3] = -π + (Float32(idx)-0.5)*2π/pcount
+function printVortexBanner(::SingleLine,SP::SimulationParams)
+    println("--------------------------------------------------------")
+    println("----------- Initialising straight line vortex ----------")
+    println("--------------------------------------------------------")
+    println("   Changing size of pcount to fit with box_length and δ ")
+    println("-> δ=$(SP.δ)                                            ")
+end
 
-#         if idx == 1 #The first element
-#             fint[2,idx] = pcount
-#             fint[1,idx] = idx+1
-#         elseif idx == pcount #The last element
-#             fint[2,idx] = idx - 1
-#             fint[1,idx] = 1
-#         else 
-#             fint[2,idx] = idx - 1
-#             fint[1,idx] = idx + 1
-#         end
-#     end
-#     return nothing
-# end
+
+@kernel function initVortex_kernel!(f, fint, pcount, ::SingleLine)
+    Idx = @index(Global, Linear)
+    f[Idx] = @SVector [0.0,0.0, -π + (Float32(Idx)-0.5)*2π/Float32(pcount)]
+
+    if Idx == 1
+        fint[2,Idx] = pcount
+        fint[1,Idx] = Idx+1
+    elseif Idx == pcount
+        fint[2,Idx] = Idx - 1
+        fint[1,Idx] = 1
+    else
+        fint[2,Idx] = Idx - 1
+        fint[1,Idx] = Idx + 1
+    end
+end

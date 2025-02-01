@@ -8,11 +8,18 @@ using Plots
 make_animation = false
 make_plot = false
 
-#Vortex initial condition
-IC = SingleHelix(0.2, 0.2, 2π)
-# IC = SingleRing(0.25)
+### Set the device
+# dev = CPU();
+using CUDA; dev = CUDABackend()
 
+### Set the precision (for GPU it is highly recommended to use single precision)
+IntPrec = Int32;
+FloatPrec = Float32;
 
+### Vortex initial condition
+# IC = SingleLine()
+IC = SingleRing(0.5)
+# IC = SingleHelix(0.2, 0.2, 2π)
 
 ### Set the dimensional properties
 DimParams = SuperVFM.DimensionalParams(;
@@ -23,11 +30,11 @@ DimParams = SuperVFM.DimensionalParams(;
 α = GetSchwarzTempCoeffs(ustrip(DimParams.T))
 
 ### Set the simulation parameters
-PARAMS = SimulationParams(DimParams;
-    backend=CPU(),
+PARAMS = SimulationParams{IntPrec,FloatPrec}(DimParams;
+    backend=dev,
     shots=1,
     nsteps=100,
-    δ=0.05f0,
+    δ=0.01f0,
     box_size=(2π, 2π, 2π),
     velocity=LIA(),
     # FilamentModel=SchwarzModel(α[1], α[2]),
@@ -38,7 +45,7 @@ PARAMS = SimulationParams(DimParams;
     boundary_z=PeriodicBoundary(3),
     normal_velocity=[0.0, 0.0, 0.0],
     ν_0=0.04,
-    dt=1e-4
+    dt=1e-5
 )
 
 ### Save parameters to file
@@ -81,6 +88,3 @@ end
 #     end
 #     gif(anim, "animation.gif"; fps=30)
 # end
-
-
-

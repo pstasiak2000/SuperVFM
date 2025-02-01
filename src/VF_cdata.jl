@@ -12,7 +12,7 @@ export print_dynamic_visosity_data
 
 ### Dimensional constants
 const a₀ = 1e-10u"m"        #Helium-4 vortex core radius
-const m₄ = 6.65e-24u"g"    #Mass of helium-4 atom
+const m₄ = 6.65e-24u"g"     #Mass of helium-4 atom
 const κ = 9.97e-8u"m^2/s"   #Quantum of circulation 1
 
 ### Dimensional parameters of the simulation
@@ -55,6 +55,7 @@ function DimensionalParams(;
 end
 
 struct SimulationParams{A,B}
+    backend::Any
     shots::A
     nsteps::A
     δ::B
@@ -75,6 +76,7 @@ end
 Adapt.@adapt_structure SimulationParams
 
 function SimulationParams(DimParams::DimensionalParams;
+    backend=CPU(),
     shots=1,
     nsteps=1,
     δ=0.1f0,
@@ -104,7 +106,7 @@ function SimulationParams(DimParams::DimensionalParams;
     norm_vel = @SVector [normal_velocity[1],normal_velocity[2],normal_velocity[3]]
 
 
-    return SimulationParams{Int32,Float32}(shots,nsteps,δ,box_size,velocity,FilamentModel,initf,boundary_x,boundary_y,boundary_z,norm_vel,corea,ν_0,Γ,κ,dt)
+    return SimulationParams{Int32,Float32}(backend,shots,nsteps,δ,box_size,velocity,FilamentModel,initf,boundary_x,boundary_y,boundary_z,norm_vel,corea,ν_0,Γ,κ,dt)
 end
 
 

@@ -24,6 +24,7 @@ DimParams = SuperVFM.DimensionalParams(;
 
 ### Set the simulation parameters
 PARAMS = SimulationParams(DimParams;
+    backend=CPU(),
     shots=1,
     nsteps=100,
     δ=0.05f0,
@@ -45,41 +46,41 @@ open("parameterVF.txt","w") do io
     show(io,PARAMS)
 end
 
-@time f, tt = Run(gpu(), PARAMS);
+@time f, tt = Run(PARAMS);
 
-if make_plot    
-    let it = 1
-        plot_title = @sprintf "t = %4.2f" tt[it]
-        scatter(Tuple.(f[it]),
-            xlim=(-π, π), xlabel="x",
-            ylim=(-π, π), ylabel="y",
-            zlim=(-π, π), zlabel="z",
-            markerstrokewidth=0,
-            markersize=2,
-            linewidth=3,
-            title=plot_title,
-            label=nothing)
-    end
-end
+# if make_plot    
+#     let it = 1
+#         plot_title = @sprintf "t = %4.2f" tt[it]
+#         scatter(Tuple.(f[it]),
+#             xlim=(-π, π), xlabel="x",
+#             ylim=(-π, π), ylabel="y",
+#             zlim=(-π, π), zlabel="z",
+#             markerstrokewidth=0,
+#             markersize=2,
+#             linewidth=3,
+#             title=plot_title,
+#             label=nothing)
+#     end
+# end
 
-if make_animation
-    anim = @animate for it in eachindex(f)
-        plot_title = @sprintf "t = %4.2f" tt[it]
-        plt = scatter(Tuple.(f[it]),
-            xlim=(-π, π), xlabel="x",
-            ylim=(-π, π), ylabel="y",
-            zlim=(-π, π), zlabel="z",
-            markerstrokewidth=0.1,
-            markersize=2,
-            # linewidth=3,
-            label=nothing,
-            title=plot_title,
-            # camera=(0,90)
-        )
-        display(plt)
-    end
-    gif(anim, "animation.gif"; fps=30)
-end
+# if make_animation
+#     anim = @animate for it in eachindex(f)
+#         plot_title = @sprintf "t = %4.2f" tt[it]
+#         plt = scatter(Tuple.(f[it]),
+#             xlim=(-π, π), xlabel="x",
+#             ylim=(-π, π), ylabel="y",
+#             zlim=(-π, π), zlabel="z",
+#             markerstrokewidth=0.1,
+#             markersize=2,
+#             # linewidth=3,
+#             label=nothing,
+#             title=plot_title,
+#             # camera=(0,90)
+#         )
+#         display(plt)
+#     end
+#     gif(anim, "animation.gif"; fps=30)
+# end
 
 
 

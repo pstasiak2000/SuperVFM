@@ -1,5 +1,6 @@
                            SIMULATION PARAMETERS                                   
 ------------------------------------------------------------------------------------
+|x                     backend = CPU(false)
 |○                       shots =  1
 |○                      nsteps = 100
 |□                           δ = 0.05
@@ -11,7 +12,7 @@
 |△                  boundary_y = PeriodicBoundary{Int32}(2)
 |△                  boundary_z = PeriodicBoundary{Int32}(3)
 |□             normal_velocity = Float32[0.0, 0.0, 0.0]
-|□                       corea = 6.2831855e-6
+|□                       corea = 6.283185e-7
 |□                         ν_0 = 0.04
 |□                           Γ = 4.5172167
 |□                           κ = 0.18068866

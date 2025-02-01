@@ -23,30 +23,30 @@ function print_banner()
     println("--------------------------------------------------------")
 end
 
-function print_GPU_info()
-    device = CUDA.device()  # Get the current GPU device
+# function print_GPU_info()
+#     device = CUDA.device()  # Get the current GPU device
 
-    # Access properties
-    device_name = CUDA.name(device)
-    num_multiprocessors = CUDA.attribute(device, CUDA.DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT)
-    max_threads_per_mp = CUDA.attribute(device, CUDA.DEVICE_ATTRIBUTE_MAX_THREADS_PER_MULTIPROCESSOR)
-    max_threads_per_block = CUDA.attribute(device, CUDA.DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK)
-    warp_size = CUDA.attribute(device, CUDA.DEVICE_ATTRIBUTE_WARP_SIZE)
-    println("========================================================")
-    printstyled("                   GPU Device info                      \n", bold=:true)
-    println("========================================================")
-    print("Device Name: ")
-    printstyled("$device_name\n", color=:blue, bold=:true)
-    print("Total Multiprocessors: ")
-    printstyled("$num_multiprocessors\n", color=:blue, bold=:true)
-    print("Maximum Threads per Multiprocessor: ")
-    printstyled("$max_threads_per_mp\n", color=:blue, bold=:true)
-    print("Maximum Threads per Block: ")
-    printstyled("$max_threads_per_block\n", color=:blue, bold=:true)
-    print("Warp Size: ")
-    printstyled("$warp_size\n", color=:blue, bold=:true)
-    println("========================================================")
-end
+#     # Access properties
+#     device_name = CUDA.name(device)
+#     num_multiprocessors = CUDA.attribute(device, CUDA.DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT)
+#     max_threads_per_mp = CUDA.attribute(device, CUDA.DEVICE_ATTRIBUTE_MAX_THREADS_PER_MULTIPROCESSOR)
+#     max_threads_per_block = CUDA.attribute(device, CUDA.DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK)
+#     warp_size = CUDA.attribute(device, CUDA.DEVICE_ATTRIBUTE_WARP_SIZE)
+#     println("========================================================")
+#     printstyled("                   GPU Device info                      \n", bold=:true)
+#     println("========================================================")
+#     print("Device Name: ")
+#     printstyled("$device_name\n", color=:blue, bold=:true)
+#     print("Total Multiprocessors: ")
+#     printstyled("$num_multiprocessors\n", color=:blue, bold=:true)
+#     print("Maximum Threads per Multiprocessor: ")
+#     printstyled("$max_threads_per_mp\n", color=:blue, bold=:true)
+#     print("Maximum Threads per Block: ")
+#     printstyled("$max_threads_per_block\n", color=:blue, bold=:true)
+#     print("Warp Size: ")
+#     printstyled("$warp_size\n", color=:blue, bold=:true)
+#     println("========================================================")
+# end
 
 function print_boundary_info(boundary_x, boundary_y, boundary_z)
     println("========================================================")

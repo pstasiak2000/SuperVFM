@@ -33,5 +33,4 @@ function print_info(f, ghosti, ghostb, u, Empty, SimParams, pcount, it)
             curv_str * "     " *
             removed_str
     )
-
 end

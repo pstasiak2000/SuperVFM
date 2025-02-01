@@ -39,7 +39,6 @@ include("VF_misc.jl")
 function Run(SP::SimulationParams{S,T}) where {S,T}
     print_banner(SP)
     print_boundary_info(SP)
-        
     print_filamentmodel_info(SP.IO, SP.FilamentModel)
 
     
@@ -52,7 +51,7 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
     u_loc = allocate(SP.backend, SVector{3,T}, pcount)
     u_sup = allocate(SP.backend, SVector{3,T}, pcount)
 
-    compute_velocity!(u_loc, u_sup, SP.velocity; f, fint, pcount, SP)
+    compute_velocity!(u_loc, u_sup, SP.velocity, SP; f, fint, pcount)
     return f, nothing
 end
 

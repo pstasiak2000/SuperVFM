@@ -9,8 +9,8 @@ make_animation = false
 make_plot = false
 
 ### Set the device
-dev = CPU();
-# using CUDA; dev = CUDABackend()
+# dev = CPU();
+using CUDA; dev = CUDABackend()
 
 ### Set the precision (for GPU it is highly recommended to use single precision)
 IntPrec = Int32;

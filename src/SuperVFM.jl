@@ -8,6 +8,7 @@ using LinearAlgebra
 using Interpolations
 using Unitful
 using DelimitedFiles
+using PrecompileTools
 import Printf: @sprintf
 
 export Run
@@ -20,7 +21,6 @@ const ZeroVector = SVector{3,Float32}(0.0f0,0.0f0,0.0f0) #Zero vector
 const e_x = SVector{3,Float32}(1.0f0,0.0f0,0.0f0) #unit vector in the x direction
 const e_y = SVector{3,Float32}(0.0f0,1.0f0,0.0f0) #unit vector in the y direction
 const e_z = SVector{3,Float32}(0.0f0,0.0f0,1.0f0) #unit vector in the z direction
-
 
 
 include("VF_cdata.jl")
@@ -128,6 +128,6 @@ end
 # end
 
 
-
+include("precompile.jl")
 
 end # module VortexFilament

@@ -83,12 +83,12 @@ function SimulationParams{S,T}(DimParams::DimensionalParams;
     nsteps=1,
     δ=0.1f0,
     box_size=(2π,2π,2π),
-    velocity=nothing,
+    velocity=LIA(),
     FilamentModel=ZeroTemperature(),
     initf=SingleLine(),
-    boundary_x=nothing, #open boundary conditions unless specified
-    boundary_y=nothing, #open boundary conditions unless specified
-    boundary_z=nothing, #open boundary conditions unless specified
+    boundary_x=PeriodicBoundary(1), #Periodic boundary conditions unless specified
+    boundary_y=PeriodicBoundary(2), #Periodic boundary conditions unless specified
+    boundary_z=PeriodicBoundary(3), #Periodic boundary conditions unless specified
     normal_velocity=[0.0f0,0.0f0,0.0f0],
     ν_0=0.04f0,
     dt=0.1f0

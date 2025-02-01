@@ -16,13 +16,13 @@ end
 
 function printVortexBanner(initf::SingleHelix,SP::SimulationParams)
     local k = Int32(1/initf.b_KW)
-    println("--------------------------------------------------------")
-    println("----------- Initialising single helix  -----------------")
-    println("--------------------------------------------------------")
-    println("Changing size of pcount to fit with box_length and δ "   )
-    println("-> Amplitude of wave: A/2π=$(initf.A_KW)")
-    println("-> Wavenumber k=$(k)")
-    println("-> δ=$(SP.δ)         ")
+    println(SP.IO,"--------------------------------------------------------")
+    println(SP.IO,"----------- Initialising single helix  -----------------")
+    println(SP.IO,"--------------------------------------------------------")
+    println(SP.IO,"Changing size of pcount to fit with box_length and δ "   )
+    println(SP.IO,"-> Amplitude of wave: A/2π=$(initf.A_KW)")
+    println(SP.IO,"-> Wavenumber k=$(k)")
+    println(SP.IO,"-> δ=$(SP.δ)         ")
 end
 
 

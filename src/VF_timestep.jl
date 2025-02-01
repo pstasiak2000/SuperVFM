@@ -9,7 +9,7 @@ export SchwarzModel
 struct ZeroTemperature <: FilamentModel end
 Adapt.@adapt_structure ZeroTemperature
 
-print_filamentmodel_info(::ZeroTemperature) = print("Using the "), printstyled("zero temperature model\n\n", bold=:true, color=:yellow)
+print_filamentmodel_info(io::IO,::ZeroTemperature) = print(io,"Using the "), printstyled(io,"zero temperature model\n\n", bold=:true, color=:yellow)
 
 
 
@@ -32,7 +32,7 @@ end
 Adapt.@adapt_structure SchwarzModel
 SchwarzModel(α1::AbstractFloat,α2::AbstractFloat) = SchwarzModel{Float32}(α1,α2)
 
-print_filamentmodel_info(FM::SchwarzModel) = print("Using the "), printstyled("Schwarz model with α=$(FM.α1) and α'=$(FM.α2)\n\n", bold=:true, color=:yellow)
+print_filamentmodel_info(io::IO, FM::SchwarzModel) = print(io, "Using the "), printstyled(io, "Schwarz model with α=$(FM.α1) and α'=$(FM.α2)\n\n", bold=:true, color=:yellow)
 
 
 # function (FM::SchwarzModel)(f, ghosti, ghostb, u_sup, normal_velocity, Empty::Bool)

@@ -1,6 +1,6 @@
                            SIMULATION PARAMETERS                                   
 ------------------------------------------------------------------------------------
-|x                     backend = CPU(false)
+|x                     backend = CUDABackend(false, false)
 |x             workergroupsize = 64
 |○                       shots =  1
 |○                      nsteps = 100
@@ -18,6 +18,7 @@
 |□                           Γ = 4.5172167
 |□                           κ = 0.18068866
 |□                          dt = 1.0e-5
+|x                          IO = Base.TTY(RawFD(17) open, 0 bytes waiting)
 ------------------------------------------------------------------------------------
 Key:
    ○ Int32   / Vector{Int32}   / Tuple{Int32}

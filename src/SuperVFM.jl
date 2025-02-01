@@ -12,15 +12,18 @@ using PrecompileTools
 import Printf: @sprintf
 
 export Run
+
 export CPU
+s = @doc(KernelAbstractions.CPU)
+@doc s.text[1] KernelAbstractions.CPU
 
 const eps32 = eps(0.0f0) #Machine epsilon of 0.0 in 32 bits
 const ZeroVector = SVector{3,Float32}(0.0f0,0.0f0,0.0f0) #Zero vector
 
 #Unit vectors to avoid constant definitions in the code
-const e_x = SVector{3,Float32}(1.0f0,0.0f0,0.0f0) #unit vector in the x direction
-const e_y = SVector{3,Float32}(0.0f0,1.0f0,0.0f0) #unit vector in the y direction
-const e_z = SVector{3,Float32}(0.0f0,0.0f0,1.0f0) #unit vector in the z direction
+# const e_x = SVector{3,Float32}(1.0f0,0.0f0,0.0f0) #unit vector in the x direction
+# const e_y = SVector{3,Float32}(0.0f0,1.0f0,0.0f0) #unit vector in the y direction
+# const e_z = SVector{3,Float32}(0.0f0,0.0f0,1.0f0) #unit vector in the z direction
 
 
 include("VF_cdata.jl")
@@ -33,20 +36,23 @@ include("VF_output.jl")
 include("VF_misc.jl")
 
 
-function Run(SP::SimulationParams)
-    print_banner()
-    print_boundary_info(
-        SP.boundary_x,
-        SP.boundary_y,
-        SP.boundary_z)
+function Run(SP::SimulationParams{S,T}) where {S,T}
+    print_banner(SP)
+    print_boundary_info(SP)
+        
+    print_filamentmodel_info(SP.IO, SP.FilamentModel)
+
     
-        print_filamentmodel_info(SP.FilamentModel)
-     @assert check_timestep(SP) "Timestep is too large dt=$(SP.dt)"
-     printstyled("Timestep check passed!\n", bold=:true, color=:green)
+    @assert check_timestep(SP) "Timestep is too large dt=$(SP.dt)"
+
+    printstyled(SP.IO,"Timestep check passed!\n", bold=:true, color=:green)
 
     f, fint, pcount = initialiseVortex(SP)
 
-    ghosti, ghostb = ghostp(f, fint, pcount, SP)
+    u_loc = allocate(SP.backend, SVector{3,T}, pcount)
+    u_sup = allocate(SP.backend, SVector{3,T}, pcount)
+
+    compute_velocity!(u_loc, u_sup, SP.velocity; f, fint, pcount, SP)
     return f, nothing
 end
 

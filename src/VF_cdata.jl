@@ -73,6 +73,7 @@ struct SimulationParams{A,B}
     Γ::B
     κ::B
     dt::B
+    IO::IO
 end
 Adapt.@adapt_structure SimulationParams
 
@@ -91,7 +92,8 @@ function SimulationParams{S,T}(DimParams::DimensionalParams;
     boundary_z=PeriodicBoundary(3), #Periodic boundary conditions unless specified
     normal_velocity=[0.0f0,0.0f0,0.0f0],
     ν_0=0.04f0,
-    dt=0.1f0
+    dt=0.001f0,
+    IO=stdout
     ) where {S,T}
     #Compute the non-dimensional paramater Γ
     Γ = SuperVFM.κ / DimParams.ν_n
@@ -108,7 +110,7 @@ function SimulationParams{S,T}(DimParams::DimensionalParams;
     norm_vel = @SVector [normal_velocity[1],normal_velocity[2],normal_velocity[3]]
 
 
-    return SimulationParams{S,T}(backend,workergroupsize,shots,nsteps,δ,box_size,velocity,FilamentModel,initf,boundary_x,boundary_y,boundary_z,norm_vel,corea,ν_0,Γ,κ,dt)
+    return SimulationParams{S,T}(backend,workergroupsize,shots,nsteps,δ,box_size,velocity,FilamentModel,initf,boundary_x,boundary_y,boundary_z,norm_vel,corea,ν_0,Γ,κ,dt,IO)
 end
 
 ### Obtain the precision of simulation parameters

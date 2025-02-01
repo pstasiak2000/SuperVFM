@@ -28,8 +28,8 @@ The maximum timestep is given by
 """
 function check_timestep(SP::SimulationParams)
     dt = SP.dt
-    println("Performing  timestep check...")
+    println(SP.IO,"Performing  timestep check...")
     dt_max = ((SP.δ/2.0f0)^2)/(SP.κ * log10(SP.δ/(Float32(2π) * SP.corea)))
-    @info "Max timestep is $dt_max"
+    printstyled(SP.IO,"Max timestep is $dt_max \n", color=:blue)
     return dt < dt_max
 end

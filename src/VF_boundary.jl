@@ -55,7 +55,7 @@ Example usage:
 """
 OpenBoundary(dim::Int) = OpenBoundary{Int32}(dim)
 
-function print_boundary(BC::Boundary) where {Boundary<:BoundaryType}
+function print_boundary(io::IO, BC::OpenBoundary)
     if BC.dim == 1
         ax = "x"
     end
@@ -65,14 +65,12 @@ function print_boundary(BC::Boundary) where {Boundary<:BoundaryType}
     if BC.dim == 3
         ax = "z"
     end
-    print_BC(ax, BC)
+    print(io, "boundary_$ax: "); 
+    printstyled(io, "open\n", color=:blue);
     return nothing
 end
 
-print_BC(ax::AbstractString, ::OpenBoundary) = print("boundary_$ax: ");
-printstyled("open\n", color=:blue);
-
-function print_boundary(BC::PeriodicBoundary)
+function print_boundary(io::IO, BC::PeriodicBoundary)
     if BC.dim == 1
         ax = "x"
     end
@@ -82,13 +80,19 @@ function print_boundary(BC::PeriodicBoundary)
     if BC.dim == 3
         ax = "z"
     end
-    print("boundary_$ax: ")
-    printstyled("periodic\n", color=:blue)
+    print(io, "boundary_$ax: ")
+    printstyled(io, "periodic\n", color=:blue)
     return nothing
 end
 
 
 #######################################################################
+
+""" 
+    ghostp(f, fint, pcount, SP::SimulationParams{S,T}) where {S,T}
+
+Compute ghost points.
+"""
 function ghostp(f, fint, pcount, SP::SimulationParams{S,T}) where {S,T}
     ghosti = allocate(SP.backend, SVector{3,T}, pcount)
     ghostb = allocate(SP.backend, SVector{3,T}, pcount)
@@ -98,6 +102,22 @@ function ghostp(f, fint, pcount, SP::SimulationParams{S,T}) where {S,T}
     return ghosti, ghostb
 end
 
+"""
+     ghostp!(ghosti, ghostb; kwargs...)
+
+In place variant of `ghostp`.
+"""
+function ghostp!(ghosti, ghostb; kwargs...)
+    f, fint, pcount, SP = (;kwargs...)
+    kernel = ghostp_kernel!(SP.backend, SP.workergroupsize)
+    kernel(ghosti, ghostb, f, fint, SP.box_size, ndrange=pcount)
+end
+
+"""
+    ghostp_kernel!(ghosti, ghostb, f, fint, box_size)
+
+Kernel for computation of ghost points.
+"""
 @kernel function ghostp_kernel!(ghosti, ghostb, f, fint, box_size)
     Idx = @index(Global, Linear)
     if fint[1, Idx] == 0
@@ -155,52 +175,6 @@ end
         ghostb[Idx] -= box_size[c] * e_z
     end
 end
-
-
-
-
-# function ghostp!(ghosti,ghostb,f,fint,pcount,box_size; nthreads=1, nblocks=1)
-#     Id = CuArray([#Defines the identity matrix as three static arrays
-#         SVector{3,Float32}(1,0,0),
-#         SVector{3,Float32}(0,1,0),
-#         SVector{3,Float32}(0,0,1)
-#     ])
-#     CUDA.@sync begin
-#         @cuda threads=nthreads blocks=nblocks ghostp_Kernel!(ghosti,ghostb,f,fint,pcount,box_size,Id)
-#     end
-#     return nothing
-# end
-
-# # #Computes the ghost points infront and behind
-# function ghostp_Kernel!(ghosti,ghostb,f,fint,pcount,box_size,Id)
-#     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
-#     stride = gridDim().x * blockDim().x
-#     for Idx ∈ index:stride:pcount 
-#         # #Ghost point infront - 11 is infront
-#         ghosti[Idx] = f[fint[1,Idx]]
-
-#         # #Ghost point behind - 12 is behind
-#         ghostb[Idx] = f[fint[2,Idx]]
-
-#         #Periodic fixing for static arrays
-#         for c ∈ 1:3
-#             #Wrapping the points infront
-#             if sum((f[Idx] - ghosti[Idx]) .* Id[c])  > box_size[c]/2
-#                 ghosti[Idx] += box_size[c] * Id[c]
-#             elseif sum((f[Idx] - ghosti[Idx]).* Id[c])  < -box_size[c]/2
-#                 ghosti[Idx] -= box_size[c] * Id[c]
-#             end
-
-#             #Wrapping the points behind
-#             if sum((f[Idx] - ghostb[Idx]) .* Id[c])  > box_size[c]/2
-#                 ghostb[Idx] += box_size[c] * Id[c]
-#             elseif sum((f[Idx] - ghostb[Idx]).* Id[c])  < -box_size[c]/2
-#                 ghostb[Idx] -= box_size[c] * Id[c]
-#             end
-#         end
-#     end
-#     return nothing
-# end
 
 
 # #######################################################################

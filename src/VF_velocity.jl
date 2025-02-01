@@ -1,6 +1,15 @@
 export LIA
 struct LIA <: VelocityMode end
-# Adapt.@adapt_structure LIA
+Adapt.@adapt_structure LIA
+
+
+
+function compute_velocity!(u_loc, u_sup, ::LIA; kwargs...)
+    f, fint, pcount, SP = (; kwargs...)
+    ghosti, ghostb = ghostp(f, fint, pcount, SP)
+
+    return nothing
+end
 
 
 # #Don't compute anything if type is set to nothing

@@ -11,11 +11,11 @@ function getInitpcount(::SingleLine, SP::SimulationParams{S,T}) where {S,T}
 end
 
 function printVortexBanner(::SingleLine,SP::SimulationParams)
-    println("--------------------------------------------------------")
-    println("----------- Initialising straight line vortex ----------")
-    println("--------------------------------------------------------")
-    println("   Changing size of pcount to fit with box_length and δ ")
-    println("-> δ=$(SP.δ)                                            ")
+    println(SP.IO,"--------------------------------------------------------")
+    println(SP.IO,"----------- Initialising straight line vortex ----------")
+    println(SP.IO,"--------------------------------------------------------")
+    println(SP.IO,"   Changing size of pcount to fit with box_length and δ ")
+    println(SP.IO,"-> δ=$(SP.δ)                                            ")
 end
 
 

@@ -1,7 +1,7 @@
 export print_characteristics
 export GetSchwarzTempCoeffs
 
-function print_banner()
+function print_banner(SP::SimulationParams)
     ### Gets the system independent username to print
     function get_username()
         varnames = ["LOGNAME", "USER", "LNAME",  "USERNAME"]
@@ -16,20 +16,20 @@ function print_banner()
     date = now()              #Get the current date and time
     docsite = raw"https://pstasiak2000.github.io/SuperVFM/stable/"
 
-    printstyled("                                             \n", bold=:true, color=:blue)
-    printstyled("        _   _     __     __         _        \n", bold=:true, color=:blue)
-    printstyled("       | \\ | |_   \\ \\   / /__  _ __| |_   \n", bold=:true, color=:blue)
-    printstyled("       |  \\| | | | \\ \\ / / _ \\| '__| __| \n", bold=:true, color=:blue)
-    printstyled("       | |\\  | |_| |\\ V / (_) | |  | |_    \n", bold=:true, color=:blue)
-    printstyled("       |_| \\_|\\__,_| \\_/ \\___/|_|   \\__|\n", bold=:true, color=:blue)
-    printstyled("                                             \n", bold=:true, color=:blue)
-    printstyled("                                             \n", bold=:true, color=:blue)
+    printstyled(SP.IO,"                                             \n", bold=:true, color=:blue)
+    printstyled(SP.IO,"        _   _     __     __         _        \n", bold=:true, color=:blue)
+    printstyled(SP.IO,"       | \\ | |_   \\ \\   / /__  _ __| |_   \n", bold=:true, color=:blue)
+    printstyled(SP.IO,"       |  \\| | | | \\ \\ / / _ \\| '__| __| \n", bold=:true, color=:blue)
+    printstyled(SP.IO,"       | |\\  | |_| |\\ V / (_) | |  | |_    \n", bold=:true, color=:blue)
+    printstyled(SP.IO,"       |_| \\_|\\__,_| \\_/ \\___/|_|   \\__|\n", bold=:true, color=:blue)
+    printstyled(SP.IO,"                                             \n", bold=:true, color=:blue)
+    printstyled(SP.IO,"                                             \n", bold=:true, color=:blue)
 
-    println("user info:  $(username)@$(hostname)")
-    println("Launched on $(Dates.day(date))/$(Dates.month(date))/$(Dates.year(date)) @ $(Dates.Time(date))")
-    print("Documentation available at: ")
-    printstyled(docsite * "\n", underline=:true)
-    println("--------------------------------------------------------")
+    println(SP.IO,"user info:  $(username)@$(hostname)")
+    println(SP.IO,"Launched on $(Dates.day(date))/$(Dates.month(date))/$(Dates.year(date)) @ $(Dates.Time(date))")
+    print(SP.IO,"Documentation available at: ")
+    printstyled(SP.IO,docsite * "\n", underline=:true)
+    println(SP.IO,"--------------------------------------------------------")
 end
 
 # function print_GPU_info()
@@ -57,14 +57,14 @@ end
 #     println("========================================================")
 # end
 
-function print_boundary_info(boundary_x, boundary_y, boundary_z)
-    println("========================================================")
-    printstyled("                 Boundary Information                   \n", bold=:true)
-    println("========================================================")
-    print_boundary(boundary_x)
-    print_boundary(boundary_y)
-    print_boundary(boundary_z)
-    println("========================================================")
+function print_boundary_info(SP::SimulationParams)
+    println(SP.IO,"========================================================")
+    printstyled(SP.IO,"                 Boundary Information                   \n", bold=:true)
+    println(SP.IO,"========================================================")
+    print_boundary(SP.IO, SP.boundary_x)
+    print_boundary(SP.IO, SP.boundary_y)
+    print_boundary(SP.IO, SP.boundary_z)
+    println(SP.IO,"========================================================")
 end
 
 

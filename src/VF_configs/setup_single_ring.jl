@@ -11,12 +11,12 @@ function getInitpcount(initf::SingleRing, SP::SimulationParams{S,T}) where {S,T}
 end
 
 function printVortexBanner(initf::SingleRing,SP::SimulationParams)
-    println("--------------------------------------------------------")
-    println("------------- Initialising vortex ring  --------0-------")
-    println("--------------------------------------------------------")
-    println("Changing size of pcount to fit with box_length and δ    ")
-    println("-> Radius of ring: R=$(initf.Radius)")
-    println("-> δ=$(SP.δ)                                            ")
+    println(SP.IO,"--------------------------------------------------------")
+    println(SP.IO,"------------- Initialising vortex ring  ----------------")
+    println(SP.IO,"--------------------------------------------------------")
+    println(SP.IO,"Changing size of pcount to fit with box_length and δ    ")
+    println(SP.IO,"-> Radius of ring: R=$(initf.Radius)")
+    println(SP.IO,"-> δ=$(SP.δ)                                            ")
 end
 
 """

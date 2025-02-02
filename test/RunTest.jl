@@ -34,19 +34,18 @@ PARAMS = SimulationParams{IntPrec,FloatPrec}(DimParams;
     backend=dev,
     shots=100,
     nsteps=10000,
-    δ=0.005f0,
+    δ=0.05f0,
     box_size=(2π, 2π, 2π),
     velocity=LIA(),
-    FilamentModel=SchwarzModel(α[1], α[2]),
-    # FilamentModel=ZeroTemperature(),
+    # FilamentModel=SchwarzModel(α[1], α[2]),
+    FilamentModel=ZeroTemperature(),
     initf=IC,
     boundary_x=PeriodicBoundary(1),
     boundary_y=PeriodicBoundary(2),
     boundary_z=PeriodicBoundary(3),
     normal_velocity=[0.0, 0.0, 0.0],
     ν_0=0.04,
-    dt=1e-6,
-    IO=IOBuffer()
+    dt=1e-4,
 )
 
 ### Save parameters to file
@@ -54,7 +53,7 @@ PARAMS = SimulationParams{IntPrec,FloatPrec}(DimParams;
 #     show(io,PARAMS)
 # end
 
-@time Run(PARAMS);
+@time f, tt = Run(PARAMS);
 
 # if make_plot    
 #     let it = 1

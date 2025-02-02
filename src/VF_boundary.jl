@@ -176,7 +176,43 @@ end
 
 # #######################################################################
 
+"""
+    enforce_boundary!(f, boundary_x::PeriodicBoundary, boundary_y::PeriodicBoundary, boundary_z::PeriodicBoundary; kwargs...)
 
+Enforces periodic boundary conditions across all 3 dimensions.
+"""
+function enforce_boundary!(f, boundary_x::PeriodicBoundary, boundary_y::PeriodicBoundary, boundary_z::PeriodicBoundary; kwargs...)
+    (; f_infront, pcount, SP) = (; kwargs...)
+    kernel! = all_periodic_enforce_kernel!(SP.backend, SP.workergroupsize)
+    kernel!(f, f_infront, ndrange=pcount)
+    return nothing
+end
+
+"""
+    all_periodic_enforce_kernel!(f, f_infront)
+
+Launch kernel to enforce periodic boundary conditions in all dimensions.
+"""
+@kernel function all_periodic_enforce_kernel!(f, f_infront)
+    I = @index(Global, Linear)
+    if f_infront[I] != 0
+        if norm(f[I] .* e_x) > π
+            f -= 2π * e_x
+        elseif norm(f[I] .* e_x) < -π
+            f += 2π * e_x
+        end
+    end
+end
+
+
+"""
+    enforce_boundary!(f, boundary_x::OpenBoundary, boundary_y::OpenBoundary, boundary_z::OpenBoundary; kwargs...)
+
+Enforces open boundary conditions across all 3 dimensions.
+"""
+function enforce_boundary!(f, boundary_x::OpenBoundary, boundary_y::OpenBoundary, boundary_z::OpenBoundary; kwargs...)
+    return nothing
+end
 # function boundary(f, ::Val{1})
 #     s = SVector{3,Float32}(2π,0,0)
 #     if norm(f.*e_x) > π

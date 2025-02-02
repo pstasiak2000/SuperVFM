@@ -21,9 +21,9 @@ const eps32 = eps(0.0f0) #Machine epsilon of 0.0 in 32 bits
 const ZeroVector = SVector{3,Float32}(0.0f0,0.0f0,0.0f0) #Zero vector
 
 #Unit vectors to avoid constant definitions in the code
-# const e_x = SVector{3,Float32}(1.0f0,0.0f0,0.0f0) #unit vector in the x direction
-# const e_y = SVector{3,Float32}(0.0f0,1.0f0,0.0f0) #unit vector in the y direction
-# const e_z = SVector{3,Float32}(0.0f0,0.0f0,1.0f0) #unit vector in the z direction
+const e_x = SVector{3,Float32}(1.0f0,0.0f0,0.0f0) #unit vector in the x direction
+const e_y = SVector{3,Float32}(0.0f0,1.0f0,0.0f0) #unit vector in the y direction
+const e_z = SVector{3,Float32}(0.0f0,0.0f0,1.0f0) #unit vector in the z direction
 
 
 include("VF_cdata.jl")
@@ -74,8 +74,9 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
         timestep!(f, u, u1, u2, f_infront, pcount, SP)
         t += SP.dt
 
-        ### NEED TO IMPLEMENT BOUNDARY FORCING
+        enforce_boundary!(f, SP.boundary_x, SP.boundary_y, SP.boundary_z; f_infront, pcount, SP)
 
+        ### NEED TO IMPLEMENT BOUNDARY FORCING
         if mod(it, SP.shots) == 0
             print_info(u, f, f_infront, f_behind, pcount, SP, it)
             itC += 1

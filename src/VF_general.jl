@@ -23,6 +23,29 @@ function KernelAbstractions.zeros(BE::Backend,::Type{SVector{S,T}},N::Int64) whe
     return arr
 end
 
+"""
+    get_Δξ(f, ghosti, f_infront, pcount, SP::SimulationParams{S,T}) where {S,T}
+
+Compute the seperation distance ``\\Delta\\xi`` between each filament.
+"""
+function get_Δξ(f, ghosti, f_infront, pcount, SP::SimulationParams{S,T}) where {S,T}
+    Δξ = allocate(SP.backend, T, pcount) 
+    kernel! = get_Δξ_kernel!(SP.backend, SP.workergroupsize)
+    kernel!(Δξ, f, ghosti, f_infront, ndrange=pcount)
+    return Δξ
+end
+
+"""
+    get_Δξ_kernel!(Δξ, f, ghosti, f_infront)
+
+Launch kernel to compute ``\\Delta\\xi``.
+"""
+@kernel function get_Δξ_kernel!(Δξ, f, ghosti, f_infront)
+    I = @index(Global, Linear)
+    if f_infront[I] != 0
+        Δξ[I] = norm(f[I]-ghosti[I])
+    end
+end
 
 """
     get_curvature!(curv; kwargs...)

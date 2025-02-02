@@ -7,7 +7,7 @@ make_animation = false
 make_plot = false
 
 #Vortex initial condition
-initf = SingleRing()
+initf = SingleRing(0.5)
 # IC = SingleRing(0.25)
 
 IntPrec = Int32

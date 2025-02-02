@@ -81,12 +81,24 @@ Kernel launch for the Schwarz model.
     end
 end
 
+
+"""
+    timestep!(f, u, u1, u2, f_infront, pcount, SP::SimulationParams)
+
+Perform a single timestep using the second order Adams-Bashforth method.
+"""
 function timestep!(f, u, u1, u2, f_infront, pcount, SP::SimulationParams)
     kernel! = timestep_kernel!(SP.backend, SP.workergroupsize)
     kernel!(f, u, u1, u2, f_infront, SP.dt, ndrange=pcount)
     return nothing
 end
 
+
+"""
+    timestep_kernel!(f, u, u1, u2, f_infront, dt)
+
+Kernel launch for timestep.
+"""
 @kernel function timestep_kernel!(f, u, u1, u2, f_infront, dt)
     Idx = @index(Global, Linear)
     if f_infront[Idx] != 0
@@ -101,17 +113,3 @@ end
         u1[Idx] = u[Idx]
     end
 end
-# #Employing the second order AB2 Scheme
-# function timestep(u, u1, u2, Empty::Bool)
-#     if Empty
-#         return ZeroVector
-#     else
-#         if(maximum(norm(u1) == 0.f0))
-#             return u
-#         elseif(maximum(norm(u2) == 0.f0))
-#             return (3.f0/2.0f0)*u - (0.5f0)*u1
-#         else
-#             return (23.f0/12.f0)*u - (4.f0/3.f0)*u1 + (5.0f0/12.0f0)*u2
-#         end
-#     end
-# end

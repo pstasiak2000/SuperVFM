@@ -12,7 +12,7 @@ function print_info(u, f, f_infront, f_behind, pcount, SP::SimulationParams{S,T}
     recon_str = @sprintf "%5i" 0
     wall_recon_str = @sprintf "%5i" 0
 
-    d = sum(norm.(f - ghosti))
+    d = sum(norm.(f - ghosti)) ### This should be re-written as a kernal call
     avg_d_str = @sprintf "%1.4f" d / (pcount * SP.δ)
     length_str = @sprintf "%9.6f" d
 

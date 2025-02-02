@@ -1,29 +1,38 @@
 export check_timestep
 
-"""
-    KA.zeros(BE::Backend,::Type{SVector{S,T}},dims::Tuple) where {S,T}
+# """
+#     KA.zeros(BE::Backend,::Type{SVector{S,T}},dims::Tuple) where {S,T}
 
-Initialise an array of static vectors of size `S` and type `T`
-"""
-KernelAbstractions.zeros(BE::Backend,::Type{SVector{3,T}},dims::Tuple) where {T} = T(0.0) * allocate(BE,SVector{3,T},dims)
+# Initialise an array of static vectors of size `S` and type `T`
+# """
+# KernelAbstractions.zeros(BE::Backend,::Type{SVector{3,T}},dims::Tuple) where {T} = T(0.0) * allocate(BE,SVector{3,T},dims)
 
 """
     KA.zeros(BE::Backend,::Type{SVector{S,T}},N::Int) where {S,T}
 
 Initialise an array of static vectors of size `S` and type `T`
 """
-function KernelAbstractions.zeros(BE::Backend,::Type{SVector{3,T}},N::Int64) where {T} 
-    arr = allocate(BE,SVector{3,T},N)
+function KernelAbstractions.zeros(BE::Backend,::Type{SVector{S,T}},N::Int64) where {S,T}
+    @kernel function zero_kernel!(arr)
+        Idx = @index(Global, Linear)
+        arr[Idx] = ZeroVector
+    end
+
+    arr = allocate(BE,SVector{S,T},N)
     zero_kernel!(BE,64)(arr,ndrange=N)
     return arr
 end
 
-@kernel function zero_kernel!(arr)
-    Idx = @index(Global, Linear)
-    arr[Idx] = ZeroVector
-end
 
+"""
+    get_curvature!(curv; kwargs...)
 
+Calculate the vortex line curvature ``\\zeta``.
+
+```math
+    \\zeta = |\\mathbf{s}''| = \\left|\\frac{d\\mathbf{s}}{d\\xi}\\right|
+```
+"""
 function get_curvature!(curv; kwargs...)
     (; f, f_infront, ghosti, ghostb, pcount, SP) = (; kwargs...)
 
@@ -32,6 +41,11 @@ function get_curvature!(curv; kwargs...)
     return nothing
 end
 
+"""
+    get_curvature_kernel!(curv, f, f_infront, ghosti, ghostb)
+
+Kernel launch for computing vortex line curvature.
+"""
 @kernel function get_curvature_kernel!(curv, f, f_infront, ghosti, ghostb)
     Idx = @index(Global, Linear)
     if f_infront[Idx] != 0 

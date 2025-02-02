@@ -7,39 +7,13 @@ make_animation = false
 make_plot = false
 
 #Vortex initial condition
-IC = SingleHelix(0.2, 0.2, 2π)
+initf = SingleRing()
 # IC = SingleRing(0.25)
 
+IntPrec = Int32
+FloatPrec = Float32
 
+DimParams = DimensionalParams()
+PARAMS = SimulationParams{IntPrec,FloatPrec}(DimParams; initf=initf, IO=IOBuffer())
 
-### Set the dimensional properties
-DimParams = SuperVFM.DimensionalParams()
-
-
-α = GetSchwarzTempCoeffs(ustrip(DimParams.T))
-
-### Set the simulation parameters
-PARAMS = SimulationParams(DimParams;
-    backend=CPU(),
-    shots=1,
-    nsteps=100,
-    δ=0.05f0,
-    box_size=(2π, 2π, 2π),
-    velocity=LIA(),
-    # FilamentModel=SchwarzModel(α[1], α[2]),
-    FilamentModel=ZeroTemperature(),
-    initf=IC,
-    boundary_x=PeriodicBoundary(1),
-    boundary_y=PeriodicBoundary(2),
-    boundary_z=PeriodicBoundary(3),
-    normal_velocity=[0.0, 0.0, 0.0],
-    ν_0=0.04,
-    dt=1e-4
-)
-
-### Save parameters to file
-# open("parameterVF.txt","w") do io
-#     show(io,PARAMS)
-# end
-
-@time f, tt = Run(PARAMS);
+Run(PARAMS)

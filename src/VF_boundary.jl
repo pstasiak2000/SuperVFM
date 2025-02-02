@@ -96,7 +96,7 @@ Compute ghost points.
 function ghostp(f, f_infront, f_behind, pcount, SP::SimulationParams{S,T}) where {S,T}
     ghosti = allocate(SP.backend, SVector{3,T}, pcount)
     ghostb = allocate(SP.backend, SVector{3,T}, pcount)
-
+    
     kernel = ghostp_kernel!(SP.backend, SP.workergroupsize)
     kernel(ghosti, ghostb, f, f_infront, f_behind, SP.box_size, ndrange=pcount)
     return ghosti, ghostb

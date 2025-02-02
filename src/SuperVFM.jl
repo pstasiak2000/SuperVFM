@@ -49,8 +49,15 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
 
     u_loc = allocate(SP.backend, SVector{3,T}, pcount)
     u_sup = allocate(SP.backend, SVector{3,T}, pcount)
+
+    u_mf = allocate(SP.backend, SVector{3,T}, pcount)
     u = allocate(SP.backend, SVector{3,T}, pcount)
 
+    ### Zero the initial velocities -- important!
+    u1 = KernelAbstractions.zeros(SP.backend, SVector{3,T}, pcount)
+    u2 = KernelAbstractions.zeros(SP.backend, SVector{3,T}, pcount)
+
+    
     ###  Initialise the time
     t = 0.0
 
@@ -61,9 +68,19 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
     print_info_header(SP.IO)
     for it ∈ 1:SP.nsteps
         
-        compute_filament_velocity!(u, u_loc, u_sup,SP.FilamentModel, SP;
-            f, f_infront, f_behind, pcount)
+        compute_filament_velocity!(u, u_mf, u_loc, u_sup,SP.FilamentModel, SP;
+            f, f_infront, f_behind, pcount, SP.normal_velocity)
 
+        timestep!(f, u, u1, u2, f_infront, pcount, SP)
+        t += SP.dt
+
+        ### NEED TO IMPLEMENT BOUNDARY FORCING
+
+        if mod(it, SP.shots) == 0
+            print_info(u, f, f_infront, f_behind, pcount, SP, it)
+            itC += 1
+            push!(tt,t)
+        end
     end
     return f, tt
 end

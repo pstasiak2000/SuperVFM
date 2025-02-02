@@ -3,25 +3,28 @@ function print_info_header(io::IO)
     return nothing
 end
 
-function print_info(f, ghosti, ghostb, u, Empty, SimParams, pcount, it)
-    itstr = @sprintf "%06d" div(it, SimParams.shots)
-    t = @sprintf "%10.7f" it * SimParams.dt
+function print_info(u, f, f_infront, f_behind, pcount, SP::SimulationParams{S,T}, it) where {S,T}
+    ghosti, ghostb = ghostp(f, f_infront, f_behind, pcount, SP) 
+
+    itstr = @sprintf "%06d" div(it, SP.shots)
+    t = @sprintf "%10.7f" it * SP.dt
     pcount_str = @sprintf "%5i" pcount
     recon_str = @sprintf "%5i" 0
     wall_recon_str = @sprintf "%5i" 0
 
     d = sum(norm.(f - ghosti))
-    avg_d_str = @sprintf "%1.4f" d / (pcount * SimParams.δ)
+    avg_d_str = @sprintf "%1.4f" d / (pcount * SP.δ)
     length_str = @sprintf "%9.6f" d
 
     u_max_str = @sprintf "%1.5f" maximum(norm.(u))
     du_max_str = @sprintf "%1.5f" 0.0f0
 
-    curv = norm.(get_deriv_2.(f, ghosti, ghostb, Empty))
+    curv = allocate(SP.backend,T,pcount)
+    get_curvature!(curv; f, f_infront, ghosti, ghostb, pcount, SP)
     curv_str = @sprintf "%3.2f" sum(curv) / pcount
 
     removed_str = @sprintf "%8i" 0
-    println(itstr * "   " *
+    println(SP.IO,itstr * "   " *
             t * "   " *
             pcount_str * "       " *
             recon_str * "       " *

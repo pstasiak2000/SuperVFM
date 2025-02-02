@@ -12,9 +12,32 @@ KernelAbstractions.zeros(BE::Backend,::Type{SVector{3,T}},dims::Tuple) where {T}
 
 Initialise an array of static vectors of size `S` and type `T`
 """
-KernelAbstractions.zeros(BE::Backend,::Type{SVector{3,T}},N::Int64) where {T} = T(0.0) * allocate(BE,SVector{3,T},N)
+function KernelAbstractions.zeros(BE::Backend,::Type{SVector{3,T}},N::Int64) where {T} 
+    arr = allocate(BE,SVector{3,T},N)
+    zero_kernel!(BE,64)(arr,ndrange=N)
+    return arr
+end
+
+@kernel function zero_kernel!(arr)
+    Idx = @index(Global, Linear)
+    arr[Idx] = ZeroVector
+end
 
 
+function get_curvature!(curv; kwargs...)
+    (; f, f_infront, ghosti, ghostb, pcount, SP) = (; kwargs...)
+
+    kernel! = get_curvature_kernel!(SP.backend,SP.workergroupsize)
+    kernel!(curv, f, f_infront, ghosti, ghostb, ndrange=pcount)
+    return nothing
+end
+
+@kernel function get_curvature_kernel!(curv, f, f_infront, ghosti, ghostb)
+    Idx = @index(Global, Linear)
+    if f_infront[Idx] != 0 
+        curv[Idx] = norm(get_deriv_2(f[Idx],ghosti[Idx], ghostb[Idx]))
+    end
+end
 
 """
     check_timestep(SP::SimulationParams)

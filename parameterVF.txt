@@ -2,12 +2,12 @@
 ------------------------------------------------------------------------------------
 |x                     backend = CPU(false)
 |x             workergroupsize = 64
-|○                       shots =  1
-|○                      nsteps = 100
+|○                       shots = 100
+|○                      nsteps = 10000
 |□                           δ = 0.01
 |□                    box_size = (6.2831855f0, 6.2831855f0, 6.2831855f0)
 |⋄                    velocity = LIA()
-|⋄               FilamentModel = ZeroTemperature()
+|⋄               FilamentModel = SchwarzModel{Float32}(0.206f0, 0.00834f0)
 |★                       initf = SingleRing{Float64}(0.5)
 |△                  boundary_x = PeriodicBoundary{Int32}(1)
 |△                  boundary_y = PeriodicBoundary{Int32}(2)
@@ -18,7 +18,7 @@
 |□                           Γ = 4.5172167
 |□                           κ = 0.18068866
 |□                          dt = 1.0e-5
-|x                          IO = Base.TTY(RawFD(17) open, 0 bytes waiting)
+|x                          IO = IOBuffer(data=UInt8[...], readable=true, writable=true, seekable=true, append=false, size=0, maxsize=Inf, ptr=1, mark=-1)
 ------------------------------------------------------------------------------------
 Key:
    ○ Int32   / Vector{Int32}   / Tuple{Int32}

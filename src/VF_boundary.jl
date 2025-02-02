@@ -196,10 +196,22 @@ Launch kernel to enforce periodic boundary conditions in all dimensions.
 @kernel function all_periodic_enforce_kernel!(f, f_infront)
     I = @index(Global, Linear)
     if f_infront[I] != 0
-        if norm(f[I] .* e_x) > π
-            f -= 2π * e_x
-        elseif norm(f[I] .* e_x) < -π
-            f += 2π * e_x
+        if f[I][1] > π
+            f[I] -= @SVector [2π,0,0]
+        elseif f[I][1] < -π
+            f[I] += @SVector [2π,0,0]
+        end
+
+        if f[I][2] > π
+            f[I] -= @SVector [0,2π,0]
+        elseif f[I][2] < -π
+            f[I] += @SVector [0,2π,0]
+        end
+        
+        if f[I][3] > π
+            f[I] -= @SVector [0,0,2π]
+        elseif f[I][3] < -π
+            f[I] += @SVector [0,0,2π]
         end
     end
 end

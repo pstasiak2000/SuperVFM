@@ -11,8 +11,18 @@ Adapt.@adapt_structure ZeroTemperature
 
 print_filamentmodel_info(io::IO,::ZeroTemperature) = print(io,"Using the "), printstyled(io,"zero temperature model\n\n", bold=:true, color=:yellow)
 
+function compute_filament_velocity!(u, u_loc, u_sup, ::ZeroTemperature,             SP::SimulationParams{S,T}; kwargs...) where {S,T}
+    f, f_infront, f_behind, pcount = (; kwargs...) 
 
+    ### Compute the ghost points
+    ghosti, ghostb = ghostp(f, f_infront, f_behind, pcount, SP)
 
+    ### Compute the superfluid velocity
+    compute_velocity!(u_loc, u_sup, SP.velocity, SP; f, f_infront, f_behind, pcount, ghosti, ghostb)
+
+    u .= u_sup
+    return nothing
+end
 # function (FM::ZeroTemperature)(f, ghosti, ghostb, u_sup, normal_velocity, Empty::Bool)
 #     if Empty
 #         return ZeroVector

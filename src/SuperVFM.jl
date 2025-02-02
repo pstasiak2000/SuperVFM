@@ -43,67 +43,34 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
 
     
     @assert check_timestep(SP) "Timestep is too large dt=$(SP.dt)"
-
     printstyled(SP.IO,"Timestep check passed!\n", bold=:true, color=:green)
 
-    f, fint, pcount = initialiseVortex(SP)
+    f, f_infront, f_behind, pcount = initialiseVortex(SP)
 
     u_loc = allocate(SP.backend, SVector{3,T}, pcount)
     u_sup = allocate(SP.backend, SVector{3,T}, pcount)
+    u = allocate(SP.backend, SVector{3,T}, pcount)
 
-    compute_velocity!(u_loc, u_sup, SP.velocity, SP; f, fint, pcount)
-    return f, nothing
+    ###  Initialise the time
+    t = 0.0
+
+    ### Initialise the time vector
+    tt = []; push!(tt, t);
+    itC = 0
+
+    print_info_header(SP.IO)
+    for it ∈ 1:SP.nsteps
+        
+        compute_filament_velocity!(u, u_loc, u_sup,SP.FilamentModel, SP;
+            f, f_infront, f_behind, pcount)
+
+    end
+    return f, tt
 end
-
-# function Run(::gpu,SimParams::SimulationParams)
-#     print_banner()
-#     print_GPU_info()
-#     print_boundary_info(
-#         SimParams.boundary_x,
-#         SimParams.boundary_y,
-#         SimParams.boundary_z)
-    
-#     print_filamentmodel_info(SimParams.FilamentModel)
-    
-#     #Check the timestep here
-#     @assert check_timestep(SimParams) "Timestep is too large dt=$(SimParams.dt)"
-#     printstyled("Timestep check passed!\n", bold=:true, color=:green)
-
-#     #Initialise the vortex arrays [VF_initial_condition.jl]
-#     f, fint, pcount, nthreads, nblocks = (SimParams.initf)(SimParams)
-#     f_curv = CUDA.zeros(Float32, pcount) #Vortex filament curvature
-
-#     u_loc = CUDA.fill(SVector{3,Float32}(0,0,0),pcount) #Local superfluid velocity
-#     u_sup = CUDA.fill(SVector{3,Float32}(0,0,0),pcount) #Total superfluid velocity
-
-#     u = CUDA.fill(SVector{3,Float32}(0,0,0),pcount) #Vortex velocity
-#     u1 = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)#Previous vortex velocity (AB2)
-#     u2 = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)#Previous vortex velocity (AB2)
-    
-#     #Determines the empty particles based on f_infront and stores them as a CUDA Boolean array. 
-#     Empty = vec(CUDA.reduce(+, fint, dims=1) .== 0)
-
-#     #The ghost particles infront and behind
-#     ghosti = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)
-#     ghostb = CUDA.fill(SVector{3,Float32}(0,0,0),pcount)
-
-#     normal_velocity = CUDA.fill(SimParams.normal_velocity, pcount)
-
-#     t = 0.0f0 #Simulation time
-    
-
-#     f_out = []
-#     tt = [t]
-#     push!(f_out,Array(f)) #Initial configuration
 
 #     itCount = 0
 #     print_info_header()
 #     for it ∈ 1:SimParams.nsteps
-
-#         #Find the right number of threads and blocks if pcount changes
-#         nthreads, nblocks = redefineThreads_Blocks(pcount)
-
-#         ghostp!(ghosti, ghostb, f, fint, pcount, SimParams.box_size; nthreads, nblocks)
         
 #         #Compute the superfluid velocity v_s
 #         @. u_loc = (SimParams.velocity)(f, ghosti, ghostb, Empty, SimParams.κ, SimParams.corea)

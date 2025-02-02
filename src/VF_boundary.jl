@@ -89,16 +89,16 @@ end
 #######################################################################
 
 """ 
-    ghostp(f, fint, pcount, SP::SimulationParams{S,T}) where {S,T}
+    ghostp(f, f_infront, f_behind, pcount, SP::SimulationParams{S,T}) where {S,T}
 
 Compute ghost points.
 """
-function ghostp(f, fint, pcount, SP::SimulationParams{S,T}) where {S,T}
+function ghostp(f, f_infront, f_behind, pcount, SP::SimulationParams{S,T}) where {S,T}
     ghosti = allocate(SP.backend, SVector{3,T}, pcount)
     ghostb = allocate(SP.backend, SVector{3,T}, pcount)
 
     kernel = ghostp_kernel!(SP.backend, SP.workergroupsize)
-    kernel(ghosti, ghostb, f, fint, SP.box_size, ndrange=pcount)
+    kernel(ghosti, ghostb, f, f_infront, f_behind, SP.box_size, ndrange=pcount)
     return ghosti, ghostb
 end
 
@@ -108,9 +108,9 @@ end
 In place variant of `ghostp`.
 """
 function ghostp!(ghosti, ghostb; kwargs...)
-    f, fint, pcount, SP = (;kwargs...)
+    f, f_infront, f_behind, pcount, SP = (;kwargs...)
     kernel = ghostp_kernel!(SP.backend, SP.workergroupsize)
-    kernel(ghosti, ghostb, f, fint, SP.box_size, ndrange=pcount)
+    kernel(ghosti, ghostb, f, f_infront, f_behind, SP.box_size, ndrange=pcount)
 end
 
 """
@@ -118,61 +118,58 @@ end
 
 Kernel for computation of ghost points.
 """
-@kernel function ghostp_kernel!(ghosti, ghostb, f, fint, box_size)
+@kernel function ghostp_kernel!(ghosti, ghostb, f, f_infront, f_behind, box_size)
     Idx = @index(Global, Linear)
-    if fint[1, Idx] == 0
-        ghosti[Idx] = ZeroVector
-        ghostb[Idx] = ZeroVector
-    else
-        ghosti[Idx] = f[fint[1, Idx]]
-        ghostb[Idx] = f[fint[2, Idx]]
-    end
+    if f_infront[Idx] != 0 #Ignore empty particles
+        ghosti[Idx] = f[f_infront[Idx]]
+        ghostb[Idx] = f[f_behind[Idx]]
 
 
-    e_x = SVector{3,eltype(box_size)}(1,0,0)
-    e_y = SVector{3,eltype(box_size)}(0,1,0)
-    e_z = SVector{3,eltype(box_size)}(0,0,1)
-    
-    ### x direction
-    c  = 1
-    if sum((f[Idx] - ghosti[Idx]) .* e_x) > box_size[c] / 2
-        ghosti[Idx] += box_size[c] * e_x
-    elseif sum((f[Idx] - ghosti[Idx]) .* e_x) < -box_size[c] / 2
-        ghosti[Idx] -= box_size[c] * e_x
-    end
+        e_x = SVector{3,eltype(box_size)}(1,0,0)
+        e_y = SVector{3,eltype(box_size)}(0,1,0)
+        e_z = SVector{3,eltype(box_size)}(0,0,1)
+        
+        ### x direction
+        c  = 1
+        if sum((f[Idx] - ghosti[Idx]) .* e_x) > box_size[c] / 2
+            ghosti[Idx] += box_size[c] * e_x
+        elseif sum((f[Idx] - ghosti[Idx]) .* e_x) < -box_size[c] / 2
+            ghosti[Idx] -= box_size[c] * e_x
+        end
 
-    if sum((f[Idx] - ghostb[Idx]) .* e_x) > box_size[c] / 2
-        ghostb[Idx] += box_size[c] * e_x
-    elseif sum((f[Idx] - ghostb[Idx]) .* e_x) < -box_size[c] / 2
-        ghostb[Idx] -= box_size[c] * e_x
-    end
+        if sum((f[Idx] - ghostb[Idx]) .* e_x) > box_size[c] / 2
+            ghostb[Idx] += box_size[c] * e_x
+        elseif sum((f[Idx] - ghostb[Idx]) .* e_x) < -box_size[c] / 2
+            ghostb[Idx] -= box_size[c] * e_x
+        end
 
-    ### y direction
-    c = 2
-    if sum((f[Idx] - ghosti[Idx]) .* e_y) > box_size[c] / 2
-        ghosti[Idx] += box_size[c] * e_y
-    elseif sum((f[Idx] - ghosti[Idx]) .* e_y) < -box_size[c] / 2
-        ghosti[Idx] -= box_size[c] * e_y
-    end
+        ### y direction
+        c = 2
+        if sum((f[Idx] - ghosti[Idx]) .* e_y) > box_size[c] / 2
+            ghosti[Idx] += box_size[c] * e_y
+        elseif sum((f[Idx] - ghosti[Idx]) .* e_y) < -box_size[c] / 2
+            ghosti[Idx] -= box_size[c] * e_y
+        end
 
-    if sum((f[Idx] - ghostb[Idx]) .* e_y) > box_size[c] / 2
-        ghostb[Idx] += box_size[c] * e_y
-    elseif sum((f[Idx] - ghostb[Idx]) .* e_y) < -box_size[c] / 2
-        ghostb[Idx] -= box_size[c] * e_y
-    end
+        if sum((f[Idx] - ghostb[Idx]) .* e_y) > box_size[c] / 2
+            ghostb[Idx] += box_size[c] * e_y
+        elseif sum((f[Idx] - ghostb[Idx]) .* e_y) < -box_size[c] / 2
+            ghostb[Idx] -= box_size[c] * e_y
+        end
 
-    ### z direction
-    c = 3
-    if sum((f[Idx] - ghosti[Idx]) .* e_z) > box_size[c] / 2
-        ghosti[Idx] += box_size[c] * e_z
-    elseif sum((f[Idx] - ghosti[Idx]) .* e_z) < -box_size[c] / 2
-        ghosti[Idx] -= box_size[c] * e_z
-    end
+        ### z direction
+        c = 3
+        if sum((f[Idx] - ghosti[Idx]) .* e_z) > box_size[c] / 2
+            ghosti[Idx] += box_size[c] * e_z
+        elseif sum((f[Idx] - ghosti[Idx]) .* e_z) < -box_size[c] / 2
+            ghosti[Idx] -= box_size[c] * e_z
+        end
 
-    if sum((f[Idx] - ghostb[Idx]) .* e_z) > box_size[c] / 2
-        ghostb[Idx] += box_size[c] * e_z
-    elseif sum((f[Idx] - ghostb[Idx]) .* e_z) < -box_size[c] / 2
-        ghostb[Idx] -= box_size[c] * e_z
+        if sum((f[Idx] - ghostb[Idx]) .* e_z) > box_size[c] / 2
+            ghostb[Idx] += box_size[c] * e_z
+        elseif sum((f[Idx] - ghostb[Idx]) .* e_z) < -box_size[c] / 2
+            ghostb[Idx] -= box_size[c] * e_z
+        end
     end
 end
 

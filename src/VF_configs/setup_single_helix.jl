@@ -30,9 +30,9 @@ end
 """
     initVortex_kernel!(f, fint, pcount, initf::SingleHelix)
 
-Launch kernel to initialise a single ring vortex.
+Launch kernel to initialise a single he_behi_infront
 """
-@kernel function initVortex_kernel!(f, fint, pcount, initf::SingleHelix)
+@kernel function initVortex_kernel!(f, f_infront, f_behind, pcount, initf::SingleHelix)
     Idx = @index(Global, Linear)
 
     step_KW = (initf.box_length_z)*(sqrt(((initf.A_KW/initf.b_KW)^2)+1.0f0))/Float32(pcount) 
@@ -43,13 +43,13 @@ Launch kernel to initialise a single ring vortex.
         initf.b_KW*(Idx-1)*step_KW/(sqrt((initf.A_KW)^2 + (initf.b_KW)^2)) - initf.box_length_z/2
     ]
     if Idx == 1
-        fint[2,Idx] = pcount
-        fint[1,Idx] = Idx+1
+        f_behind[Idx] = pcount
+        f_infront[Idx] = Idx+1
     elseif Idx == pcount
-        fint[2,Idx] = Idx - 1
-        fint[1,Idx] = 1
+        f_behind[Idx] = Idx - 1
+        f_infront[Idx] = 1
     else
-        fint[2,Idx] = Idx - 1
-        fint[1,Idx] = Idx + 1
+        f_behind[Idx] = Idx - 1
+        f_infront[Idx] = Idx + 1
     end
 end

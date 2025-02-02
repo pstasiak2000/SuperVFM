@@ -1,5 +1,5 @@
-function print_info_header()
-    printstyled("--var--------t--------pcount--------recon-----wall_recon---avg_d-----length--------maxu---------maxdu-------curv------removed\n", bold=:true)
+function print_info_header(io::IO)
+    printstyled(io,"--var--------t--------pcount--------recon-----wall_recon---avg_d-----length--------maxu---------maxdu-------curv------removed\n", bold=:true)
     return nothing
 end
 

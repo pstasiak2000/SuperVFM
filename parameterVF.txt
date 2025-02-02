@@ -1,6 +1,6 @@
                            SIMULATION PARAMETERS                                   
 ------------------------------------------------------------------------------------
-|x                     backend = CUDABackend(false, false)
+|x                     backend = CPU(false)
 |x             workergroupsize = 64
 |○                       shots =  1
 |○                      nsteps = 100

@@ -12,14 +12,13 @@ Computes the superfluid velocity using the Local Induction Approximation (LIA)
 \\mathbf{v}_i = \\beta \\mathbf{s}'_i \\times \\mathbf{s}''_i  
 ```
 """
-function compute_velocity!(u_loc, u_sup, ::LIA, SP::SimulationParams{S,T},; kwargs...) where {S,T}
-    f, fint, pcount = (; kwargs...)
-
-    ghosti, ghostb = ghostp(f, fint, pcount, SP)
+function compute_velocity!(u_loc, u_sup, ::LIA, SP::SimulationParams{S,T}; kwargs...) where {S,T}
+    (; f, f_infront, f_behind, pcount) = (; kwargs...)
+    (; ghosti, ghostb) = (; kwargs...)
 
     kernel! = compute_LIA_kernel!(SP.backend,SP.workergroupsize)
-    kernel!(u_loc, f, ghosti, ghostb, SP.κ, SP.corea, ndrange=pcount)
-    u_sup = u_loc
+    kernel!(u_loc, f, f_infront, ghosti, ghostb, SP.κ, SP.corea, ndrange=pcount)
+    u_sup .= u_loc
     return nothing
 end
 """
@@ -27,19 +26,21 @@ end
 
 Kernel to compute the superfluid velocity.
 """
-@kernel function compute_LIA_kernel!(u_loc, f, ghosti, ghostb, κ, corea)
+@kernel function compute_LIA_kernel!(u_loc, f, f_infront, ghosti, ghostb, κ, corea)
     Idx = @index(Global, Linear)
-    f_dot = get_deriv_1(f[Idx], ghosti[Idx], ghostb[Idx])
-    f_ddot = get_deriv_2(f[Idx], ghosti[Idx], ghostb[Idx])
+    if f_infront[Idx] != 0
+        f_dot = get_deriv_1(f[Idx], ghosti[Idx], ghostb[Idx])
+        f_ddot = get_deriv_2(f[Idx], ghosti[Idx], ghostb[Idx])
 
-    curv = sqrt(dot(f_ddot,f_ddot))
-    if(curv < eps32)
-        curv = eps32
-    else
-        curv ^= -1
+        curv = sqrt(dot(f_ddot,f_ddot))
+        if(curv < eps32)
+            curv = eps32
+        else
+            curv ^= -1
+        end
+        beta = (κ/Float32(4*π)) * log10(4.6f0 * curv / corea)
+        u_loc[Idx] = beta * cross(f_dot,f_ddot)
     end
-    beta = (κ/Float32(4*π)) * log10(4.6f0 * curv / corea)
-    u_loc[Idx] = beta * cross(f_dot,f_ddot)
 end
 # """
 #     (Velocity::LIA)(f, ghosti, ghostb, Empty, κ, corea)

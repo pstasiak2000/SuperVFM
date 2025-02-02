@@ -15,14 +15,21 @@ Uses `SP.backend` to initialise the vortex structure according to the initial co
 function initialiseVortex(SP::SimulationParams{S,T}) where {S,T}
     @assert supertype(typeof(SP.initf)) == InitCond "Invalid initial condition"
 
+    ### Get the initial vortex filament itCount
     pcount = getInitpcount(SP.initf, SP)
+
+    ### Print vortex information
     printVortexBanner(SP.initf, SP)
     println(SP.IO,"-> pcount is now at $pcount")
 
+    ### Initialise empty vectors for filaments
     f = allocate(SP.backend, SVector{3,T}, pcount)
-    fint = allocate(SP.backend, S, 3, pcount) 
+    f_infront = allocate(SP.backend, S, pcount)
+    f_behind = allocate(SP.backend, S, pcount) 
 
-    initVortex_kernel!(SP.backend,SP.workergroupsize)(f, fint, pcount, SP.initf, ndrange=pcount)
+    ### Kernel call to initialise the vortices
+    kernel! = initVortex_kernel!(SP.backend,SP.workergroupsize)
+    kernel!(f, f_infront, f_behind, pcount, SP.initf, ndrange=pcount)
     println(SP.IO,"--------------------------------------------------------")
-    return f, fint, pcount
+    return f, f_infront, f_behind, pcount
 end

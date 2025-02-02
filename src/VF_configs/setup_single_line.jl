@@ -18,19 +18,23 @@ function printVortexBanner(::SingleLine,SP::SimulationParams)
     println(SP.IO,"-> δ=$(SP.δ)                                            ")
 end
 
+"""
+    initVortex_kernel!(f, f_infront, f_behind, pcount, ::SingleLine)
 
-@kernel function initVortex_kernel!(f, fint, pcount, ::SingleLine)
+Kernel call to initialise a single vortex line.
+"""
+@kernel function initVortex_kernel!(f, f_infront, f_behind, pcount, ::SingleLine)
     Idx = @index(Global, Linear)
     f[Idx] = @SVector [0.0,0.0, -π + (Float32(Idx)-0.5)*2π/Float32(pcount)]
 
     if Idx == 1
-        fint[2,Idx] = pcount
-        fint[1,Idx] = Idx+1
+        f_behind[Idx] = pcount
+        f_infront[Idx] = Idx+1
     elseif Idx == pcount
-        fint[2,Idx] = Idx - 1
-        fint[1,Idx] = 1
+        f_behind[Idx] = Idx - 1
+        f_infront[Idx] = 1
     else
-        fint[2,Idx] = Idx - 1
-        fint[1,Idx] = Idx + 1
+        f_behind[Idx] = Idx - 1
+        f_infront[Idx] = Idx + 1
     end
 end

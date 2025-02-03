@@ -1,5 +1,5 @@
 # SuperVFM.jl
-![Logo](docs/assests/logo.svg)
+![Logo](docs/assets/logo.svg)
 
 [![GitHub Release](https://img.shields.io/github/v/release/pstasiak2000/SuperVFM)](https://github.com/pstasiak2000/SuperVFM/releases/latest)
 *Vortex filament method solver using CPU and GPU parallelism in Julia*

@@ -62,7 +62,7 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
     t = 0.0
     itC = 0
 
-    save_vortex(itC, f)
+    # save_vortex(itC, f, u)
 
     print_info_header(SP.IO)
     for it ∈ 1:SP.nsteps
@@ -79,7 +79,7 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
             itC += 1
             print_info(u, f, f_infront, f_behind, pcount, SP, it)
 
-            save_vortex(itC, f)
+            # save_vortex(itC, f)
         end
     end
     return f, t

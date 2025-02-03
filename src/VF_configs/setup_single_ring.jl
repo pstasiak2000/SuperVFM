@@ -20,7 +20,7 @@ function printVortexBanner(initf::SingleRing,SP::SimulationParams)
 end
 
 """
-    initVortex_kernel!(f, fint, pcount, initf::SingleRing)
+    initVortex_kernel!(f, f_infront, f_behind, pcount, initf::SingleRing)
 
 Launch kernel to initialise a single ring vortex.
 """

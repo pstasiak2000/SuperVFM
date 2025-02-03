@@ -28,7 +28,7 @@ end
 
 
 """
-    initVortex_kernel!(f, fint, pcount, initf::SingleHelix)
+    initVortex_kernel!(f, f_infront, f_behind, pcount, initf::SingleHelix)
 
 Launch kernel to initialise a single he_behi_infront
 """

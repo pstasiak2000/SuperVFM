@@ -60,10 +60,9 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
     
     ###  Initialise the time
     t = 0.0
-
-    ### Initialise the time vector
-    tt = []; push!(tt, t);
     itC = 0
+
+    save_vortex(itC, f)
 
     print_info_header(SP.IO)
     for it ∈ 1:SP.nsteps
@@ -76,14 +75,14 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
 
         enforce_boundary!(f, SP.boundary_x, SP.boundary_y, SP.boundary_z; f_infront, pcount, SP)
 
-        ### NEED TO IMPLEMENT BOUNDARY FORCING
         if mod(it, SP.shots) == 0
-            print_info(u, f, f_infront, f_behind, pcount, SP, it)
             itC += 1
-            push!(tt,t)
+            print_info(u, f, f_infront, f_behind, pcount, SP, it)
+
+            save_vortex(itC, f)
         end
     end
-    return f, tt
+    return f, t
 end
 
 #     itCount = 0

@@ -1,3 +1,11 @@
+function save_vortex(it, f)
+    itstr = @sprintf "%06d" it
+    open("var." * itstr * ".txt","w") do io
+        writedlm(io, f)
+    end   
+end
+
+
 function print_info_header(io::IO)
     printstyled(io,"--var--------t--------pcount--------recon-----wall_recon---avg_d-----length--------maxu---------maxdu-------curv------removed\n", bold=:true)
     return nothing

@@ -1,5 +1,5 @@
 # SuperVFM.jl
-
+[![Logo](https://github.com/pstasiak2000/SuperVFM)](https://github.com/pstasiak2000/SuperVFM/blob/main/docs/src/assets/logo.svg)
 [![GitHub Release](https://img.shields.io/github/v/release/pstasiak2000/SuperVFM)](https://github.com/pstasiak2000/SuperVFM/releases/latest)
 
 

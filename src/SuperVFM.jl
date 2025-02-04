@@ -42,8 +42,7 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
     print_banner(SP)
     print_boundary_info(SP)
     print_filamentmodel_info(SP.IO, SP.FilamentModel)
-    check_output_folder_structure(SP.IO)
-    create_info_file(SP)
+    generate_initial_files(SP)
     
     @assert check_timestep(SP) "Timestep is too large dt=$(SP.dt)"
     printstyled(SP.IO,"Timestep check passed!\n", bold=:true, color=:green)

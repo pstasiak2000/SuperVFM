@@ -1,20 +1,46 @@
-# function save_vortex(it;kwargs...)
-#     (; pcount, dt) = 
-#     itstr = @sprintf "%06d" it
-#     open("var." * itstr * ".txt","w") do io
+"""
+    save_vortex(it;kwargs...)
 
-#         write(io,f)
-#         write(io,u)
-#     end   
-# end
+Save the vortex and related information to file.
+"""
+function save_vortex(it;kwargs...)
+    (; pcount, t) = (; kwargs...)
+    (; f, f_infront, curv) = (; kwargs...)
+    (; u, u_mf, u_loc, u_sup) = (; kwargs...)
+
+    itstr = @sprintf "%06d" it
+    open(joinpath(base_dir,"OUTPUTS","VFdata","var." * itstr * ".log"),"w") do io
+        writedlm(io, t)
+        writedlm(io, pcount)
+        writedlm(io, f)
+        writedlm(io, f_infront)
+        writedlm(io, u)
+        writedlm(io, u_mf)
+        writedlm(io, u_loc)
+        writedlm(io, u_sup)
+        writedlm(io, curv)
+    end   
+end
 
 
 function print_info_header(io::IO)
-    printstyled(io,"--var--------t--------pcount--------recon-----wall_recon---avg_d-----length--------maxu---------maxdu-------curv------removed\n", bold=:true)
+    header_string = "--var--------t--------pcount--------recon-----wall_recon---avg_d-----length--------maxu---------maxdu-------curv------removed\n"
+
+    ### Print to file
+    open(joinpath(base_dir,"OUTPUTS","VFdata","ts.log"),"w") do file
+        printstyled(file,header_string, bold=:true)
+    end
+
+    ### Print to simulation buffer (by default stdout)
+    printstyled(io,header_string, bold=:true)
     return nothing
 end
 
-function print_info(u, f, f_infront, f_behind, pcount, SP::SimulationParams{S,T}, it) where {S,T}
+function print_info(it, SP::SimulationParams{S,T};kwargs...) where {S,T}
+    (; pcount) = (; kwargs...)
+    (; f, f_infront, f_behind, curv) = (; kwargs...)
+    (; u) = (; kwargs...)
+
     ghosti, ghostb = ghostp(f, f_infront, f_behind, pcount, SP) 
 
     pcountx = sum(f_infront .> 0)
@@ -37,16 +63,28 @@ function print_info(u, f, f_infront, f_behind, pcount, SP::SimulationParams{S,T}
     curv_str = @sprintf "%3.2f" sum(curv) / pcountx
 
     removed_str = @sprintf "%8i" 0
-    println(SP.IO,itstr * "   " *
-            t * "   " *
-            pcount_str * "       " *
-            recon_str * "       " *
-            wall_recon_str * "       " *
-            avg_d_str * "    " *
-            length_str * "    " *
-            u_max_str * "       " *
-            du_max_str * "      " *
-            curv_str * "     " *
-            removed_str
-    )
+
+    output_string = itstr * "   " * t * "   " * pcount_str * "       " * recon_str * "       " * wall_recon_str * "       " * avg_d_str * "    " * length_str * "    " * u_max_str * "       " * du_max_str * "      " * curv_str * "     " * removed_str
+
+    ### Print to file
+    open(joinpath(base_dir,"OUTPUTS","VFdata","ts.log"),"a") do file
+        println(file,output_string)
+    end
+
+    ### Print to simulation buffer (by default stdout)
+    println(SP.IO,output_string)
+    return curv
+end
+
+"""
+    create_info_file(::SimulationParams{S,T}) where {S,T}
+
+Create file to print the simulation precision of floating point and integers. To be used by vortex reading methods for correct parsing.
+"""
+function create_info_file(::SimulationParams{S,T}) where {S,T}
+    filename = "precision.info"
+    open(joinpath(base_dir,"OUTPUTS",filename),"w") do io
+        println(io,T) #Write integer precision
+        println(io,S) #Write floating point precision
+    end
 end

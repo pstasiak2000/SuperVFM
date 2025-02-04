@@ -14,7 +14,7 @@ end
 
 function printVortexBanner(initf::SimpleTrefoil,SP::SimulationParams)
     println(SP.IO,"--------------------------------------------------------")
-    println(SP.IO,"------------- Initialising vortex ring  ----------------")
+    println(SP.IO,"---------- Initialising simple trefoil  ----------------")
     println(SP.IO,"--------------------------------------------------------")
     println(SP.IO,"Changing size of pcount to fit with box_length and δ    ")
     println(SP.IO,"Drawing a simple trefoil scaled from blueprint")

@@ -1,5 +1,20 @@
 export check_timestep
 
+"""
+    check_output_folder_structure(io::IO)
+
+Creates the output folder structure if it did not exist already. Prints result to buffer.
+"""
+function check_output_folder_structure(io::IO)
+    if isdir(joinpath(base_dir,"OUTPUTS")) && isdir(joinpath(base_dir,"OUTPUTS","VFdata"))
+        println(io,"OUTPUTS directory already exists!")
+    else
+        println(io,"OUTPUTS directory not found. Creating output directory...")
+        mkpath(joinpath(base_dir,"OUTPUTS","VFdata"))
+        #Add more diectories here if needed
+    end
+end
+
 # """
 #     KA.zeros(BE::Backend,::Type{SVector{S,T}},dims::Tuple) where {S,T}
 

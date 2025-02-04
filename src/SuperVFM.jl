@@ -43,7 +43,7 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
     print_boundary_info(SP)
     print_filamentmodel_info(SP.IO, SP.FilamentModel)
     generate_initial_files(SP)
-    
+
     @assert check_timestep(SP) "Timestep is too large dt=$(SP.dt)"
     printstyled(SP.IO,"Timestep check passed!\n", bold=:true, color=:green)
 
@@ -55,6 +55,7 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
     u_mf = allocate(SP.backend, SVector{3,T}, pcount)
     u = allocate(SP.backend, SVector{3,T}, pcount)
     curv = KernelAbstractions.zeros(SP.backend,T, pcount)
+    
     ### Zero the initial velocities -- important!
     u1 = KernelAbstractions.zeros(SP.backend, SVector{3,T}, pcount)
     u2 = KernelAbstractions.zeros(SP.backend, SVector{3,T}, pcount)

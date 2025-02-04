@@ -8,11 +8,6 @@ export OpenBoundary
 #---------------------------------------
 #--- Periodic boundary identifier
 #---------------------------------------
-struct PeriodicBoundary{A} <: BoundaryType
-    dim::Int
-end
-Adapt.@adapt_structure PeriodicBoundary
-
 """
     PeriodicBoundary(dim::Int)
 
@@ -28,7 +23,11 @@ Example usage:
 !!! warning
     As of v1.0.2, only the periodic boundary condition is fully implemented and working correctly, open boundary conditions and solid walls will be implemented in a future release.
 """
-PeriodicBoundary(dim::Int) = PeriodicBoundary{Int32}(dim)
+struct PeriodicBoundary{A} <: BoundaryType
+    dim::Int
+end
+Adapt.@adapt_structure PeriodicBoundary
+
 
 
 
@@ -36,11 +35,6 @@ PeriodicBoundary(dim::Int) = PeriodicBoundary{Int32}(dim)
 #--------------------------------------
 #--- Open boundary identifier
 #---------------------------------------
-struct OpenBoundary{A} <: BoundaryType
-    dim::Int
-end
-Adapt.@adapt_structure OpenBoundary
-
 """
     OpenBoundary(dim::Int)
 
@@ -53,7 +47,10 @@ Example usage:
     boundary_z = OpenBoundary(3)
 ```
 """
-OpenBoundary(dim::Int) = OpenBoundary{Int32}(dim)
+struct OpenBoundary{A} <: BoundaryType
+    dim::Int
+end
+Adapt.@adapt_structure OpenBoundary
 
 function print_boundary(io::IO, BC::OpenBoundary)
     if BC.dim == 1

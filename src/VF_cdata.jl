@@ -87,12 +87,12 @@ function SimulationParams{S,T}(DimParams::DimensionalParams;
     velocity=LIA(),
     FilamentModel=ZeroTemperature(),
     initf=SingleLine(),
-    boundary_x=PeriodicBoundary(1), #Periodic boundary conditions unless specified
-    boundary_y=PeriodicBoundary(2), #Periodic boundary conditions unless specified
-    boundary_z=PeriodicBoundary(3), #Periodic boundary conditions unless specified
+    boundary_x=PeriodicBoundary{S}(1), #Periodic boundary conditions unless specified
+    boundary_y=PeriodicBoundary{S}(2), #Periodic boundary conditions unless specified
+    boundary_z=PeriodicBoundary{S}(3), #Periodic boundary conditions unless specified
     normal_velocity=[0.0f0,0.0f0,0.0f0],
-    ν_0=0.04f0,
-    dt=0.001f0,
+    ν_0=0.04,
+    dt=0.001,
     IO=stdout
     ) where {S,T}
     #Compute the non-dimensional paramater Γ

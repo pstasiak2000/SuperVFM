@@ -9,7 +9,7 @@ Adapt.@adapt_structure SingleHelix
 
 
 function getInitpcount(initf::SingleHelix, SP::SimulationParams{S,T}) where {S,T}
-    @assert SP.boundary_z == PeriodicBoundary(3) "Periodic boundary conditions in z required"
+    @assert SP.boundary_z == PeriodicBoundary{S}(3) "Periodic boundary conditions in z required"
     return Int64(ceil(initf.box_length_z*(sqrt(((initf.A_KW/initf.b_KW)^2)+1.0))/(0.75*SP.δ)))
 end
 

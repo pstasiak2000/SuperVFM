@@ -75,7 +75,7 @@ Lists the simulation parameters stored in `SimParams` in a stylistic way with a 
 """
 Base.show(io::IO, SimParams::SimulationParams) = list_parameters(io,SimParams)
 
-function list_parameters(io::IO,SimParams::SimulationParams)
+function list_parameters(io::IO,SimParams::SimulationParams{S,T}) where {S,T}
     printstyled(io,"                           SIMULATION PARAMETERS                                   \n", bold=:true)
     println(io,"------------------------------------------------------------------------------------")
 
@@ -87,10 +87,10 @@ function list_parameters(io::IO,SimParams::SimulationParams)
         argval = @sprintf "%2s" getfield(SimParams, arg)
 
         #Choose the colouring based on type
-        if eltype(getfield(SimParams, arg)) == Float32
+        if eltype(getfield(SimParams, arg)) == T
             col = :blue
             printstyled(io,"|□        ", color=col)
-        elseif eltype(getfield(SimParams, arg)) == Int32
+        elseif eltype(getfield(SimParams, arg)) == S
             col = :green
             printstyled(io,"|○        ", color=col)
         elseif typeof(getfield(SimParams, arg)) <: BoundaryType
@@ -115,11 +115,12 @@ function list_parameters(io::IO,SimParams::SimulationParams)
     # printstyled("                                                                                     \n", underline=:true)
     println(io,"------------------------------------------------------------------------------------")
     printstyled(io,"Key:\n", italic=:true)
-    printstyled(io,"   ○ Int32   / Vector{Int32}   / Tuple{Int32}\n", italic=:true, color=:green)
-    printstyled(io,"   □ Float32 / Vector{Float32} / Tuple{Float32} \n", italic=:true, color=:blue)
+    printstyled(io,"   ○ $T   / Vector{$T}   / Tuple{$T}\n", italic=:true, color=:green)
+    printstyled(io,"   □ $S / Vector{$S} / Tuple{$S} \n", italic=:true, color=:blue)
     printstyled(io,"   ★ Initial vortex configuration \n", italic=:true, color=:yellow)
     printstyled(io,"   △ Boundary conditions \n", italic=:true, color=:red)
     printstyled(io,"   ⋄ Velocity and filament models \n", italic=:true, color=:magenta)
+    printstyled(io,"   x Other  \n", italic=:true, color=:white)
     return nothing
 end
 

@@ -2,7 +2,7 @@
 
 VORTEX_CONFIGS = readdir(joinpath(@__DIR__, "VF_configs"))
 
-
+### Read the vortex initial conditions from folder
 for config ∈ VORTEX_CONFIGS
     include(joinpath(@__DIR__,"VF_configs",config))
 end

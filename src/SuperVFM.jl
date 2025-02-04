@@ -55,7 +55,7 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
     u_mf = allocate(SP.backend, SVector{3,T}, pcount)
     u = allocate(SP.backend, SVector{3,T}, pcount)
     curv = KernelAbstractions.zeros(SP.backend,T, pcount)
-    
+
     ### Zero the initial velocities -- important!
     u1 = KernelAbstractions.zeros(SP.backend, SVector{3,T}, pcount)
     u2 = KernelAbstractions.zeros(SP.backend, SVector{3,T}, pcount)
@@ -90,38 +90,6 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
     end
     return f, t
 end
-
-#     itCount = 0
-#     print_info_header()
-#     for it ∈ 1:SimParams.nsteps
-        
-#         #Compute the superfluid velocity v_s
-#         @. u_loc = (SimParams.velocity)(f, ghosti, ghostb, Empty, SimParams.κ, SimParams.corea)
-#         u_sup .= u_loc
-
-#         #Calculate the velocities of the filaments
-#         @. u = (SimParams.FilamentModel)(f, ghosti, ghostb, u_sup, normal_velocity, Empty)
-#         #Timestep the new positions
-#         @. f += SimParams.dt * timestep(u, u1, u2, Empty)
-#         u2 .= u1
-#         u1 .= u
-#         t += SimParams.dt
-        
-#         enforce_boundary!(f,SimParams.boundary_x,SimParams.boundary_y,SimParams.boundary_z)
-        
-        
-#         if mod(it, SimParams.shots) == 0
-#             print_info(f, ghosti, ghostb, u, Empty, SimParams, pcount, it)
-#             itCount += 1
-#             push!(f_out,Array(f))
-#             push!(tt,t)
-#         end
-#     end
-#     println("")
-#     printstyled("Simulation finished!\n", bold=:true, color=:green)
-#     return f_out, tt
-# end
-
 
 include("precompile.jl")
 

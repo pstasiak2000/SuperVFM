@@ -10,15 +10,15 @@ function save_vortex(it;kwargs...)
 
     itstr = @sprintf "%06d" it
     open(joinpath(base_dir,"OUTPUTS","VFdata","var." * itstr * ".log"),"w") do io
-        writedlm(io, t)
-        writedlm(io, pcount)
-        writedlm(io, f)
-        writedlm(io, f_infront)
-        writedlm(io, u)
-        writedlm(io, u_mf)
-        writedlm(io, u_loc)
-        writedlm(io, u_sup)
-        writedlm(io, curv)
+        write(io, t)
+        write(io, pcount)
+        write(io, Array(f))
+        write(io, Array(f_infront))
+        write(io, Array(u))
+        write(io, Array(u_mf))
+        write(io, Array(u_loc))
+        write(io, Array(u_sup))
+        write(io, Array(curv))
     end   
 end
 
@@ -79,6 +79,10 @@ end
 function generate_initial_files(SP::SimulationParams)
     check_output_folder_structure(SP.IO)
     create_info_file(SP)
+    
+    open(joinpath(base_dir,"OUTPUTS","parameterVF.txt"),"w") do io
+        show(io,SP)
+    end
 end 
 
 """

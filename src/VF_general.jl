@@ -1,10 +1,20 @@
 export check_timestep
+
 """
     static2field(field::AbstractArray{SVector{S,T}}, N::Int) where {S<:Int,T<:AbstractFloat} 
 
-Convert array of static vectors of size `S` and type `T` of length `N`, to a matrix of with dimensions `(S,N)`.
+Convert array of static vectors of size `S` and type `T` of length `N`, to a matrix of with dimensions `(S,N)`. Return type is an child type of `AbstractMatrix`.
+
+```
+julia> N = 128;
+
+julia> f = rand(SVector{3,Float32},N);
+
+julia> typeof(static2field(f,N)) <: AbstractMatrix
+true
+```
 """
-static2field(field::AbstractArray{SVector{S,T}}, N::Int) where {S<:Int,T<:AbstractFloat} = reshape(reinterpret(T, reshape(field,N)),S, :)
+static2field(field::AbstractArray{SVector{S,T}}, N::Int) where {S,T<:AbstractFloat} = reshape(reinterpret(T, reshape(field,N)),S, :)
 
 """
     check_output_folder_structure(io::IO)

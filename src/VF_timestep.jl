@@ -24,13 +24,14 @@ SchwarzModel(α1::AbstractFloat,α2::AbstractFloat) = SchwarzModel{Float32}(α1,
 print_filamentmodel_info(io::IO, FM::SchwarzModel) = print(io, "Using the "), printstyled(io, "Schwarz model with α=$(FM.α1) and α'=$(FM.α2)\n\n", bold=:true, color=:yellow)
 
 
-
-
 ################################################################################
 """
     compute_filament_velocity!(u, u_loc, u_sup, ::ZeroTemperature, SP::SimulationParams{S,T}; kwargs...) where {S,T}
 
-Compute vortex filament velocities in the zero temperature limit.
+Compute vortex filament velocities in the zero temperature limit. Filaments are evolved by
+```math
+    \\frac{d\\mathbf{s}}{dt} = \\mathbf{v}_s
+```
 """
 function compute_filament_velocity!(u, u_mf, u_loc, u_sup, ::ZeroTemperature, SP::SimulationParams{S,T}; kwargs...) where {S,T}
     f, f_infront, f_behind, pcount = (; kwargs...) 
@@ -52,7 +53,7 @@ end
 Compute vortex filament velocities using the Schwarz model.
 
 ```math
-    \\frac{d\\mathbf{s}}{dt} = ...
+    \\frac{d\\mathbf{s}}{dt} = \\mathbf{v}_s + \\alpha\\left[\\mathbf{s}'\\times\\left(\\mathbf{v}_n - \\mathbf{v}_s\\right)\\right] - \\alpha'\\left(\\mathbf{s}'\\times\\left[\\mathbf{s}'\\times\\left(\\mathbf{v}_n - \\mathbf{v}_s\\right)\\right] \\right)
 ```
 """
 function compute_filament_velocity!(u, u_mf, u_loc, u_sup, FM::SchwarzModel, SP::SimulationParams{S,T}; kwargs...) where {S,T}

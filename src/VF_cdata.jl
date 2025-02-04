@@ -130,9 +130,10 @@ function get_density(T::AbstractFloat)
     data = readdlm(joinpath(@__DIR__,"data","density.txt"),skipstart=3)
     row = findall(view(data,:,1) .== T)
     if isempty(row)
-        @error "Interpolation of values not yet implemented, please choose another value. The full list can be viewed by calling SuperVFM.print_density_data() "
-        ρ_n = 0.0u"g/cm^3"
-        ρ_s = 0.0u"g/cm^3"
+        interp_ρs = linear_interpolation(data[:,1],data[:,2]);
+        interp_ρn = linear_interpolation(data[:,1],data[:,2]);
+        ρ_n = interp_ρn(T)u"g/cm^3"
+        ρ_s = interp_ρs(T)u"g/cm^3"
     else
         ρ_n = reshape(data[row,3])u"g/cm^3"
         ρ_s = reshape(data[row,2])u"g/cm^3"
@@ -154,16 +155,16 @@ get_density(T::Unitful.Temperature) = get_density(ustrip(uconvert(u"K",T)))
 
 Returns the dynamic viscosity ``η`` at temperature ``T``.
 
-Requires ``0.8\\leq T \\leq T_{\\lambda} = 2.178``
+Requires ``0.8\\leq T < T_{\\lambda} = 2.178``
 """
 function get_dynamic_viscosity(T::AbstractFloat)
     @assert T ≥ 0.8 "Invalid temperature: T cannot be negative"
     @assert T < 2.17 "Invalid temperature: T cannot be above the transition temperature"
-    data = readdlm(joinpath(@__DIR__,"data","dynamic_viscosity.txt"),skipstart=0)
+    data = readdlm(joinpath(@__DIR__,"data","dynamic_viscosity.txt"),skipstart=3)
     row = findall(view(data,:,1) .== T)
     if isempty(row)
-        @error "Interpolation of values not yet implemented, please choose another value. The full list can be viewed by calling SuperVFM.print_dynamic_visosity_data()"
-        η = 0.0u"Pa*s"
+        interp_η = linear_interpolation(data[:,1],data[:,2]);
+        η = interp_η(T)u"Pa*s"
     else
         η = reshape(data[row,2])u"Pa*s"
     end

@@ -1,4 +1,10 @@
 export check_timestep
+"""
+    static2field(field::AbstractArray{SVector{S,T}}, N::Int) where {S<:Int,T<:AbstractFloat} 
+
+Convert array of static vectors of size `S` and type `T` of length `N`, to a matrix of with dimensions `(S,N)`.
+"""
+static2field(field::AbstractArray{SVector{S,T}}, N::Int) where {S<:Int,T<:AbstractFloat} = reshape(reinterpret(T, reshape(field,N)),S, :)
 
 """
     check_output_folder_structure(io::IO)

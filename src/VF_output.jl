@@ -46,7 +46,7 @@ function print_info(it, SP::SimulationParams{S,T};kwargs...) where {S,T}
     pcountx = sum(f_infront .> 0)
 
     itstr = @sprintf "%06d" div(it, SP.shots)
-    t = @sprintf "%10.7f" it * SP.dt
+    t = @sprintf "%11.7f" it * SP.dt
     pcount_str = @sprintf "%5i" pcountx
     recon_str = @sprintf "%5i" 0
     wall_recon_str = @sprintf "%5i" 0

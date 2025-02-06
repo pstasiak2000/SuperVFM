@@ -79,7 +79,7 @@ Adapt.@adapt_structure SimulationParams
 
 function SimulationParams{S,T}(DimParams::DimensionalParams;
     backend=CPU(),
-    workergroupsize=64,
+    workergroupsize=256,
     shots=1,
     nsteps=1,
     δ=0.1f0,

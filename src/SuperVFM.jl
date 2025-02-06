@@ -37,6 +37,9 @@ include("VF_general.jl")
 include("VF_output.jl")
 include("VF_misc.jl")
 
+### Other packages
+include("VortexTools.jl")
+
 
 function Run(SP::SimulationParams{S,T}) where {S,T}
     print_banner(SP)
@@ -49,11 +52,12 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
 
     f, f_infront, f_behind, pcount = initialiseVortex(SP)
 
-    u_loc = allocate(SP.backend, SVector{3,T}, pcount)
-    u_sup = allocate(SP.backend, SVector{3,T}, pcount)
+    u_loc = KernelAbstractions.zeros(SP.backend, SVector{3,T}, pcount)
+    u_sup = KernelAbstractions.zeros(SP.backend, SVector{3,T}, pcount)
 
-    u_mf = allocate(SP.backend, SVector{3,T}, pcount)
-    u = allocate(SP.backend, SVector{3,T}, pcount)
+    u = KernelAbstractions.zeros(SP.backend, SVector{3,T}, pcount)
+    u_mf = KernelAbstractions.zeros(SP.backend, SVector{3,T}, pcount)
+
     curv = KernelAbstractions.zeros(SP.backend,T, pcount)
 
     ### Zero the initial velocities -- important!
@@ -87,7 +91,7 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
             save_vortex(itC; pcount, t, f, f_infront, curv, u, u_mf, u_loc, u_sup)
             flush(SP.IO)
         end
-        
+
         check_active_pcount(f_infront)
     end
     return f, t

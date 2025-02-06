@@ -87,6 +87,8 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
             save_vortex(itC; pcount, t, f, f_infront, curv, u, u_mf, u_loc, u_sup)
             flush(SP.IO)
         end
+        
+        check_active_pcount(f_infront)
     end
     return f, t
 end

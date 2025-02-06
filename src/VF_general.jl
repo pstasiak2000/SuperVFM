@@ -31,6 +31,10 @@ function check_output_folder_structure(io::IO)
     end
 end
 
+function check_active_pcount(f_infront)
+    @assert sum(f_infront .> 0) >= 5 "pcount too small: quitting loop..."
+end
+
 # """
 #     KA.zeros(BE::Backend,::Type{SVector{S,T}},dims::Tuple) where {S,T}
 

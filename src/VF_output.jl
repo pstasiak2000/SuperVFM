@@ -76,6 +76,11 @@ function print_info(it, SP::SimulationParams{S,T};kwargs...) where {S,T}
     return curv
 end
 
+"""
+    generate_initial_files(SP::SimulationParams)
+
+Generates the output folder structure and the initialisation files.
+"""
 function generate_initial_files(SP::SimulationParams)
     check_output_folder_structure(SP.IO)
     create_info_file(SP)

@@ -11,6 +11,13 @@ This package implements the Vortex Filament method for superfluid helium-4 vorte
 |:-------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|
 | [![][docs-dev-img]][docs-dev-url] [![][docs-stable-img]][docs-stable-url] |[![CI](https://github.com/pstasiak2000/SuperVFM/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/pstasiak2000/SuperVFM/actions/workflows/CI.yml) [![Coverage](https://codecov.io/gh/pstasiak2000/SuperVFM.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/pstasiak2000/SuperVFM.jl) |
 
+### To do lists
+
+- [ ] Vortex re-remeshing algorithm
+- [ ] Vortex reconnection algorithm (KDtree implementation)
+- [ ] Biot-Savart vortex velocity calculation
+- [ ] Dynamic forcing (vortex loop injection)
+
 
 
 

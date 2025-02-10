@@ -76,14 +76,18 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
     ### Start the loop here
     for it ∈ 1:SP.nsteps
         
+        #Compute superfluid velocity and the velocity of filaments
         compute_filament_velocity!(u, u_mf, u_loc, u_sup,SP.FilamentModel, SP;
             f, f_infront, f_behind, pcount, SP.normal_velocity)
 
+        #Timestep the filaments
         timestep!(f, u, u1, u2, f_infront, pcount, SP)
         t += SP.dt
 
+        #Enforce the boundary conditions
         enforce_boundary!(f, SP.boundary_x, SP.boundary_y, SP.boundary_z; f_infront, pcount, SP)
 
+        #Printing and writing to file
         if mod(it, SP.shots) == 0
             itC += 1
             curv = print_info(it, SP; pcount, f, f_infront, f_behind, curv, u)
@@ -91,7 +95,8 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
             save_vortex(itC; pcount, t, f, f_infront, curv, u, u_mf, u_loc, u_sup)
             flush(SP.IO)
         end
-
+        
+        #Quit the loop if there are not enough vortex points
         check_active_pcount(f_infront)
     end
     return f, t

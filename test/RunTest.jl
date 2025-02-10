@@ -6,11 +6,11 @@ using Test
 using Plots
 
 make_animation = true
-make_plot = false
+make_plot = true
 
 ### Set the device
-# dev = CPU();
-using CUDA; dev = CUDABackend()
+dev = CPU();
+# using CUDA; dev = CUDABackend()
 
 ### Set the precision (for GPU it is highly recommended to use single precision)
 IntPrec = Int32;
@@ -21,7 +21,7 @@ FloatPrec = Float32;
 # IC = SingleRing(0.25)
 # IC = SingleHelix(0.2, 0.2, 2π)
 # IC = SimpleTrefoil{FloatPrec}(0.5)
-IC = TorusKnot(17,25,0.5,2.0);
+IC = TorusKnot(3,-2,0.5,2.0);
 
 ### Set the dimensional properties
 DimParams = SuperVFM.DimensionalParams(;
@@ -59,10 +59,12 @@ PARAMS = SimulationParams{IntPrec,FloatPrec}(DimParams;
 
 
 
-data = load_VF_file("OUTPUTS/VFdata/var.000000.log")
-if make_plot    
-    let it = 1
-        plot_title = @sprintf "t = %4.2f" tt[it]
+
+if make_plot
+    let it = 0
+        itstr = @sprintf "%06i" it
+        data = load_VF_file("OUTPUTS/VFdata/var.$itstr.log")
+        plot_title = @sprintf "t = %4.2f" data.time
         scatter(data.xyz,
             xlim=(-π, π), xlabel="x",
             ylim=(-π, π), ylabel="y",

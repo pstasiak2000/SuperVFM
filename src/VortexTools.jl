@@ -125,7 +125,7 @@ function load_VF_file(io::IO)
     loops, particles_per_loop = identify_loops(front)
     num_loops = length(loops)
     total_particles_in_loops = sum(particles_per_loop)
-    @info "Found $num_loops vortex loops ($total_particles_in_loops particles)"
+    # @info "Found $num_loops vortex loops ($total_particles_in_loops particles)"
 
     vortex_id = collect(1:num_loops)
 

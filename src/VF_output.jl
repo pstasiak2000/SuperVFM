@@ -24,7 +24,7 @@ end
 
 
 function print_info_header(io::IO)
-    header_string = "--var--------t--------pcount--------recon-----wall_recon---avg_d-----length--------maxu---------maxdu-------curv------removed\n"
+    header_string = "--var----------t--------pcount--------recon-----wall_recon---avg_d-----length--------maxu---------maxdu-------curv------removed\n"
 
     ### Print to file
     open(joinpath(base_dir,"OUTPUTS","VFdata","ts.log"),"w") do file
@@ -37,11 +37,9 @@ function print_info_header(io::IO)
 end
 
 function print_info(it, SP::SimulationParams{S,T};kwargs...) where {S,T}
-    (; pcount) = (; kwargs...)
-    (; f, f_infront, f_behind, curv) = (; kwargs...)
-    (; u) = (; kwargs...)
-
-    ghosti, ghostb = ghostp(f, f_infront, f_behind, pcount, SP) 
+    (; pcount, remove_counter) = (; kwargs...)
+    (; f, f_infront, curv, ghosti, ghostb) = (; kwargs...)
+    (; u) = (; kwargs...) 
 
     pcountx = sum(f_infront .> 0)
 
@@ -55,16 +53,16 @@ function print_info(it, SP::SimulationParams{S,T};kwargs...) where {S,T}
     avg_d_str = @sprintf "%1.4f" L / (pcountx * SP.δ)
     length_str = @sprintf "%9.6f" L
 
-    u_max_str = @sprintf "%1.5f" maximum(norm.(u))
-    du_max_str = @sprintf "%1.5f" 0.0f0
+    u_max_str = @sprintf "%8.5f" maximum(norm.(u))
+    du_max_str = @sprintf "%8.5f" 0.0f0
 
     curv = KernelAbstractions.zeros(SP.backend, T, pcount)
     get_curvature!(curv; f, f_infront, ghosti, ghostb, pcount, SP)
-    curv_str = @sprintf "%3.2f" sum(curv) / pcountx
+    curv_str = @sprintf "%6.2f" sum(curv) / pcountx
 
-    removed_str = @sprintf "%8i" 0
+    removed_str = @sprintf "%8i" remove_counter
 
-    output_string = itstr * "   " * t * "   " * pcount_str * "       " * recon_str * "       " * wall_recon_str * "       " * avg_d_str * "    " * length_str * "    " * u_max_str * "       " * du_max_str * "      " * curv_str * "     " * removed_str
+    output_string = itstr * "   " * t * "   " * pcount_str * "       " * recon_str * "       " * wall_recon_str * "       " * avg_d_str * "    " * length_str * "    " * u_max_str * "     " * du_max_str * "     " * curv_str * "    " * removed_str
 
     ### Print to file
     open(joinpath(base_dir,"OUTPUTS","VFdata","ts.log"),"a") do file

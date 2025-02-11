@@ -6,7 +6,7 @@ using Test
 using Plots
 
 make_animation = true
-make_plot = true
+make_plot = false
 
 ### Set the device
 dev = CPU();
@@ -18,14 +18,14 @@ FloatPrec = Float32;
 
 ### Vortex initial condition
 # IC = SingleLine()
-# IC = SingleRing(0.25)
+IC = SingleRing(1.0)
 # IC = SingleHelix(0.2, 0.2, 2π)
 # IC = SimpleTrefoil{FloatPrec}(0.5)
-IC = TorusKnot(3,-2,0.5,2.0);
+# IC = TorusKnot(3,-2,0.5,2.0);
 
 ### Set the dimensional properties
 DimParams = SuperVFM.DimensionalParams(;
-    T=1.9u"K",
+    T=2.1u"K",
     D=0.1u"cm")
 
 
@@ -34,20 +34,20 @@ DimParams = SuperVFM.DimensionalParams(;
 ### Set the simulation parameters
 PARAMS = SimulationParams{IntPrec,FloatPrec}(DimParams;
     backend=dev,
-    shots=5000,
-    nsteps=1500000,
-    δ=0.05f0,
+    shots=1000,
+    nsteps=100000,
+    δ=0.01f0,
     box_size=(2π, 2π, 2π),
     velocity=LIA(),
-    # FilamentModel=SchwarzModel(α[1], α[2]),
-    FilamentModel=ZeroTemperature(),
+    FilamentModel=SchwarzModel(α[1], α[2]),
+    # FilamentModel=ZeroTemperature(),
     initf=IC,
     boundary_x=PeriodicBoundary{IntPrec}(1),
     boundary_y=PeriodicBoundary{IntPrec}(2),
     boundary_z=PeriodicBoundary{IntPrec}(3),
-    normal_velocity=[0.0, 0.0, 0.0],
+    normal_velocity=[-2.0, 0.0, 0.0],
     ν_0=0.04,
-    dt=1e-4,
+    dt=1e-5,
 )
 
 ### Save parameters to file
@@ -56,16 +56,16 @@ PARAMS = SimulationParams{IntPrec,FloatPrec}(DimParams;
 # end
 
 @time f, tt = Run(PARAMS);
-
-
+s = scatter(Tuple.(f),xlim=(-π,π),ylim=(-π,π),zlim=(-π,π))
+display(s)
 
 
 if make_plot
-    let it = 0
+    let it = 70
         itstr = @sprintf "%06i" it
         data = load_VF_file("OUTPUTS/VFdata/var.$itstr.log")
         plot_title = @sprintf "t = %4.2f" data.time
-        scatter(data.xyz,
+        s = scatter(data.xyz,
             xlim=(-π, π), xlabel="x",
             ylim=(-π, π), ylabel="y",
             zlim=(-π, π), zlabel="z",
@@ -74,19 +74,23 @@ if make_plot
             linewidth=1,
             title=plot_title,
             label=nothing)
+            display(s)
     end
 end
 
-DIR = readdir("OUTPUTS/VFdata")
-DIR = DIR[2:end]
 
-VF = Vector{Any}(undef,length(DIR))
-for it in eachindex(DIR)
-    VF[it] = load_VF_file(joinpath("OUTPUTS","VFdata",DIR[it]))
-end
 
 
 if make_animation
+    DIR = readdir("OUTPUTS/VFdata")
+    DIR = DIR[2:end]
+
+    VF = Vector{Any}(undef, length(DIR))
+    for it in eachindex(DIR)
+        VF[it] = load_VF_file(joinpath("OUTPUTS", "VFdata", DIR[it]))
+    end
+
+
     anim = @animate for it in eachindex(VF)
         plot_title = @sprintf "t = %4.2f" VF[it].time
         plt = scatter(VF[it].xyz,

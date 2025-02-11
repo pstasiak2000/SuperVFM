@@ -44,7 +44,7 @@ function compute_filament_velocity!(u, u_mf, u_loc, u_sup, ::ZeroTemperature, SP
 
     u_mf .*= 0.0
     u .= u_sup
-    return nothing
+    return ghosti, ghostb
 end
 
 """
@@ -70,7 +70,7 @@ function compute_filament_velocity!(u, u_mf, u_loc, u_sup, FM::SchwarzModel, SP:
     kernel!(u_mf, u_sup, f, f_infront, ghosti, ghostb, FM, normal_velocity, ndrange=pcount)
 
     @. u = u_sup + u_mf
-    return nothing
+    return ghosti, ghostb
 end
 
 """

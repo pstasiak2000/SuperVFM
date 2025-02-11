@@ -64,7 +64,7 @@ end
 Compute the seperation distance ``\\Delta\\xi`` between each filament.
 """
 function get_Δξ(f, ghosti, f_infront, pcount, SP::SimulationParams{S,T}) where {S,T}
-    Δξ = allocate(SP.backend, T, pcount) 
+    Δξ = KernelAbstractions.zeros(SP.backend, T, pcount) 
     kernel! = get_Δξ_kernel!(SP.backend, SP.workergroupsize)
     kernel!(Δξ, f, ghosti, f_infront, ndrange=pcount)
     return Δξ

@@ -1,7 +1,6 @@
 module SuperVFM
 
 using KernelAbstractions
-using Atomix
 using Adapt
 using Dates
 using StaticArrays
@@ -92,7 +91,7 @@ function Run(SP::SimulationParams{S,T}) where {S,T}
 
         #Remove vortex points if needed 
         removed = premove!(; pcount, f, f_infront, f_behind, ghosti, ghostb, u, u1, u2, SP)
-        remove_counter += removed
+        remove_counter += sum(removed)
 
         #Printing and writing to file
         if mod(it, SP.shots) == 0

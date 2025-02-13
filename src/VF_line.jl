@@ -10,14 +10,16 @@ function premove!(; kwargs...)
     (; u, u1, u2) = (; kwargs...)
     (; SP) = (; kwargs...)
 
-    removed = 0
-
-    kernel! = premove_kernel!(SP.backend,1)
-    kernel!(removed, f, f_infront, f_behind, ghosti, ghostb, u, u1, u2, SP.δ, ndrange=pcount)
+    pre_remove = sum(f_infront .== 0)
+    kernel! = premove_kernel!(SP.backend,SP.workergroupsize)
+    kernel!(f, f_infront, f_behind, ghosti, ghostb, u, u1, u2, SP.δ, ndrange=pcount)
+    
+    post_remove = sum(f_infront .== 0)
+    removed = post_remove - pre_remove
     return removed
 end
 
-@kernel function premove_kernel!(removed, f, f_infront, f_behind, ghosti, ghostb, u, u1, u2, δ)
+@kernel function premove_kernel!(f, f_infront, f_behind, ghosti, ghostb, u, u1, u2, δ)
     Idx = @index(Global, Linear)
     if f_infront[Idx] != 0
         infront = f_infront[Idx]
@@ -27,7 +29,6 @@ end
             f_behind[tinfront] = Idx
             f_infront[Idx] = tinfront
             clear_particle!(f, f_infront, f_behind, ghosti, ghostb, u, u1, u2, infront)
-            removed += 1
         end
     end
 end

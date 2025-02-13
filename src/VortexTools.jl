@@ -115,6 +115,7 @@ function load_VF_file(io::IO)
     num_particles = read(io, Int64)
 
     buf = Array{VecN{3,Float32}}(undef, num_particles)
+    
     # buf = Array{SVector{3,Float32}}(undef,num_particles)
     read!(io, buf)
     xyz = buf

@@ -6,7 +6,7 @@ using Test
 using Plots
 
 make_animation = true
-make_plot = false
+make_plot = true
 
 ### Set the device
 dev = CPU();
@@ -35,7 +35,7 @@ DimParams = SuperVFM.DimensionalParams(;
 PARAMS = SimulationParams{IntPrec,FloatPrec}(DimParams;
     backend=dev,
     shots=1000,
-    nsteps=100000,
+    nsteps=50000,
     δ=0.01f0,
     box_size=(2π, 2π, 2π),
     velocity=LIA(),
@@ -90,14 +90,18 @@ if make_animation
         VF[it] = load_VF_file(joinpath("OUTPUTS", "VFdata", DIR[it]))
     end
 
-
+    ZeroTuple = (0.f0,0.f0,0.f0)
     anim = @animate for it in eachindex(VF)
+
+        #Remove the zero points
+        VORTEX = VF[it].xyz[VF[it].xyz .!= fill(ZeroTuple,VF[it].num_particles)]
+        
         plot_title = @sprintf "t = %4.2f" VF[it].time
-        plt = scatter(VF[it].xyz,
+        plt = scatter(VORTEX,
             xlim=(-π, π), xlabel="x",
             ylim=(-π, π), ylabel="y",
             zlim=(-π, π), zlabel="z",
-            markerstrokewidth=0.1,
+            markerstrokewidth=0.5,
             markersize=0.5,
             # linewidth=3,
             label=nothing,

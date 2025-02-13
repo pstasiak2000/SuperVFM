@@ -1,3 +1,5 @@
+### List of useful functions to be used within the package.
+
 export check_timestep
 
 """
@@ -31,6 +33,12 @@ function check_output_folder_structure(io::IO)
     end
 end
 
+
+"""
+    check_active_pcount(f_infront)
+
+Exits the run if there are not enough vortex points, if there are less than 5 points (needed to properly resolve the derivatives).
+"""
 function check_active_pcount(f_infront)
     @assert sum(f_infront .> 0) >= 5 "pcount too small: quitting loop..."
 end

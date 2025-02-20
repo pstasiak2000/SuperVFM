@@ -2,46 +2,48 @@ export load_VF_file
 
 const VecN{N,T} = NTuple{N,T} where {N,T}
 
-struct VFData
+struct VFData{A,B,C}
     time::Float64
     num_particles::Int32  # = Np
     num_loops::Int32      # = Nl
 
     # Connects every particle to a neighbouring particle in the same vortex
     # loop. A "removed" particle has a value of 0.
-    front::Vector{Int32}   # [Np]
+    front::A   # [Np]
 
     # Indices of reference particles for each vortex loop.
     # Each vortex has a different reference particle (which can be any particle
     # inside the vortex).
     # Knowing the index of a vortex particle and the connectivities in the
     # `front` vector allows to reconstruct a whole vortex loop.
-    loops::Vector{Int32}   # [Nl]
+    loops::A   # [Nl]
 
     # Number of particles in each loop.
-    num_particles_per_loop::Vector{Int32}  # [Nl]
+    num_particles_per_loop::A  # [Nl]
 
     # ID of each vortex.
     # Useful when a single vortex is broken into separate objects due to
     # periodicity.
-    vortex_id::Vector{Int32}  # [Nl]
+    vortex_id::A  # [Nl]
 
-    xyz::Vector{VecN{3,Float32}}  # [3, Np]
-    u::Vector{VecN{3,Float32}}  # [3, Np]
-    vs_loc::Vector{VecN{3,Float32}} #[3, Np]
-    vs_sup::Vector{VecN{3,Float32}} #[3, Np]
+    xyz::C # [3, Np]
+    u::C  # [3, Np]
+    vs_loc::C #[3, Np]
+    vs_sup::C #[3, Np]
     # u_pll :: Matrix{Float64} #[3, Np]
     # u_n  :: Matrix{Float64}  # [3, Np]
     # f_mf :: Matrix{Float64}  # [3, Np]
-    u_mf::Vector{VecN{3,Float32}} #[3, Np]
-    v_curv::Vector{Float32}
+    u_mf::C #[3, Np]
+    v_curv::B
     # v_stretch :: Vector{Float64}
 end
+Adapt.@adapt_structure VFData
 
 function read_vector(io, N, T::DataType)
     v = Array{T}(undef, N)
     read!(io, v)
 end
+
 
 """
 Identify a single vortex loop.
@@ -150,11 +152,20 @@ function load_VF_file(io::IO)
     v_curv = read_vector(io, num_particles, Float32)
 
     @assert eof(io)
-    return VFData(time, num_particles, num_loops, front, loops, particles_per_loop,
+    return VFData{Vector{Int32},Vector{Float32},Vector{VecN{3,Float32}}}(time, num_particles, num_loops, front, loops, particles_per_loop,
         vortex_id, xyz, u, vs_loc, vs_sup, u_mf, v_curv)
 end
 
 
-
-
 load_VF_file(filename::AbstractString) = open(load_VF_file, filename, "r")
+
+
+# ### Read in the vortex tool scripts
+# VortexToolScripts = readdir(joinpath(@__DIR__, "VortexTools"))
+# for scripts ∈ VortexToolScripts
+#     include(joinpath(@__DIR__,"VortexTools",scripts))
+# end
+
+
+
+

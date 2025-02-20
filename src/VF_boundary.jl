@@ -105,9 +105,9 @@ end
 In place variant of `ghostp`.
 """
 function ghostp!(ghosti, ghostb; kwargs...)
-    f, f_infront, f_behind, pcount, SP = (;kwargs...)
-    kernel = ghostp_kernel!(SP.backend, SP.workergroupsize)
-    kernel(ghosti, ghostb, f, f_infront, f_behind, SP.box_size, ndrange=pcount)
+    f, f_infront, f_behind, dev, workergroupsize = (;kwargs...)
+    kernel = ghostp_kernel!(dev, workergroupsize)
+    kernel(ghosti, ghostb, f, f_infront, f_behind, (2π,2π,2π), ndrange=length(f))
 end
 
 """
@@ -126,7 +126,7 @@ Kernel for computation of ghost points.
         e_y = SVector{3,eltype(box_size)}(0,1,0)
         e_z = SVector{3,eltype(box_size)}(0,0,1)
         
-        ### x direction
+        # ### x direction
         c  = 1
         if sum((f[Idx] - ghosti[Idx]) .* e_x) > box_size[c] / 2
             ghosti[Idx] += box_size[c] * e_x

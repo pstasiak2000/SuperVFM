@@ -4,9 +4,10 @@ using Unitful
 using Printf
 using Test
 using Plots
+using LaTeXStrings
 
-make_animation = true
-make_plot = true
+make_animation = false
+make_plot = false
 
 ### Set the device
 dev = CPU();
@@ -17,8 +18,8 @@ IntPrec = Int32;
 FloatPrec = Float32;
 
 ### Vortex initial condition
-# IC = SingleLine()
-IC = SingleRing(1.0)
+IC = SingleLine()
+# IC = SingleRing(1.0)
 # IC = SingleHelix(0.2, 0.2, 2π)
 # IC = SimpleTrefoil{FloatPrec}(0.5)
 # IC = TorusKnot(3,-2,0.5,2.0);
@@ -34,8 +35,10 @@ DimParams = SuperVFM.DimensionalParams(;
 ### Set the simulation parameters
 PARAMS = SimulationParams{IntPrec,FloatPrec}(DimParams;
     backend=dev,
-    shots=1000,
-    nsteps=50000,
+    shots=1,
+    nsteps=1,
+    # shots = 1,
+    # nsteps = 1,
     δ=0.01f0,
     box_size=(2π, 2π, 2π),
     velocity=LIA(),
@@ -45,7 +48,7 @@ PARAMS = SimulationParams{IntPrec,FloatPrec}(DimParams;
     boundary_x=PeriodicBoundary{IntPrec}(1),
     boundary_y=PeriodicBoundary{IntPrec}(2),
     boundary_z=PeriodicBoundary{IntPrec}(3),
-    normal_velocity=[-2.0, 0.0, 0.0],
+    normal_velocity=[-2.5, 0.0, 0.0],
     ν_0=0.04,
     dt=1e-5,
 )
@@ -56,9 +59,27 @@ PARAMS = SimulationParams{IntPrec,FloatPrec}(DimParams;
 # end
 
 @time f, tt = Run(PARAMS);
-s = scatter(Tuple.(f),xlim=(-π,π),ylim=(-π,π),zlim=(-π,π))
-display(s)
+# s = scatter(Tuple.(f),xlim=(-π,π),ylim=(-π,π),zlim=(-π,π))
+# display(s)
 
+
+VortexData = load_VF_file("OUTPUTS/VFdata/var.000001.log")
+
+N = 128
+kMap = SuperVFM.generateMapping(N)
+Ekin = computeEnergySpectrum(VortexData, kMap)
+
+begin
+    k = collect(1:64)
+    plot(k,EkinFull./(2π),xscale=:log10,yscale=:log10,
+    xlabel=L"k",xguidefontsize=18,
+    ylabel=L"E(k)/(L κ^2ρ_s)", yguidefontsize=18,
+    label="Numeric",linewidth=3)
+
+
+    Ekin_anal = @. 1/(4π*k)
+    plot!(k,Ekin_anal,linestyle=:dash,linewidth=3, label="Analytic")
+end
 
 if make_plot
     let it = 70
@@ -77,8 +98,6 @@ if make_plot
             display(s)
     end
 end
-
-
 
 
 if make_animation

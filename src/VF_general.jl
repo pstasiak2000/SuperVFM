@@ -18,6 +18,8 @@ true
 """
 static2field(field::AbstractArray{SVector{S,T}}, N::Int) where {S,T<:AbstractFloat} = reshape(reinterpret(T, reshape(field,N)),S, :)
 
+
+
 """
     check_output_folder_structure(io::IO)
 
@@ -42,13 +44,6 @@ Exits the run if there are not enough vortex points, if there are less than 5 po
 function check_active_pcount(f_infront)
     @assert sum(f_infront .> 0) >= 5 "pcount too small: quitting loop..."
 end
-
-# """
-#     KA.zeros(BE::Backend,::Type{SVector{S,T}},dims::Tuple) where {S,T}
-
-# Initialise an array of static vectors of size `S` and type `T`
-# """
-# KernelAbstractions.zeros(BE::Backend,::Type{SVector{3,T}},dims::Tuple) where {T} = T(0.0) * allocate(BE,SVector{3,T},dims)
 
 """
     KA.zeros(BE::Backend,::Type{SVector{S,T}},N::Int) where {S,T}

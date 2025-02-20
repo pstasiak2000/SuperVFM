@@ -160,11 +160,11 @@ end
 load_VF_file(filename::AbstractString) = open(load_VF_file, filename, "r")
 
 
-# ### Read in the vortex tool scripts
-# VortexToolScripts = readdir(joinpath(@__DIR__, "VortexTools"))
-# for scripts ∈ VortexToolScripts
-#     include(joinpath(@__DIR__,"VortexTools",scripts))
-# end
+### Read in the vortex tool scripts
+VortexToolScripts = readdir(joinpath(@__DIR__, "VortexTools"))
+for scripts ∈ VortexToolScripts
+    include(joinpath(@__DIR__,"VortexTools",scripts))
+end
 
 
 

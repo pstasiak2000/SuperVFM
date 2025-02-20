@@ -82,8 +82,17 @@ struct ComboMapping{A,B}
 end
 Adapt.@adapt_structure ComboMapping
 
-function generateMapping(N)
+"""
+    generateMapping(N::Int)
 
+Generate a vector of combination k-maps. A combination map with `id=n` contains all of the 3D k-vectors ``(k_x,k_y,k_z)`` which reside within two consective integer spherical shells of size `n`.
+
+The mapping partititions the vector as a set ``\\Omega = \\lbrace \\Omega_k : 1\\leq k \\leq M = N/2\\rbrace`` where ``N`` is the resolution and 
+```math
+\\Omega_k = \\lbrace \\mathbf{k} = (k_x,k_y,k_z) : k-1 < ||\\mathbf{k}||_{2} \\leq k \\rbrace
+```
+"""
+function generateMapping(N::Int)
     kMap = [];
     if (N == 128)
         max_kmap = 50586

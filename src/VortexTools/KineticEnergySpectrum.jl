@@ -76,7 +76,7 @@ Full anisotropic computation of the superfluid kinetic energy spectrum ``E(k)``.
 The full anisotropic formula for the 3D energy spectrum ``E(\\mathbf{k})``is given by:
 
 ```math
-E(\\mathbf{k}) = \\frac{\\rho_s \\kappa^2}{16\\pi^3}\\frac{1}{k^2}\\int_{\\mathcal{L}_1}\\int_{\\mathcal{L}_2}d\\xi_1 d\\xi_2 \\mathbf{s}'(\\xi_1)\\cdot\\mathbf{s}'(\\xi_2) e^{i\\mathbf{k}\\cdot\\left[\\mathbf{s}(\xi_2) - \\mathbf{s}(\\xi_1) \\right]}.
+E(\\mathbf{k}) = \\frac{\\rho_s \\kappa^2}{16\\pi^3}\\frac{1}{k^2}\\int_{\\mathcal{L}_1}\\int_{\\mathcal{L}_2}d\\xi_1 d\\xi_2 \\mathbf{s}'(\\xi_1)\\cdot\\mathbf{s}'(\\xi_2) e^{i\\mathbf{k}\\cdot\\left[\\mathbf{s}(\\xi_2) - \\mathbf{s}(\\xi_1) \\right]}.
 ```
 The 1D spectrum is computed by integration over concentric shells
 

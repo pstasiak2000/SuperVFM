@@ -1,4 +1,4 @@
-![Logo](docs/src/assets/logo-light.svg#gh-light-mode-only)
+![Logo](docs/src/assets/logo.svg#gh-light-mode-only)
 ![Logo](docs/src/assets/logo-dark.svg#gh-dark-mode-only)
 
 # SuperVFM.jl

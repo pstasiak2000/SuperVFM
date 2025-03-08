@@ -1,4 +1,5 @@
 ![Logo](docs/src/assets/logo-light.svg#gh-light-mode-only)
+![Logo](docs/src/assets/logo-dark.svg#gh-dark-mode-only)
 
 # SuperVFM.jl
 [![GitHub Release](https://img.shields.io/github/v/release/pstasiak2000/SuperVFM)](https://github.com/pstasiak2000/SuperVFM/releases/latest)

@@ -14,7 +14,7 @@ This package implements the Vortex Filament method for superfluid helium-4 vorte
 ### --- To do list ---
 The first checkbox
 
-- [ ]  [ ] Vortex re-remeshing algorithm
+- [ ]  - [ ] Vortex re-remeshing algorithm
     - [x] [ ] Removal of vortex points 
     - [ ] [ ] Insertion of vortex points
 - [ ] [ ] Vortex reconnection algorithm (KDtree implementation)
